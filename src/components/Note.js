@@ -4,16 +4,17 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
 import HeartToggle from './HeartToggle'
-import Avatar from './Avatar'
+// import Avatar from './Avatar'
 
 import PushPin from '../assets/images/drawing-pin.webp'
 import './Note.scss'
 
-function Note({ note, toggleHeart}) {
+function Note({ note, toggleHeart }) {
+    console.log('note', note)
     return (
-        <Link to={`/notes/${note.id}`} className={`note is-${note.style}`} data-saved={note.saved}  style={{ backgroundColor: `${note.color ? note.color : ''}` }}>
+        <Link to={`/notes/${note.id}`} className={`note is-${note.style}`} data-saved={note.saved} style={{ backgroundColor: `${note.color ? note.color : ''}` }}>
             <header className="note-header">
-                { toggleHeart &&
+                {toggleHeart &&
                     <HeartToggle
                         val={note.id}
                         isSet={note.saved}
@@ -24,8 +25,8 @@ function Note({ note, toggleHeart}) {
                 <img className="note-pin" src={PushPin} alt="Push Pin" />
             </header>
 
-            { note.noteImage &&
-                <img className='note-image' src={ note.noteImage.URL} alt={ note.noteImage.name}/>
+            {note.noteImage &&
+                <img className='note-image' src={note.noteImage.URL} alt={note.noteImage.name} />
             }
 
             <ReactMarkdown
@@ -36,8 +37,8 @@ function Note({ note, toggleHeart}) {
             />
 
             <footer className="note-footer">
-                <Avatar src={note.createdBy.photoURL} name={note.createdBy.displayName} />
-                <p className='note-author'>from {note.createdBy.displayName}</p>
+                {/* <Avatar src={note.createdBy.imageURL} name={note.createdBy.displayName} /> */}
+                {/* <p className='note-author'>from {note.createdBy.displayName}</p> */}
             </footer>
 
 
@@ -48,13 +49,13 @@ function Note({ note, toggleHeart}) {
                 <ul className="list-avatars">
                     {assignedUsersList.map(user => (
                         <li key={user.id}>
-                            <Avatar src={user.photoURL} />
+                            <Avatar src={user.imageURL} />
                         </li>
                     ))}
                 </ul>
             </div> */}
 
-</Link>
+        </Link>
     )
 }
 

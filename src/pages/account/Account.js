@@ -1,25 +1,22 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from "react"
 import { useAuthContext } from "../../hooks/useAuthContext"
-import { useAppContext } from "../../hooks/useAppContext"
-
-import Profile from '../../components/Profile'
-import UserSearch from '../../components/UserSearch'
-
+import { useCollection } from '../../hooks/useCollection'
+import { useDocument } from '../../hooks/useDocument'
+import UserSearch from './UserSearch'
+import Invitations from './Invitations'
 import './Account.scss'
 
 export default function Account() {
+    const [friendUID, setFriendUID] = useState('EonKFr7OXXdpDolj4TC7VwDcOtT2')
+    const { documents } = useCollection('users')
+    const { document } = useDocument('users', friendUID)
     const { user } = useAuthContext()
-    const { dispatchApp } = useAppContext()
-
-    useEffect(() => {
-        dispatchApp({ type: 'SET_TITLE', payload: 'Account' })
-    }, [])
 
     return (
         <div className='card'>
             <h1>hello {user.displayName}</h1>
-            <Profile></Profile>
             <UserSearch></UserSearch>
+            <Invitations users={documents}></Invitations>
         </div>
     )
 }

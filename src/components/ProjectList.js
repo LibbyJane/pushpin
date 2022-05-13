@@ -8,7 +8,7 @@ export default function ProjectList({ projects }) {
         <ul className="list-projects">
             {projects.length === 0 && <p>No projects yet!</p>}
             {projects.map(project => (
-                <li key={project.id}  className="card">
+                <li key={project.id} className="card">
                     <Link to={`/projects/${project.id}`}>
                         <h4>{project.name}</h4>
                         <p>Due by {project.dueDate.toDate().toDateString()}</p>
@@ -17,7 +17,7 @@ export default function ProjectList({ projects }) {
                             <ul className="list-avatars">
                                 {project.assignedUsersList.map(user => (
                                     <li key={user.id}>
-                                        <Avatar src={user.photoURL} name={user.displayName} />
+                                        <Avatar src={user.imageURL} name={user.displayName} />
                                     </li>
                                 ))}
                             </ul>

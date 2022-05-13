@@ -13,7 +13,7 @@ export default function Login() {
 
     useEffect(() => {
         dispatchApp({ type: 'SET_TITLE', payload: 'Log In' })
-    }, [])
+    }, [dispatchApp])
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')

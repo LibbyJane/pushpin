@@ -6,7 +6,7 @@ import { useFirestore } from "../../hooks/useFirestore"
 import Avatar from "../../components/Avatar"
 import DeleteIcon from '../../assets/icons/delete.svg'
 
-export default function NoteComments({note, id}) {
+export default function NoteComments({ note, id }) {
     const { user } = useAuthContext()
     const { updateDocument, response } = useFirestore('notes')
     const [newComment, setNewComment] = useState('')
@@ -16,7 +16,7 @@ export default function NoteComments({note, id}) {
 
         const commentToAdd = {
             uid: user.uid,
-            photoURL: user.photoURL,
+            imageURL: user.imageURL,
             displayName: user.displayName,
             content: newComment,
             createdAt: timestamp.fromDate(new Date()),
@@ -36,7 +36,7 @@ export default function NoteComments({note, id}) {
     }
 
     const deleteComment = async (commentId) => {
-        const updatedComments = note.comments.filter(item => {return (item.id !== commentId)});
+        const updatedComments = note.comments.filter(item => { return (item.id !== commentId) });
         await updateDocument(id, {
             comments: updatedComments
         })
@@ -46,30 +46,30 @@ export default function NoteComments({note, id}) {
         <aside className="note-comments">
             {note.comments && note.comments.length > 0 &&
                 <ul>
-                { note.comments.map(comment => (
-                    <li className={`comment  ${comment.uid === user.uid ? 'user-authored' : ''}`} key={comment.id}>
-                        <p className="comment-date">{formatDistanceToNow(note.createdAt.toDate(), {addSuffix: true})}</p>
+                    {note.comments.map(comment => (
+                        <li className={`comment  ${comment.uid === user.uid ? 'user-authored' : ''}`} key={comment.id}>
+                            <p className="comment-date">{formatDistanceToNow(note.createdAt.toDate(), { addSuffix: true })}</p>
 
-                        <div className="comment-content">
-                            <p>{comment.content}</p>
-                        </div>
+                            <div className="comment-content">
+                                <p>{comment.content}</p>
+                            </div>
 
-                        <div className="comment-author">
-                            <Avatar src={comment.photoURL} name={comment.displayName} />
-                            {/* <div className="comment-author">{comment.displayName}</div> */}
-                        </div>
-                        {comment.uid === user.uid &&
-                            <button
-                                className="comment-delete"
-                                type="button"
-                                onClick={(e) => deleteComment(comment.id)}
-                            >
-                                <img src={DeleteIcon} alt="Delete comment" />
-                            </button>
-                        }
-                    </li>
-                ))}
-            </ul>}
+                            <div className="comment-author">
+                                <Avatar src={comment.imageURL} name={comment.displayName} />
+                                {/* <div className="comment-author">{comment.displayName}</div> */}
+                            </div>
+                            {comment.uid === user.uid &&
+                                <button
+                                    className="comment-delete"
+                                    type="button"
+                                    onClick={(e) => deleteComment(comment.id)}
+                                >
+                                    <img src={DeleteIcon} alt="Delete comment" />
+                                </button>
+                            }
+                        </li>
+                    ))}
+                </ul>}
 
             <form className="add-comment" onSubmit={handleSubmit}>
                 <label>

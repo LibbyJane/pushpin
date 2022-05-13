@@ -11,7 +11,7 @@ export default function Swatch({ value, label, handler }) {
                 onChange={(e) => handler(e.target.value)}
             />
             <span className="swatch" style={{ backgroundColor: `${value}`, color: `${value}` }}>
-                <img className="icon" src={CheckIcon} />
+                <img className="icon" src={CheckIcon} alt="selected icon" />
             </span>
             <span className='checkable-text'>{label}</span>
         </label>

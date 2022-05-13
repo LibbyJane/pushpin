@@ -23,16 +23,16 @@ export const useSignup = () => {
 
             const uploadPath = `thumbnails/${res.user.uid}/${thumbnail.name}`
             const img = await projectStorage.ref(uploadPath).put(thumbnail)
-            const photoURL = await img.ref.getDownloadURL()
+            const imageURL = await img.ref.getDownloadURL()
 
-            await res.user.updateProfile({ displayName, photoURL })
+            await res.user.updateProfile({ displayName, imageURL })
 
             // create a user document
             await projectFirestore.collection('users').doc(res.user.uid).set({
                 online: true,
                 displayName,
                 email,
-                photoURL,
+                imageURL,
                 friends: []
             })
 

@@ -1,25 +1,29 @@
-import { useEffect, useState } from 'react'
-import { useAuthContext } from './useAuthContext'
+import { useEffect, useState, useRef } from "react"
 
 import axios from "axios";
 import { apiBaseURL } from '../api/config';
+import { useAuthContext } from "../hooks/useAuthContext"
 
-export const useLogin = () => {
+export const useNotes = () => {
     const [isCancelled, setIsCancelled] = useState(false)
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
-    const { dispatch } = useAuthContext()
+    const { user } = useAuthContext()
+    const id = user.id;
+    const [documents, setDocuments] = useState(null)
 
-    const login = async (email, password) => {
+    // if we don't use a ref --> infinite loop in useEffect
+    // _query is an array and is "different" on every function call
+    // const query = useRef(_query).current
+    // const orderBy = useRef(_orderBy).current
+
+    useEffect(() => {
         setError(null)
         setIsPending(true)
 
         try {
-            // login
-            axios.post(`${apiBaseURL}login`, { email, password }).then((response) => {
-                console.log('login response', response)
-                // dispatch login action
-                dispatch({ type: 'LOGIN', payload: response.data.user })
+            axios.post(`${apiBaseURL}notes`, { id }).then((response) => {
+                setDocuments(response.data)
 
                 if (!isCancelled) {
                     setIsPending(false)
@@ -38,11 +42,10 @@ export const useLogin = () => {
                 setIsPending(false)
             }
         }
-    }
 
-    useEffect(() => {
+
         return () => setIsCancelled(true)
     }, [])
 
-    return { login, isPending, error }
+    return { documents, isPending, error }
 }

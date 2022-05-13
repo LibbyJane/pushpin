@@ -15,9 +15,10 @@ import CreateIcon from '../../assets/icons/mail-opened-filled.svg'
 import LogoutIcon from '../../assets/icons/log-out.svg'
 
 export default function SiteHeader() {
-    const { logout, isPending } = useLogout()
+    const { logout } = useLogout()
     const { user } = useAuthContext()
     const { headerTitle } = useAppContext()
+    console.log('user', user)
 
     return (
         <header className='site-header container'>
@@ -32,7 +33,7 @@ export default function SiteHeader() {
             {user && (
                 <div className="site-user">
                     <Link to={`/account`}>
-                        {user.photoURL && <Avatar src={user.photoURL} />}
+                        {user.imageURL && <Avatar src={user.imageURL} />}
                         <p>Hey {user.displayName}</p>
                     </Link>
 

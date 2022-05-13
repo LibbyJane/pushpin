@@ -1,4 +1,4 @@
-import { createContext, useReducer, useEffect } from 'react'
+import { createContext, useReducer } from 'react'
 
 export const AppContext = createContext()
 
@@ -15,7 +15,6 @@ export const AppContextProvider = ({ children }) => {
     const [state, dispatchApp] = useReducer(AppReducer, {
         headerTitle: "Welcome"
     })
-
 
     return (
         <AppContext.Provider value={{ ...state, dispatchApp }}>

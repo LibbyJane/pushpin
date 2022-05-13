@@ -14,13 +14,13 @@ export default function NoteDetail({ note, id }) {
 
         //TODO: delete any note images also
         navigate('/')
-      }
+    }
 
     return (
         <div className="card note-detail">
             {note.noteImage && <img className='note-image' src={note.noteImage.URL} alt={note.noteImage.name} />}
             <p>{note.message}</p>
-            <Avatar src={note.createdBy.photoURL} name={note.createdBy.displayName} />
+            <Avatar src={note.createdBy.imageURL} name={note.createdBy.displayName} />
             <p>from {note.createdBy.displayName} on {note.createdAt.toDate().toDateString()}</p>
 
             {user.uid === note.createdBy.id && (

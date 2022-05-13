@@ -47,7 +47,7 @@ export default function Create() {
     const [color, setColor] = useState('var(--white)')
     const [recipients, setRecipients] = useState([])
     const [formError, setFormError] = useState(null)
-    const { addNote, isPending, error } = useAddNote()
+    const { addNote, error } = useAddNote()
 
     useEffect(() => {
         if (documents) {
@@ -56,7 +56,7 @@ export default function Create() {
                 return {
                     value: {
                         displayName: u.displayName,
-                        photoURL: u.photoURL,
+                        imageURL: u.imageURL,
                         id: u.id
                     },
                     label: u.displayName
@@ -85,7 +85,11 @@ export default function Create() {
         }
 
         setNoteImageError(null)
+        console.log('selected', selected)
+
         selected.URL = URL.createObjectURL(selected)
+        console.log('selected2', selected)
+
         setNoteImage(selected)
     }
 
@@ -109,7 +113,7 @@ export default function Create() {
         })
         const createdBy = {
             displayName: user.displayName,
-            photoURL: user.photoURL,
+            imageURL: user.imageURL,
             id: user.uid
         }
 

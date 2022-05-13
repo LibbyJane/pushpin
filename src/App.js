@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { useState } from 'react'
 import { useAuthContext } from "./hooks/useAuthContext"
 
 import Corkboard from './pages/corkboard/Corkboard'

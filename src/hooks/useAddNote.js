@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 // storage for the user's avatar, firestore to make a document for the user
 import { projectAuth, projectStorage } from '../firebase/config'
 import { useFirestore } from './useFirestore'
+import { useAuthContext } from "../hooks/useAuthContext"
 
 
 
@@ -10,8 +11,8 @@ export const useAddNote = () => {
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
     const { addDocument } = useFirestore('notes')
-    const { uid } = projectAuth.currentUser
-
+    const { user } = useAuthContext()
+    const id = user.id
 
     const addNote = async (note, image) => {
         console.log('addnote', note, image)
@@ -20,7 +21,7 @@ export const useAddNote = () => {
 
         try {
             if (image) {
-                const uploadPath = `noteImages/${uid}/${image.name}`
+                const uploadPath = `noteImages/${id}/${image.name}`
                 const img = await projectStorage.ref(uploadPath).put(image)
 
                 const noteImage = {
@@ -28,7 +29,7 @@ export const useAddNote = () => {
                     name: image.name
                 }
 
-                note = {...note, noteImage}
+                note = { ...note, noteImage }
             }
             await addDocument(note)
 
@@ -49,5 +50,5 @@ export const useAddNote = () => {
         return () => setIsCancelled(true)
     }, [])
 
-    return { addNote, isPending, error}
+    return { addNote, isPending, error }
 }

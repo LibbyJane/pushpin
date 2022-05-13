@@ -17,5 +17,9 @@ service cloud.firestore {
             // logged in user uid must match the document creator to read & delete
             allow delete: if request.auth.uid == resource.data.createdBy.id;
         }
+
+        match /invitations/* {
+            allow read, create, update, delete: if request.auth != null;
+        }
     }
 }

@@ -16,7 +16,7 @@ export default function Sidebar() {
             {user && <>
                 <div className="sb-content">
                     <div className="sb-user sb-border">
-                        {user.photoURL && <Avatar src={user.photoURL} />}
+                        {user.imageURL && <Avatar src={user.imageURL} />}
                         <p>Hey {user.displayName}</p>
                     </div>
                     <nav className="sb-links sb-border">
