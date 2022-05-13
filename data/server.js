@@ -7,7 +7,6 @@ var cors = require('cors')
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('pushpin.db');
 
-// mkcert -key-file key.pem -cert-file cert.pem localhost
 const keyFile = '../key.pem';
 const certFile = '../cert.pem';
 const sslOptions = {
