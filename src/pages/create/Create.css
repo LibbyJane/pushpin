@@ -1,0 +1,8 @@
+.form-create {
+    max-width: none;
+}
+
+.note-preview {
+    margin-left: var(--space-lg);
+    max-width: 50vw;
+}

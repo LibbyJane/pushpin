@@ -1,0 +1,26 @@
+.error {
+    /* background: var(--danger-bg); */
+    color: var(--danger);
+    font-size: 0.9rem;
+    line-height: 1.2;
+    position: relative;
+    padding: 0 0 var(--space-sm);
+    padding-left: calc(var(--space) + var(--space-sm));
+
+    &::before {
+        --size: calc(var(--space) - var(--border-width) - var(--border-width));
+
+        border: var(--border);
+        border-radius: 50%;
+        content: "!";
+        font-size: 12px;
+        height: var(--size);
+        width: var(--size);
+        line-height: 1;
+        font-weight: 600;
+        position: absolute;
+        top: var(--space-xs);
+        left: 0;
+        text-align: center;
+    }
+}

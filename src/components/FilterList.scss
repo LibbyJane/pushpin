@@ -1,0 +1,21 @@
+.list-filters {
+    display: flex;
+
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    label {
+        color: var(--text-alt);
+        cursor: pointer;
+        display: flex;
+            align-items: center;
+        font-size: 0.94rem;
+        padding-right: var(--space)
+    }
+
+    input {
+        margin: 0 var(--space-xs) 0 0;
+        padding: 0;
+    }
+}

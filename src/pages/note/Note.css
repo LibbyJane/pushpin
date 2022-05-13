@@ -1,0 +1,115 @@
+
+.note-details {
+    flex: 0 0 auto;
+    margin-bottom: var(--space-md)
+}
+
+.note-comments {
+    flex: 0 0 auto;
+    margin-left: var(--space);
+}
+
+.comment {
+    display: grid;
+        grid-gap: 0 var(--space-sm);
+        grid-template-areas:
+            'date date date'
+            'comment comment comment'
+            'author blank blank';
+    justify-content: start;
+}
+
+.user-authored {
+    grid-template-areas:
+        'date date delete'
+        'comment comment comment'
+        'blank blank author';
+    justify-content: end;
+}
+
+.comment p {
+    margin: 0;
+    padding: 0;
+}
+
+.comment-content {
+    grid-area: comment;
+
+    background: var(--grey-d);
+    border-radius: var(--radius-lg);
+    border-bottom-left-radius: 0;
+    padding: var(--space-sm);
+}
+
+.user-authored .comment-content {
+    border-bottom-left-radius: var(--radius-lg);
+    border-bottom-right-radius: 0;
+}
+
+.comment-author {
+    grid-area: author;
+
+    position: relative;
+}
+
+.comment-author::after {
+    width: 0;
+    height: 0;
+    border-width: var(--space) var(--space) 0  0 ;
+    border-color: var(--grey-d) transparent transparent transparent;
+    border-style: solid;
+    content: '';
+    position: absolute;
+        bottom: auto;
+        left: 0;
+}
+
+.user-authored .comment-author::after {
+    border-width: 0 var(--space) var(--space) 0;
+    border-color: transparent var(--grey-d) transparent transparent;
+    left: auto;
+    right: 0;
+}
+
+
+.comment-author {
+    grid-area: author;
+    text-align: right;
+}
+
+.comment-author .avatar {
+    --size: 1.6rem;
+    height: var(--size);
+    width: var(--size);
+    margin-top: var(--space-sm);
+}
+
+.comment-date {
+    grid-area: date;
+    font-weight: 300;
+    font-size: 0.8rem;
+    margin-left: auto;
+}
+
+.user-authored .comment-date {
+    text-align: right;
+}
+
+.comment-delete {
+    grid-area: delete;
+    margin-left: auto;
+
+    appearance: none;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+}
+
+.comment:hover .comment-delete {
+    opacity: 1;
+}
+
+

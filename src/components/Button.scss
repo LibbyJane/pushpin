@@ -1,0 +1,26 @@
+.btn {
+    margin-bottom: var(--space);
+
+    &.is-white {
+        border-color: var(--white);
+        color: var(--white);
+
+        &:hover,
+        &:focus {
+            background-color: var(--white);
+            border-color: var(--white);
+            color: var(--text);
+        }
+    }
+
+    &.is-text {
+        border: 0 none;
+        color: currentColor;
+
+        &:hover,
+        &:focus {
+            background-color: transparent;
+            border-color: transparent;
+        }
+    }
+}
