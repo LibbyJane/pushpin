@@ -72,8 +72,6 @@ init.initialiseDatabase(db, async () => {
         const token = req.token;
         console.log(token);
 
-        //console.log('get notes', req);
-        const uid = 2;
         const query = `
     SELECT n.*
     FROM notes n
@@ -81,7 +79,7 @@ init.initialiseDatabase(db, async () => {
     WHERE r.recipient_id = ?
     `;
         const notes = [];
-        await db.each(query, [uid], (err, row) => {
+        await db.each(query, [req.token.userId], (err, row) => {
             notes.push(row);
         }, () => {
             res.status(200).json(notes)
