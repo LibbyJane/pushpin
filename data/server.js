@@ -17,7 +17,10 @@ const sslOptions = {
     key: fs.readFileSync(keyFile,),
     cert: fs.readFileSync(certFile),
 };
-const port = 4000
+const port = 4000;
+
+// Switch to true to get extra diagnostics from endpoints.
+const debugMode = true;
 
 const testCreateToken = async () => {
     try {
@@ -46,7 +49,7 @@ init.initialiseDatabase(db, async () => {
         });
 
     // Setup endpoints
-    app.get('/', async (req, res) => {
+    app.get('/', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), async (req, res) => {
         const query = `
     SELECT id, firstName, lastName, displayName, email
     FROM users
@@ -60,9 +63,17 @@ init.initialiseDatabase(db, async () => {
         });
     });
 
-    app.post('/notes', async (req, res) => {
+    app.get('/notes', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), async (req, res) => {
+        /**
+         * If we get here then the middleware has already verified that the authorization header is present
+         * and contains a valid token.  There will be a token object containing the logged in user id
+         * in the request object.
+         */
+        const token = req.token;
+        console.log(token);
+
         //console.log('get notes', req);
-        const uid = req.body.id;
+        const uid = 2;
         const query = `
     SELECT n.*
     FROM notes n
@@ -77,6 +88,7 @@ init.initialiseDatabase(db, async () => {
         });
     });
 
+    // User Login
     app.post('/login', async (req, res) => {
         const email = req.body.email;
         const password = req.body.password;
@@ -132,10 +144,32 @@ init.initialiseDatabase(db, async () => {
                     }
                 } else {
                     res.status(400).json({
-                        'error': 'Login failed'
+                        'error': "Login failed"
                     });
                 }
             });
+        });
+    });
+
+    // User Logout
+    app.get('/logout', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), async (req, res) => {
+        try {
+            await tokens.deleteToken(db, req.token.id);
+
+            res.status(200).json({
+                'success': true
+            });
+        } catch (error) {
+            res.status(500).json({
+                'error': "Logout failed"
+            });
+        }
+    });
+
+    // Capture All 404 errors
+    app.use(function (req,res,next){
+        res.status(404).json({
+            "error": "404 - Resource not found"
         });
     });
 });

@@ -3,14 +3,16 @@ const {stat} = require("fs");
 
 const init = (db, callback) => {
     createTables(db, () => {
-        insertSampleUsers(db, () => {
-            insertSampleNotes(db, () => {
-                insertSampleRecipients(db, () => {
-                    console.log('Database setup completed');
-                    callback();
+        resetAllTables(db, () => {
+            insertSampleUsers(db, () => {
+                insertSampleNotes(db, () => {
+                    insertSampleRecipients(db, () => {
+                        console.log('Database setup completed');
+                        callback();
+                    });
                 });
             });
-        });
+        })
     });
 
     function createTables(db, callback) {
@@ -101,197 +103,206 @@ const init = (db, callback) => {
         applyNextSqlStatement(db,0, callback);
     }
 
+    function resetAllTables(db, callback) {
+        const tables = ['recipients', 'notes', 'tokens', 'users'];
+
+        const emptyNextTable = (db, tableIndex, callback) => {
+            const tableName = tables[tableIndex];
+
+            console.log('Deleting data from table ', tableName);
+            const sql = "DELETE FROM " + tableName;
+
+            db.run(sql, (err) => {
+                if (err) {
+                    console.log('Failed to run delete query:', sql);
+                    return;
+                }
+
+                if (tableIndex < (tables.length - 1)) {
+                    emptyNextTable(db, ++tableIndex, callback);
+                } else {
+                    console.log('Resetting all autoincrement sequence numbers');
+                    const resetSql = `UPDATE sqlite_sequence SET seq = 0;`
+
+                    db.run(resetSql, (err) => {
+                        if (err) {
+                            console.log('Failed to run reset sequences query:', resetSql);
+                            return;
+                        } else {
+                            callback();
+                        }
+                    });
+                }
+            });
+        }
+
+        emptyNextTable(db, 0, callback);
+    }
+
     function insertSampleUsers(db, callback) {
-        // Delete all existing users
-        const sql = "DELETE FROM users";
-        db.run(sql, (err) => {
-            if (err) {
-                console.log('Failed to delete users');
-                return;
-            }
 
-            const users = [
-                {
-                    'firstName': 'Cookie',
-                    'lastName': 'Monster',
-                    'displayName': 'Cookie',
-                    'email': 'cookie@monster.com',
-                    'password': 'testtest',
-                    'imageURL': 'https://firebasestorage.googleapis.com/v0/b/thedojo-d76cf.appspot.com/o/thumbnails%2FnOPT6hmpG8TQE6a1CrqVqAKvbeX2%2Fcookiemonster.jpg?alt=media&token=e4bb4797-e209-4441-bd83-0e2a09b33ad7',
-                    'uid': '2XM5vxnZGhSqqs5AnEMTLbUxcCm2'
-                },
-                {
-                    'firstName': 'Animal',
-                    'lastName': 'Monster',
-                    'displayName': 'Animaaaaaaal',
-                    'email': 'animal@muppets.com',
-                    'password': 'testtest',
-                    'imageURL': 'https://firebasestorage.googleapis.com/v0/b/thedojo-d76cf.appspot.com/o/thumbnails%2F2XM5vxnZGhSqqs5AnEMTLbUxcCm2%2Fanimal.jpg?alt=media&token=96ac0cf7-78c0-41fa-a096-5b79de53aeaf',
-                    'uid': '2XM5vxnZGhSqqs5AnEMTLbUxcCm2'
-                },
-                {
-                    'firstName': 'Libby',
-                    'lastName': 'Chapman',
-                    'displayName': 'Dizski',
-                    'email': 'libby@libbychapman.com',
-                    'password': 'bingle',
-                    'imageURL': 'https://firebasestorage.googleapis.com/v0/b/thedojo-d76cf.appspot.com/o/thumbnails%2FnOPT6hmpG8TQE6a1CrqVqAKvbeX2%2Fcookiemonster.jpg?alt=media&token=e4bb4797-e209-4441-bd83-0e2a09b33ad7',
-                    'uid': '2XM5vxnZGhSqqs5AnEMTLbUxcCm2'
-                },
-                {
-                    'firstName': 'Andy',
-                    'lastName': 'Chapman',
-                    'displayName': 'Nycran',
-                    'email': 'andy@andychapman.net',
-                    'password': 'mango77z',
-                    'imageURL': 'https://firebasestorage.googleapis.com/v0/b/thedojo-d76cf.appspot.com/o/thumbnails%2FnOPT6hmpG8TQE6a1CrqVqAKvbeX2%2Fcookiemonster.jpg?alt=media&token=e4bb4797-e209-4441-bd83-0e2a09b33ad7',
-                    'uid': '2XM5vxnZGhSqqs5AnEMTLbUxcCm2'
-                },
-            ];
+        const users = [
+            {
+                'firstName': 'Cookie',
+                'lastName': 'Monster',
+                'displayName': 'Cookie',
+                'email': 'cookie@monster.com',
+                'password': 'testtest',
+                'imageURL': 'https://firebasestorage.googleapis.com/v0/b/thedojo-d76cf.appspot.com/o/thumbnails%2FnOPT6hmpG8TQE6a1CrqVqAKvbeX2%2Fcookiemonster.jpg?alt=media&token=e4bb4797-e209-4441-bd83-0e2a09b33ad7',
+                'uid': '2XM5vxnZGhSqqs5AnEMTLbUxcCm2'
+            },
+            {
+                'firstName': 'Animal',
+                'lastName': 'Monster',
+                'displayName': 'Animaaaaaaal',
+                'email': 'animal@muppets.com',
+                'password': 'testtest',
+                'imageURL': 'https://firebasestorage.googleapis.com/v0/b/thedojo-d76cf.appspot.com/o/thumbnails%2F2XM5vxnZGhSqqs5AnEMTLbUxcCm2%2Fanimal.jpg?alt=media&token=96ac0cf7-78c0-41fa-a096-5b79de53aeaf',
+                'uid': '2XM5vxnZGhSqqs5AnEMTLbUxcCm2'
+            },
+            {
+                'firstName': 'Libby',
+                'lastName': 'Chapman',
+                'displayName': 'Dizski',
+                'email': 'libby@libbychapman.com',
+                'password': 'bingle',
+                'imageURL': 'https://firebasestorage.googleapis.com/v0/b/thedojo-d76cf.appspot.com/o/thumbnails%2FnOPT6hmpG8TQE6a1CrqVqAKvbeX2%2Fcookiemonster.jpg?alt=media&token=e4bb4797-e209-4441-bd83-0e2a09b33ad7',
+                'uid': '2XM5vxnZGhSqqs5AnEMTLbUxcCm2'
+            },
+            {
+                'firstName': 'Andy',
+                'lastName': 'Chapman',
+                'displayName': 'Nycran',
+                'email': 'andy@andychapman.net',
+                'password': 'mango77z',
+                'imageURL': 'https://firebasestorage.googleapis.com/v0/b/thedojo-d76cf.appspot.com/o/thumbnails%2FnOPT6hmpG8TQE6a1CrqVqAKvbeX2%2Fcookiemonster.jpg?alt=media&token=e4bb4797-e209-4441-bd83-0e2a09b33ad7',
+                'uid': '2XM5vxnZGhSqqs5AnEMTLbUxcCm2'
+            },
+        ];
 
-            const saltRounds = 10;
+        const saltRounds = 10;
 
-            const createUserSql = `
+        const createUserSql = `
                 INSERT INTO users(firstName, lastName, displayName, email, password, imageURL, uid)
                 VALUES (?, ?, ?, ?, ?, ?, ?);
             `
 
-            const stmt = db.prepare(createUserSql);
+        const stmt = db.prepare(createUserSql);
 
-            const insertNextUser = function (currentUserNo) {
-                const user = users[currentUserNo];
+        const insertNextUser = function (currentUserNo) {
+            const user = users[currentUserNo];
 
-                bcrypt.hash(user.password, saltRounds, function (err, hashedPassword) {
-                    stmt.run(user.firstName, user.lastName, user.displayName, user.email, hashedPassword, user.imageURL, user.uid);
+            bcrypt.hash(user.password, saltRounds, function (err, hashedPassword) {
+                stmt.run(user.firstName, user.lastName, user.displayName, user.email, hashedPassword, user.imageURL, user.uid);
 
-                    if (currentUserNo < (users.length - 1)) {
-                        insertNextUser(++currentUserNo, callback);
-                    } else {
-                        stmt.finalize();
-                        console.log('USERS INSERTED');
-                        callback();
-                    }
-                });
-            }
+                if (currentUserNo < (users.length - 1)) {
+                    insertNextUser(++currentUserNo, callback);
+                } else {
+                    stmt.finalize();
+                    console.log('USERS INSERTED');
+                    callback();
+                }
+            });
+        }
 
-            insertNextUser(0);
-
-        });
+        insertNextUser(0);
     }
 
     function insertSampleNotes(db, callback) {
-        // Delete all existing users
-        const sql = "DELETE FROM notes";
-        db.run(sql, (err) => {
-            if (err) {
-                console.log('Failed to delete notes');
-                return;
-            }
+        const notes = [
+            {
+                'createdByID': 1,
+                'message': 'Hello Cookie',
+                'imageURL': 'https://firebasestorage.googleapis.com/v0/b/thedojo-d76cf.appspot.com/o/noteImages%2F2XM5vxnZGhSqqs5AnEMTLbUxcCm2%2Fshortbreadcookies.jpg?alt=media&token=1e8470ee-bdf3-4c98-83fa-9383b6466981',
+                'style': 'polaroid'
+            },
+            {
+                'createdByID': 2,
+                'message': 'Mmm cookie',
+                'imageURL': 'https://firebasestorage.googleapis.com/v0/b/thedojo-d76cf.appspot.com/o/thumbnails%2F2XM5vxnZGhSqqs5AnEMTLbUxcCm2%2Fanimal.jpg?alt=media&token=96ac0cf7-78c0-41fa-a096-5b79de53aeaf',
+                'style': 'postcard'
+            },
+            {
+                'createdByID': 3,
+                'message': 'Nothing to see here',
+                'imageURL': null,
+                'style': 'stickynote'
+            },
+        ];
 
-            const notes = [
-                {
-                    'createdByID': 1,
-                    'message': 'Hello Cookie',
-                    'imageURL': 'https://firebasestorage.googleapis.com/v0/b/thedojo-d76cf.appspot.com/o/noteImages%2F2XM5vxnZGhSqqs5AnEMTLbUxcCm2%2Fshortbreadcookies.jpg?alt=media&token=1e8470ee-bdf3-4c98-83fa-9383b6466981',
-                    'style': 'polaroid'
-                },
-                {
-                    'createdByID': 2,
-                    'message': 'Mmm cookie',
-                    'imageURL': 'https://firebasestorage.googleapis.com/v0/b/thedojo-d76cf.appspot.com/o/thumbnails%2F2XM5vxnZGhSqqs5AnEMTLbUxcCm2%2Fanimal.jpg?alt=media&token=96ac0cf7-78c0-41fa-a096-5b79de53aeaf',
-                    'style': 'postcard'
-                },
-                {
-                    'createdByID': 3,
-                    'message': 'Nothing to see here',
-                    'imageURL': null,
-                    'style': 'stickynote'
-                },
-            ];
-
-            const createNoteSql = `
+        const createNoteSql = `
                 INSERT INTO notes(createdByID, message, imageURL, style)
                 VALUES (?, ?, ?, ?);
             `
 
-            const stmt = db.prepare(createNoteSql);
+        const stmt = db.prepare(createNoteSql);
 
-            const insertNext = function (current) {
-                const note = notes[current];
-                stmt.run(note.createdByID, note.message, note.imageURL, note.style);
+        const insertNext = function (current) {
+            const note = notes[current];
+            stmt.run(note.createdByID, note.message, note.imageURL, note.style);
 
-                if (current < (notes.length - 1)) {
-                    insertNext(++current, callback);
-                } else {
-                    stmt.finalize();
-                    console.log('NOTES INSERTED');
-                    callback();
-                }
+            if (current < (notes.length - 1)) {
+                insertNext(++current, callback);
+            } else {
+                stmt.finalize();
+                console.log('NOTES INSERTED');
+                callback();
             }
+        }
 
-            insertNext(0);
-        });
+        insertNext(0);
     }
 
     function insertSampleRecipients(db, callback) {
-        // Delete all existing recipients
-        const sql = "DELETE FROM recipients";
-        db.run(sql, (err) => {
-            if (err) {
-                console.log('Failed to delete recipients');
-                return;
-            }
+        const recipients = [
+            {
+                'note_id': 1,
+                'recipient_id': 1,
+                'status': 'saved'
+            },
+            {
+                'note_id': 1,
+                'recipient_id': 2,
+                'status': 'deleted'
+            },
+            {
+                'note_id': 2,
+                'recipient_id': 2,
+                'status': 'saved'
+            },
+            {
+                'note_id': 2,
+                'recipient_id': 3,
+                'status': 'saved'
+            },
+            {
+                'note_id': 3,
+                'recipient_id': 2,
+                'status': 'saved'
+            },
+        ];
 
-            const recipients = [
-                {
-                    'note_id': 1,
-                    'recipient_id': 1,
-                    'status': 'saved'
-                },
-                {
-                    'note_id': 1,
-                    'recipient_id': 2,
-                    'status': 'deleted'
-                },
-                {
-                    'note_id': 2,
-                    'recipient_id': 2,
-                    'status': 'saved'
-                },
-                {
-                    'note_id': 2,
-                    'recipient_id': 3,
-                    'status': 'saved'
-                },
-                {
-                    'note_id': 3,
-                    'recipient_id': 2,
-                    'status': 'saved'
-                },
-            ];
-
-            const createRecipientsSql = `
+        const createRecipientsSql = `
                 INSERT INTO recipients(note_id, recipient_id, status)
                 VALUES (?, ?, ?);
             `
 
-            const stmt = db.prepare(createRecipientsSql);
+        const stmt = db.prepare(createRecipientsSql);
 
-            const insertNext = function (current) {
-                const recipient = recipients[current];
-                stmt.run(recipient.note_id, recipient.recipient_id, recipient.status);
+        const insertNext = function (current) {
+            const recipient = recipients[current];
+            stmt.run(recipient.note_id, recipient.recipient_id, recipient.status);
 
-                if (current < (recipients.length - 1)) {
-                    insertNext(++current, callback);
-                } else {
-                    stmt.finalize();
-                    console.log('RECIPIENTS INSERTED');
-                    callback();
-                }
+            if (current < (recipients.length - 1)) {
+                insertNext(++current, callback);
+            } else {
+                stmt.finalize();
+                console.log('RECIPIENTS INSERTED');
+                callback();
             }
+        }
 
-            insertNext(0);
-        });
+        insertNext(0);
     }
 }
 
