@@ -90,6 +90,9 @@ init.initialiseDatabase(db, async () => {
     // User Login
     app.post('/login', userModule.login(db));
 
+    // Register user
+    app.post('/register', userModule.register(db));
+
     // User Logout
     app.get('/logout', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), async (req, res) => {
         try {
