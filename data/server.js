@@ -10,7 +10,7 @@ const db = new sqlite3.Database('pushpin.db');
 // Our modules
 const init = require('./init');
 const tokens = require('./tokens');
-const userModule = require('./users');
+const userModule = require('./userModule');
 
 const keyFile = '../key.pem';
 const certFile = '../cert.pem';
@@ -88,7 +88,7 @@ init.initialiseDatabase(db, async () => {
     });
 
     // User Login
-    app.post('/login', userModule.user.login(db));
+    app.post('/login', userModule.login(db));
 
     // User Logout
     app.get('/logout', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), async (req, res) => {
