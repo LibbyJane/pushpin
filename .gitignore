@@ -26,3 +26,4 @@ yarn-error.log*
 
 .idea
 data/pushpin.db
+data/config.json

@@ -3,9 +3,14 @@ const fs = require("fs");
 const express = require('express')
 const bcrypt = require("bcrypt");
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('pushpin.db');
+
+// Config
+const config = require('./config.json');
+console.log(config);
 
 // Our modules
 const init = require('./init');
@@ -18,7 +23,6 @@ const sslOptions = {
     key: fs.readFileSync(keyFile,),
     cert: fs.readFileSync(certFile),
 };
-const port = 4000;
 
 // Switch to true to get extra diagnostics from endpoints.
 const debugMode = true;
@@ -35,18 +39,46 @@ const testCreateToken = async () => {
 init.initialiseDatabase(db, async () => {
     await testCreateToken();
 
+    const fileUploadParams = {
+        limits: {
+            fileSize: 20_000_000
+        },
+        useTempFiles : true,
+        tempFileDir : config.files.tmpUploadPath,
+        safeFileNames: true,
+        preserveExtension: true,
+    }
+
+    const staticFilesOptions = {
+        dotfiles: 'ignore',
+        etag: true,
+        index: false,
+        fallthrough: true,
+        maxAge: '1d',
+        redirect: false,
+        setHeaders: function (res, path, stat) {
+            res.set('x-timestamp', Date.now())
+        }
+    }
+
     // Setup the server
     const app = express()
+        .use(express.static('public', staticFilesOptions))
         .use(express.json())
-        .use(cors());
+        .use(cors())
+        .use(fileUpload(fileUploadParams));
+
 
     const server = https.createServer(sslOptions);
     server
         .on('request', app)
-        .listen(port, () => {
-            console.log(
-                `Go to https://localhost:${port}/`
-            );
+        .listen(config.server.port, () => {
+            let host = config.server.host;
+            if ((config.server.port !== 80) && (config.server.port !== 443)) {
+                host += `:${config.server.port}`;
+            }
+
+            console.log(`Server running at: ${host}`);
         });
 
     // Setup endpoints
@@ -71,7 +103,6 @@ init.initialiseDatabase(db, async () => {
          * in the request object.
          */
         const token = req.token;
-        console.log(token);
 
         const query = `
     SELECT n.*
@@ -92,6 +123,13 @@ init.initialiseDatabase(db, async () => {
 
     // Register user
     app.post('/register', userModule.register(db));
+
+    // Upload profile photo
+    app.post(
+        '/upload/profile_photo',
+        tokens.checkTokenMiddleware({"db": db, "debug": debugMode}),
+        userModule.uploadProfilePhoto(db, config)
+    );
 
     // User Logout
     app.get('/logout', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), async (req, res) => {

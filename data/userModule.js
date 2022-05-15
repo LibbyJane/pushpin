@@ -1,6 +1,9 @@
 const bcrypt = require("bcrypt");
 const tokens = require("./tokens");
 const validationModule = require("./validationModule");
+const im = require("imagemagick");
+const config = require("./config.json");
+const mediaModule = require('./mediaModule');
 
 module.exports.login = (db) => {
     return async (req, res) => {
@@ -185,6 +188,80 @@ module.exports.register = (db) => {
     }
 }
 
+module.exports.uploadProfilePhoto = (db, config) => {
+    return async (req, res) => {
+        const errors = [];
+
+        const token = req.token;
+        if (!token) {
+            errors.push('no token found');
+            return res.status(400).json({errors});
+        }
+
+        if (!req.files || Object.keys(req.files).length === 0) {
+            errors.push('No files were uploaded');
+            return res.status(400).json({errors});
+        }
+
+        const mediaService = mediaModule.getMediaService(config);
+
+        // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+        const profilePhotoFile = req.files.profilePhoto;
+        console.log('Mime type is: ', profilePhotoFile.mimetype);
+
+        const extension = mediaService.getImageExtension(profilePhotoFile);
+        if (extension === '') {
+            errors.push('Invalid file type');
+            return res.status(400).json({errors});
+        }
+
+        const imageUri = 'uploads/profile/profile_' + token.userId + "." + extension;
+        const thumbUri = 'uploads/profile/profile_' + token.userId + "_tmb." + extension;
+        const uploadPath = __dirname + '/public/' + imageUri;
+        const uploadPathThumb = __dirname + '/public/' + thumbUri;
+
+        // Final url
+        let host = config.server.host;
+        if ((config.server.port !== 80) && (config.server.port !== 443)) {
+            host += `:${config.server.port}`;
+        }
+
+        const uploadUrl = host + `/${imageUri}`;
+
+        // Use the mv() method to place the file somewhere on your server
+        await profilePhotoFile.mv(uploadPath, async (err) => {
+            if (err) {
+                errors.push('Failed to move uploaded file');
+                return res.status(500).json({errors});
+            }
+
+            try {
+                // Create the thumbnail from the original image
+                await mediaService.resizePhoto(uploadPath, uploadPathThumb, 120);
+
+                // Resize the original image to be only 400px wide
+                await mediaService.resizePhoto(uploadPath, uploadPath, 400);
+
+                // The image has now been uploaded and resized, update the user database with the imageUrl
+                db.run(sqlStatements.updateUserPhoto, [uploadUrl, token.userId], (err) => {
+                    if (err) {
+                        errors.push(err.toString());
+                        return res.status(500).json({errors});
+                    }
+
+                    return res.send({
+                        "success": true,
+                        "imageUrl": uploadUrl,
+                    });
+                });
+            } catch (err) {
+                errors.push('Failed to move resize photo: ' + err.toString());
+                return res.status(500).json({errors});
+            }
+        });
+    }
+}
+
 const getUserByEmail = (db, email, exceptionIfNotExisting = true) => {
     return new Promise((resolve, reject) => {
         const stmt = db.prepare(sqlStatements.getUserByEmail);
@@ -224,6 +301,11 @@ const sqlStatements = {
     `,
     insertUser: `
     INSERT INTO users(firstName, lastName, displayName, email, uid, password)
-    VALUES(?, ?, ?, ?, ?, ?);'
+    VALUES(?, ?, ?, ?, ?, ?);
+    `,
+    updateUserPhoto: `
+    UPDATE users
+    SET imageUrl = ?
+    WHERE id = ?;
     `,
 }
