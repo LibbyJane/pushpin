@@ -4,6 +4,7 @@ const express = require('express')
 const bcrypt = require("bcrypt");
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
+const bodyParser = require('body-parser');
 
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('pushpin.db');
@@ -16,6 +17,7 @@ console.log(config);
 const init = require('./init');
 const tokens = require('./tokens');
 const userModule = require('./userModule');
+const notesModule = require('./notesModule');
 
 const keyFile = '../key.pem';
 const certFile = '../cert.pem';
@@ -64,6 +66,7 @@ init.initialiseDatabase(db, async () => {
     // Setup the server
     const app = express()
         .use(express.static('public', staticFilesOptions))
+        .use(bodyParser.urlencoded({ extended: true }))
         .use(express.json())
         .use(cors())
         .use(fileUpload(fileUploadParams));
@@ -96,27 +99,11 @@ init.initialiseDatabase(db, async () => {
         });
     });
 
-    app.get('/notes', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), async (req, res) => {
-        /**
-         * If we get here then the middleware has already verified that the authorization header is present
-         * and contains a valid token.  There will be a token object containing the logged in user id
-         * in the request object.
-         */
-        const token = req.token;
+    // Get available notes for the logged in user
+    app.get('/notes', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), notesModule.getNotesForLoggedInUser(db));
 
-        const query = `
-    SELECT n.*
-    FROM notes n
-    INNER JOIN recipients r ON n.id = r.note_id
-    WHERE r.recipient_id = ?
-    `;
-        const notes = [];
-        await db.each(query, [req.token.userId], (err, row) => {
-            notes.push(row);
-        }, () => {
-            res.status(200).json(notes)
-        });
-    });
+    // Insert/create a new note.
+    app.post('/note', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), notesModule.createNote(db, config));
 
     // User Login
     app.post('/login', userModule.login(db));

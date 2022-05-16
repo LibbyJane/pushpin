@@ -10,6 +10,34 @@ const isNonEmptyString = (value) => {
     return true;
 }
 
+const isNonEmptyArray = (value) => {
+    if (typeof value !== 'object') {
+        return false;
+    }
+
+    if (!Array.isArray(value)) {
+        return false;
+    }
+
+    if (value.length === 0) {
+        return false;
+    }
+
+    return true;
+}
+
+const isPositiveInteger = (value) => {
+    if (typeof value !== 'number') {
+        return false;
+    }
+
+    if (value <= 0) {
+        return false;
+    }
+
+    return true;
+}
+
 const allStringsInArrayAreNotEmpty = (itemArray, noSpaces = true) => {
     if (!Array.isArray(itemArray)) {
         return false;
@@ -62,6 +90,8 @@ const isEmailAddress = (email) => {
     return res.test(String(email).toLowerCase());
 }
 
+module.exports.isPositiveInteger = isPositiveInteger;
+module.exports.isNonEmptyArray = isNonEmptyArray;
 module.exports.isNonEmptyString = isNonEmptyString;
 module.exports.allStringsInArrayAreNotEmpty = allStringsInArrayAreNotEmpty;
 module.exports.isEmailAddress = isEmailAddress;

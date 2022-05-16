@@ -43,6 +43,18 @@ module.exports.getMediaService = (config) => {
             }
 
             return '';
-        }
+        },
+        moveImage: (image, uploadPath) => {
+            return new Promise((resolve, reject) => {
+                // Use the mv() method to place the file somewhere on your server
+                image.mv(uploadPath, async (err) => {
+                    if (err) {
+                        reject('Failed to move uploaded file');
+                    } else {
+                        resolve();
+                    }
+                })
+            });
+        },
     }
 }

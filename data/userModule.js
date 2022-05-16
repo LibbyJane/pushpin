@@ -198,8 +198,8 @@ module.exports.uploadProfilePhoto = (db, config) => {
             return res.status(400).json({errors});
         }
 
-        if (!req.files || Object.keys(req.files).length === 0) {
-            errors.push('No files were uploaded');
+        if (!req.files || (!req.files.hasOwnProperty('profilePhoto'))) {
+            errors.push('No profile photo was uploaded');
             return res.status(400).json({errors});
         }
 

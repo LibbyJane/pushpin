@@ -41,10 +41,10 @@ const init = (db, callback) => {
 
         const createRecipientsTableSql = `
             CREATE TABLE IF NOT EXISTS recipients(
-                note_id INTEGER NOT NULL,
-                recipient_id INTEGER NOT NULL,
+                noteId INTEGER NOT NULL,
+                recipientId INTEGER NOT NULL,
                 status VARCHAR(50),
-                PRIMARY KEY (note_id, recipient_id )
+                PRIMARY KEY (noteId, recipientId)
         );
         `;
 
@@ -74,7 +74,7 @@ const init = (db, callback) => {
             },
             {
                 "name": "Applying recipients table user index",
-                "sql": `CREATE INDEX IF NOT EXISTS idx_note_recipients_user_id ON recipients(recipient_id);`,
+                "sql": `CREATE INDEX IF NOT EXISTS idx_note_recipients_user_id ON recipients(recipientId);`,
             },
             {
                 "name": "Creating tokens table",
@@ -256,34 +256,34 @@ const init = (db, callback) => {
     function insertSampleRecipients(db, callback) {
         const recipients = [
             {
-                'note_id': 1,
-                'recipient_id': 1,
+                'noteId': 1,
+                'recipientId': 1,
                 'status': 'saved'
             },
             {
-                'note_id': 1,
-                'recipient_id': 2,
+                'noteId': 1,
+                'recipientId': 2,
                 'status': 'deleted'
             },
             {
-                'note_id': 2,
-                'recipient_id': 2,
+                'noteId': 2,
+                'recipientId': 2,
                 'status': 'saved'
             },
             {
-                'note_id': 2,
-                'recipient_id': 3,
+                'noteId': 2,
+                'recipientId': 3,
                 'status': 'saved'
             },
             {
-                'note_id': 3,
-                'recipient_id': 2,
+                'noteId': 3,
+                'recipientId': 2,
                 'status': 'saved'
             },
         ];
 
         const createRecipientsSql = `
-                INSERT INTO recipients(note_id, recipient_id, status)
+                INSERT INTO recipients(noteId, recipientId, status)
                 VALUES (?, ?, ?);
             `
 
@@ -291,7 +291,7 @@ const init = (db, callback) => {
 
         const insertNext = function (current) {
             const recipient = recipients[current];
-            stmt.run(recipient.note_id, recipient.recipient_id, recipient.status);
+            stmt.run(recipient.noteId, recipient.recipientId, recipient.status);
 
             if (current < (recipients.length - 1)) {
                 insertNext(++current, callback);
