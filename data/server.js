@@ -105,6 +105,9 @@ init.initialiseDatabase(db, async () => {
     // Insert/create a new note.
     app.post('/note', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), notesModule.createNote(db, config));
 
+    // Updates a note with a photo - Note this is a 'patch' request.  Send through "notePhoto" as the file name.
+    app.patch('/upload/note_photo/:noteId', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), notesModule.uploadNotePhoto(db, config));
+
     // User Login
     app.post('/login', userModule.login(db));
 

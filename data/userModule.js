@@ -198,16 +198,21 @@ module.exports.uploadProfilePhoto = (db, config) => {
             return res.status(400).json({errors});
         }
 
-        if (!req.files || (!req.files.hasOwnProperty('profilePhoto'))) {
+        // Make sure a file with the correct name was uploaded
+        if (!req.files || (req.files.length === 0)) {
             errors.push('No profile photo was uploaded');
             return res.status(400).json({errors});
         }
 
-        const mediaService = mediaModule.getMediaService(config);
-
         // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
         const profilePhotoFile = req.files.profilePhoto;
-        console.log('Mime type is: ', profilePhotoFile.mimetype);
+        if (!profilePhotoFile) {
+            errors.push('No profile photo was uploaded');
+            return res.status(400).json({errors});
+        }
+
+        // Make sure the file has a supported mime type (jpeg or png)
+        const mediaService = mediaModule.getMediaService(config);
 
         const extension = mediaService.getImageExtension(profilePhotoFile);
         if (extension === '') {
@@ -215,6 +220,7 @@ module.exports.uploadProfilePhoto = (db, config) => {
             return res.status(400).json({errors});
         }
 
+        // Figure out the paths and urls for storage.
         const imageUri = 'uploads/profile/profile_' + token.userId + "." + extension;
         const thumbUri = 'uploads/profile/profile_' + token.userId + "_tmb." + extension;
         const uploadPath = __dirname + '/public/' + imageUri;
@@ -228,7 +234,7 @@ module.exports.uploadProfilePhoto = (db, config) => {
 
         const uploadUrl = host + `/${imageUri}`;
 
-        // Use the mv() method to place the file somewhere on your server
+        // Move the uploaded file to the correct storage path.
         await profilePhotoFile.mv(uploadPath, async (err) => {
             if (err) {
                 errors.push('Failed to move uploaded file');

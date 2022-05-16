@@ -78,60 +78,8 @@ module.exports.createNote = (db, config) => {
             }
         }
 
-        // There may no be image uploaded.
-        let imageUrl = null;
-
-        if (req.files && (req.files.notePhoto)) {
-            // Attempt to upload the note photo
-            const mediaService = mediaModule.getMediaService(config);
-
-            // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-            const notePhotoFile = req.files.notePhoto;
-            console.log('Mime type is: ', notePhotoFile.mimetype);
-
-            const extension = mediaService.getImageExtension(notePhotoFile);
-            if (extension === '') {
-                errors.push('Invalid note photo file type');
-                return res.status(400).json({errors});
-            }
-
-            const notePhotoUuid = uuid.v4();
-
-            const imageUri = 'uploads/note/' + notePhotoUuid + "." + extension;
-            const thumbUri = 'uploads/note/' + notePhotoUuid + "_tmb." + extension;
-            const uploadPath = __dirname + '/public/' + imageUri;
-            const uploadPathThumb = __dirname + '/public/' + thumbUri;
-
-            // Final url
-            let host = config.server.host;
-            if ((config.server.port !== 80) && (config.server.port !== 443)) {
-                host += `:${config.server.port}`;
-            }
-
-            imageUrl = host + `/${imageUri}`;
-
-            try {
-                await mediaService.moveImage(notePhotoFile, uploadPath);
-
-                // Create the thumbnail from the original image
-                await mediaService.resizePhoto(uploadPath, uploadPathThumb, 800);
-
-                // And resize the original image to be no greater than 1200
-                await mediaService.resizePhoto(uploadPath, uploadPath, 1200);
-            } catch (error) {
-                errors.push('Failed to handle uploaded note image: ' + error.toString());
-                return res.status(500).json({errors});
-            }
-        }
-
-        // Both the imageUrl and message should not be empty - this is an invalid state
-        if (!imageUrl && !message) {
-            errors.push('Both the message and the note image may not be empty/null');
-            return res.status(500).json({errors});
-        }
-
         // Insert the note into the database
-        const params = [token.userId, message, imageUrl, style];
+        const params = [token.userId, message, null, style];
 
         db.run(sqlStatements.insertNote, params, async (err) => {
             if (err) {
@@ -168,7 +116,7 @@ module.exports.createNote = (db, config) => {
                                     "id": newNoteId,
                                     "message": message,
                                     "style": style,
-                                    "imageUrl": imageUrl,
+                                    "imageUrl": null,
                                     "recipientsList": recipientsList
                                 }
                             });
@@ -183,7 +131,117 @@ module.exports.createNote = (db, config) => {
     }
 }
 
+module.exports.uploadNotePhoto = (db, config) => {
+    return async (req, res) => {
+        let errors = [];
+        const token = req.token;
+
+        if (!token) {
+            errors.push('no token found');
+            return res.status(500).json({errors});
+        }
+
+        // Get note id from URL.
+        if (!req.files || (req.files.length === 0)) {
+            errors.push('No profile photo was uploaded');
+            return res.status(400).json({errors});
+        }
+
+        const notePhotoFile = req.files.notePhoto;
+        if (!notePhotoFile) {
+            errors.push('No note photo was uploaded');
+            return res.status(400).json({errors});
+        }
+
+        // The noteId must be provided in the URL, and it MUST be a positive integer.
+        const noteId = parseInt(req.params.noteId, 10);
+
+        if (!validationModule.isPositiveInteger(noteId)) {
+            errors.push('noteId must be a positive integer');
+            return res.status(400).json({errors});
+        }
+
+        // Load the note and make sure it belongs to the logged-in user
+        db.get(sqlStatements.getNoteById, [noteId], async (err, note) => {
+            if (err) {
+                errors.push('Failed to load note', err.toString());
+                return res.status(500).json({errors});
+            }
+
+            if (!note) {
+                errors.push('Could not find note');
+                return res.status(500).json({errors});
+            }
+
+            if (note.createdByID !== token.userId) {
+                errors.push('Permission denied');
+                return res.status(403).json({errors});
+            }
+
+
+            // Get the uploaded file
+            const mediaService = mediaModule.getMediaService(config);
+
+            // Make sure it's a jpeg or png file.
+            const extension = mediaService.getImageExtension(notePhotoFile);
+            if (extension === '') {
+                errors.push('Invalid note photo file type');
+                return res.status(400).json({errors});
+            }
+
+            // Use a UUID as the name of the file.
+            const notePhotoUuid = uuid.v4();
+
+            // Figure out the store paths, urls etc.
+            const imageUri = 'uploads/note/' + notePhotoUuid + "." + extension;
+            const thumbUri = 'uploads/note/' + notePhotoUuid + "_tmb." + extension;
+            const uploadPath = __dirname + '/public/' + imageUri;
+            const uploadPathThumb = __dirname + '/public/' + thumbUri;
+
+            // Final url
+            let host = config.server.host;
+            if ((config.server.port !== 80) && (config.server.port !== 443)) {
+                host += `:${config.server.port}`;
+            }
+
+            const imageUrl = host + `/${imageUri}`;
+
+            try {
+                // Move the file to its final destination.
+                await mediaService.moveImage(notePhotoFile, uploadPath);
+
+                // Create the thumbnail from the original image
+                await mediaService.resizePhoto(uploadPath, uploadPathThumb, 800);
+
+                // And resize the original image to be no greater than 1200
+                await mediaService.resizePhoto(uploadPath, uploadPath, 1200);
+
+                // Update the note in the database with the url of the uploaded image.
+                db.run(sqlStatements.setNoteImageUrl, [imageUrl, noteId], (err) => {
+                    if (err) {
+                        errors.push('Failed to update node with image url');
+                        return res.status(500).json({errors});
+                    }
+
+                    return res.status(200).json({
+                        'success': true,
+                        'imageUrl': imageUrl
+                    });
+                });
+            } catch (error) {
+                errors.push('Failed to handle uploaded note image: ' + error.toString());
+                return res.status(500).json({errors});
+            }
+        });
+    }
+}
+
 const sqlStatements = {
+    "getNoteById": `
+    SELECT id, createdById, message, imageUrl, style
+    FROM notes
+    WHERE id = ?
+    `,
     "getNotesForRecipient": `
     SELECT n.id, n.createdById, n.message, n.imageUrl, n.style
     FROM notes n
@@ -198,5 +256,10 @@ const sqlStatements = {
     INSERT INTO recipients (noteId, recipientId)
     VALUES(?, ?);    
     `,
-    "getLastInsertId": "select last_insert_rowid() as id"
+    "getLastInsertId": "select last_insert_rowid() as id",
+    "setNoteImageUrl": `
+    UPDATE notes
+    SET imageUrl = ?
+    WHERE id = ?
+    `,
 }
