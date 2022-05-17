@@ -3,14 +3,21 @@ const fs = require("fs");
 const express = require('express')
 const bcrypt = require("bcrypt");
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
+const bodyParser = require('body-parser');
 
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('pushpin.db');
+
+// Config
+const config = require('./config.json');
+console.log(config);
 
 // Our modules
 const init = require('./init');
 const tokens = require('./tokens');
 const userModule = require('./userModule');
+const notesModule = require('./notesModule');
 
 const keyFile = '../key.pem';
 const certFile = '../cert.pem';
@@ -18,7 +25,6 @@ const sslOptions = {
     key: fs.readFileSync(keyFile,),
     cert: fs.readFileSync(certFile),
 };
-const port = 4000;
 
 // Switch to true to get extra diagnostics from endpoints.
 const debugMode = true;
@@ -35,18 +41,47 @@ const testCreateToken = async () => {
 init.initialiseDatabase(db, async () => {
     await testCreateToken();
 
+    const fileUploadParams = {
+        limits: {
+            fileSize: 20_000_000
+        },
+        useTempFiles : true,
+        tempFileDir : config.files.tmpUploadPath,
+        safeFileNames: true,
+        preserveExtension: true,
+    }
+
+    const staticFilesOptions = {
+        dotfiles: 'ignore',
+        etag: true,
+        index: false,
+        fallthrough: true,
+        maxAge: '1d',
+        redirect: false,
+        setHeaders: function (res, path, stat) {
+            res.set('x-timestamp', Date.now())
+        }
+    }
+
     // Setup the server
     const app = express()
+        .use(express.static('public', staticFilesOptions))
+        .use(bodyParser.urlencoded({ extended: true }))
         .use(express.json())
-        .use(cors());
+        .use(cors())
+        .use(fileUpload(fileUploadParams));
+
 
     const server = https.createServer(sslOptions);
     server
         .on('request', app)
-        .listen(port, () => {
-            console.log(
-                `Go to https://localhost:${port}/`
-            );
+        .listen(config.server.port, () => {
+            let host = config.server.host;
+            if ((config.server.port !== 80) && (config.server.port !== 443)) {
+                host += `:${config.server.port}`;
+            }
+
+            console.log(`Server running at: ${host}`);
         });
 
     // Setup endpoints
@@ -64,34 +99,27 @@ init.initialiseDatabase(db, async () => {
         });
     });
 
-    app.get('/notes', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), async (req, res) => {
-        /**
-         * If we get here then the middleware has already verified that the authorization header is present
-         * and contains a valid token.  There will be a token object containing the logged in user id
-         * in the request object.
-         */
-        const token = req.token;
-        console.log(token);
+    // Get available notes for the logged in user
+    app.get('/notes', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), notesModule.getNotesForLoggedInUser(db));
 
-        const query = `
-    SELECT n.*
-    FROM notes n
-    INNER JOIN recipients r ON n.id = r.note_id
-    WHERE r.recipient_id = ?
-    `;
-        const notes = [];
-        await db.each(query, [req.token.userId], (err, row) => {
-            notes.push(row);
-        }, () => {
-            res.status(200).json(notes)
-        });
-    });
+    // Insert/create a new note.
+    app.post('/note', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), notesModule.createNote(db, config));
+
+    // Updates a note with a photo - Note this is a 'patch' request.  Send through "notePhoto" as the file name.
+    app.patch('/upload/note_photo/:noteId', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), notesModule.uploadNotePhoto(db, config));
 
     // User Login
     app.post('/login', userModule.login(db));
 
     // Register user
     app.post('/register', userModule.register(db));
+
+    // Upload profile photo
+    app.post(
+        '/upload/profile_photo',
+        tokens.checkTokenMiddleware({"db": db, "debug": debugMode}),
+        userModule.uploadProfilePhoto(db, config)
+    );
 
     // User Logout
     app.get('/logout', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), async (req, res) => {
