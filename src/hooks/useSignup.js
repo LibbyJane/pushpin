@@ -36,7 +36,7 @@ export const useSignup = () => {
                 friends: []
             })
 
-            dispatch({ type: 'LOGIN', payload: res.user })
+            dispatch({ type: 'AUTHENTICATED', payload: res.user })
 
             if (!isCancelled) {
                 setIsPending(false)

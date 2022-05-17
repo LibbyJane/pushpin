@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuthContext } from './useAuthContext'
 
-import axios from "axios";
+import axios from "axios"
 import { apiBaseURL } from '../api/config';
 
 export const useLogin = () => {
@@ -10,22 +10,33 @@ export const useLogin = () => {
     const [isPending, setIsPending] = useState(false)
     const { dispatch } = useAuthContext()
 
+
     const login = async (email, password) => {
+        console.log('perform login')
         setError(null)
         setIsPending(true)
 
         try {
-            // login
-            axios.post(`${apiBaseURL}login`, { email, password }).then((response) => {
-                console.log('login response', response)
-                // dispatch login action
-                dispatch({ type: 'LOGIN', payload: response.data.user })
+            axios.post(
+                `${apiBaseURL}login`,
+                { email, password }).then((response) => {
+                    console.log('response', response)
+                    localStorage.setItem('ppTkn', response.data.tokenInfo.token)
+                    localStorage.setItem('ppSessionExpiry', response.data.tokenInfo.expiresAt)
+                    localStorage.setItem('ppUser', JSON.stringify(response.data.user))
 
-                if (!isCancelled) {
-                    setIsPending(false)
-                    setError(null)
-                }
-            });
+                    const payload = {
+                        user: response.data.user,
+                        token: response.data.tokenInfo.token
+                    }
+
+                    dispatch({ type: 'AUTHENTICATED', payload })
+
+                    if (!isCancelled) {
+                        setIsPending(false)
+                        setError(null)
+                    }
+                });
 
             if (!isCancelled) {
                 setIsPending(false)

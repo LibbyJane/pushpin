@@ -25,8 +25,8 @@ function Note({ note, toggleHeart }) {
                 <img className="note-pin" src={PushPin} alt="Push Pin" />
             </header>
 
-            {note.noteImage &&
-                <img className='note-image' src={note.noteImage.URL} alt={note.noteImage.name} />
+            {note.imageURL &&
+                <img className='note-image' src={note.imageURL} alt={note.imageURL} />
             }
 
             <ReactMarkdown

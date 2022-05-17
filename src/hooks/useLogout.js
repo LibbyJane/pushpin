@@ -1,28 +1,36 @@
 import { useEffect, useState } from 'react'
-import { projectAuth, projectFirestore } from '../firebase/config'
 import { useAuthContext } from './useAuthContext'
+import axios from "axios"
+import { apiBaseURL } from '../api/config';
+
 
 export const useLogout = () => {
     const [isCancelled, setIsCancelled] = useState(false)
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
-    const { dispatch } = useAuthContext()
-    const { user } = useAuthContext()
+    const { dispatch, token } = useAuthContext()
 
     const logout = async () => {
         setError(null)
         setIsPending(true)
 
+        const config = {
+            headers: {
+                authorization: "Bearer " + token
+            }
+        }
+
+        console.log('log out with', config)
+
         try {
-            // update status first while the user is still authenticated & has permission
-            const { uid } = projectAuth.currentUser
-            await projectFirestore.collection('users').doc(uid).update({
-                online: false
-            })
+            axios.get(`${apiBaseURL}logout`, config).then(() => {
+                dispatch({ type: 'UNAUTHENTICATED' })
 
-            await projectAuth.signOut()
-
-            dispatch({ type: 'LOGOUT' })
+                if (!isCancelled) {
+                    setIsPending(false)
+                    setError(null)
+                }
+            });
 
             if (!isCancelled) {
                 setIsPending(false)
