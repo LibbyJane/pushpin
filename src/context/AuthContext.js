@@ -1,16 +1,18 @@
-import { createContext, useReducer, useEffect } from 'react'
-import { projectAuth } from '../firebase/config'
-
+import { createContext, useReducer } from 'react'
 export const AuthContext = createContext()
 
 export const authReducer = (state, action) => {
     switch (action.type) {
-        case 'LOGIN':
-            return { ...state, user: action.payload }
-        case 'LOGOUT':
-            return { ...state, user: null }
-        case 'AUTH_IS_READY':
-            return { user: action.payload, authIsReady: true }
+        case 'AUTHENTICATED':
+            return { ...state, user: action.payload.user, token: action.payload.token, authIsReady: true }
+        case 'UNAUTHENTICATED':
+            localStorage.removeItem('ppTkn')
+            localStorage.removeItem('ppSessionExpiry')
+            localStorage.removeItem('ppUser')
+            return { ...state, user: null, token: null, authIsReady: true }
+        case 'API':
+            state.axiosInstance = action.payload.axiosInstance;
+            return { ...state, axiosInstance: action.payload.axiosInstance }
         default:
             return state
     }
@@ -19,22 +21,15 @@ export const authReducer = (state, action) => {
 export const AuthContextProvider = ({ children }) => {
     const [state, dispatch] = useReducer(authReducer, {
         user: null,
-        authIsReady: false
+        token: null,
+        axiosInstance: null,
+        authIsReady: null
     })
 
-    console.log('state', state)
-
-    useEffect(() => {
-        const unsub = projectAuth.onAuthStateChanged(user => {
-            dispatch({ type: 'AUTH_IS_READY', payload: user })
-            unsub()
-        })
-    }, [])
 
     return (
         <AuthContext.Provider value={{ ...state, dispatch }}>
             {children}
         </AuthContext.Provider>
     )
-
 }

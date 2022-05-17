@@ -1,54 +1,79 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from "react"
+import axios from "axios"
+import apiConfig from "../../api/config"
+
 import { useAppContext } from "../../hooks/useAppContext"
 import { useAuthContext } from '../../hooks/useAuthContext'
-import { useNotes } from '../../hooks/useNotes'
 import NoteList from '../../components/NoteList'
 import Error from "../../components/Error"
 import FilterList from "../../components/FilterList"
 
+
 import './Corkboard.css'
 
 export default function Corkboard() {
-    const { dispatchApp } = useAppContext()
+    const [notes, setNotes] = useState([])
+    const [error, setError] = useState([])
+
+    const token = localStorage.getItem('ppTkn')
+
 
     useEffect(() => {
-        dispatchApp({ type: 'SET_TITLE', payload: 'Welcome' })
-    }, [dispatchApp])
+        const ourRequest = axios.CancelToken.source()
+
+
+
+
+        async function getNotes() {
+            try {
+                const token = localStorage.getItem('ppTkn')
+                const config = {
+                    headers: {
+                        authorization: "Bearer " + token
+                    }
+                }
+                const response = await axios.get(`https://localhost:4000/notes`, config)
+                setNotes(response.data)
+            } catch (e) {
+                console.log("There was a problem.")
+            }
+        }
+        getNotes()
+        return () => {
+            ourRequest.cancel()
+        }
+    }, [token])
 
     const { user } = useAuthContext()
     const filters = ['all', 'saved', 'has image']
     const [filter, setFilter] = useState('all')
 
-    const { documents, error } = useNotes()
 
-    console.log('docs', documents)
-    // const { documents, error } = useCollection(
-    //     'notes',
-    // )
     const changeFilter = (newFilter) => {
         setFilter(newFilter)
     }
 
-    const selectedNotes = documents ? documents.filter(note => {
+    const selectedNotes = notes ? notes.filter(note => {
         switch (filter) {
             case 'all':
                 return true
             case 'saved':
                 return note.saved
             case 'has image':
-                return note.noteImage
+                return note.imageURL
             default:
                 return true
         }
     }) : null
 
+
     return (
         <section>
-            {documents && <FilterList filters={filters} changeFilter={changeFilter} />}
+            {notes && <FilterList filters={filters} changeFilter={changeFilter} />}
             {selectedNotes && <NoteList notes={selectedNotes} />}
-            {error && (
+            {/* {error && (
                 <Error message={error} />
-            )}
+            )} */}
         </section>
     )
 }

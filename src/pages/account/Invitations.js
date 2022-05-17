@@ -23,7 +23,7 @@ export default function Invitations() {
             });
             setInvitations(invitationsArray)
         }
-    }, [pendingInvitationsDocument, uid])
+    }, [users, pendingInvitationsDocument, uid])
 
     const handleAcceptInvitation = async (userId) => {
         const userDoc = await projectFirestore.collection('users').doc(uid);
