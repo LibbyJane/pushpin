@@ -1,5 +1,6 @@
 const validationModule = require("./validationModule");
 const uuid = require('uuid');
+const path = require('path');
 
 const mediaModule = require("./mediaModule");
 
@@ -14,6 +15,8 @@ module.exports.getNotesForLoggedInUser = (db) => {
             errors.push('no token found');
             return res.status(500).json({ errors });
         }
+
+        console.log('user id', token.userId, sqlStatements.getNotesForRecipient)
 
         const notes = [];
         await db.each(sqlStatements.getNotesForRecipient, [token.userId], (err, row) => {
@@ -193,10 +196,12 @@ module.exports.uploadNotePhoto = (db, config) => {
             const notePhotoUuid = uuid.v4();
 
             // Figure out the store paths, urls etc.
-            const imageUri = 'uploads/note/' + notePhotoUuid + "." + extension;
-            const thumbUri = 'uploads/note/' + notePhotoUuid + "_tmb." + extension;
-            const uploadPath = __dirname + '/public/' + imageUri;
-            const uploadPathThumb = __dirname + '/public/' + thumbUri;
+            const fileName = notePhotoUuid + "." + extension;
+            const thumbName = notePhotoUuid + "_tmb." + extension;
+            const imageUri = path.join('uploads', 'note', fileName);
+            const thumbUri = path.join('uploads', 'note', thumbName);
+            const uploadPath = path.join(__dirname, 'public', imageUri);
+            const uploadPathThumb = path.join(__dirname, 'public', thumbUri);
 
             // Final url
             let host = config.server.host;
@@ -204,9 +209,10 @@ module.exports.uploadNotePhoto = (db, config) => {
                 host += `:${config.server.port}`;
             }
 
-            const imageUrl = host + `/${imageUri}`;
+            const imageUrl = path.join(host, imageUri);
 
             try {
+                console.log('upload path', uploadPath)
                 // Move the file to its final destination.
                 await mediaService.moveImage(notePhotoFile, uploadPath);
 
@@ -245,8 +251,8 @@ const sqlStatements = {
     "getNotesForRecipient": `
     SELECT n.id, n.createdById, n.message, n.imageUrl, n.style
     FROM notes n
-    INNER JOIN recipients r ON n.id = r.note_id
-    WHERE r.recipient_id = ?
+    INNER JOIN recipients r ON n.id = r.noteId
+    WHERE r.recipientId = ?
     `,
     "insertNote": `
     INSERT INTO notes (createdById, message, imageUrl, style)

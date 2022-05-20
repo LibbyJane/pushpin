@@ -1,25 +1,33 @@
 import { useEffect, useState } from "react"
-import axios from "axios"
-import apiConfig from "../../api/config"
+import { useEndpoint } from '../../hooks/useEndpoint'
 
 import { useAppContext } from "../../hooks/useAppContext"
 import { useAuthContext } from '../../hooks/useAuthContext'
-import { useEndpoint } from '../../hooks/useEndpoint'
-// import NoteList from '../../components/NoteList'
+
+import NoteList from '../../components/NoteList'
 import Error from "../../components/Error"
-// import FilterList from "../../components/FilterList"
+import FilterList from "../../components/FilterList"
 
 
 import './Corkboard.css'
 
 export default function Corkboard() {
     const [notes, setNotes] = useState([])
-    const [error, setError] = useState([])
-    const { token } = useAuthContext()
-
+    const [err, setError] = useState([])
     const filters = ['all', 'saved', 'has image']
     const [filter, setFilter] = useState('all')
-    const { documents } = useEndpoint('notes')
+    const { documents, error } = useEndpoint('notes')
+
+
+    useEffect(() => {
+        if (documents) {
+            setNotes(documents);
+            setError(null)
+        }
+        if (error) {
+            setError(error);
+        }
+    }, [documents, error])
 
     const changeFilter = (newFilter) => {
         setFilter(newFilter)
@@ -41,11 +49,11 @@ export default function Corkboard() {
 
     return (
         <section>
-            {/* {notes && <FilterList filters={filters} changeFilter={changeFilter} />}
-            {selectedNotes && <NoteList notes={selectedNotes} />} */}
-            {/* {error && (
-                <Error message={error} />
-            )} */}
+            {notes && <FilterList filters={filters} changeFilter={changeFilter} />}
+            {selectedNotes && <NoteList notes={selectedNotes} />}
+            {err && (
+                <Error message={err} />
+            )}
         </section>
     )
 }

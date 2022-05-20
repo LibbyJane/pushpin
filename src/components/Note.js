@@ -12,6 +12,7 @@ import './Note.scss'
 
 
 function Note({ note, toggleHeart }) {
+    console.log('note', note)
     if (note.id) {
         return (
             <Link to={`/notes/${note.id}`} className={`note is-${note.style}`} style={{ backgroundColor: `${note.color ? note.color : ''}` }} data-saved={note.saved} >
@@ -72,7 +73,7 @@ Note.propTypes = {
     id: PropTypes.string,
     saved: PropTypes.bool,
     toggleHeart: PropTypes.func,
-    noteImage: PropTypes.object,
+    notePhoto: PropTypes.object,
     message: PropTypes.string,
     createdBy: PropTypes.string,
     delete: PropTypes.func

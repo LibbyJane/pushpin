@@ -1,24 +1,25 @@
 import { Link } from 'react-router-dom'
-import { useFirestore } from "../hooks/useFirestore"
+// import { useFirestore } from "../hooks/useFirestore"
 import Note from './Note'
 
 import './NoteList.css'
 
 export default function NoteList({ notes }) {
-    const { updateDocument } = useFirestore('notes')
+    // const { updateDocument } = useFirestore('notes')
 
     const toggleHeart = async (id) => {
-        notes.find((n, index) => {
-            if (n.id === id) {
-                const newVal = notes[index].saved ? !notes[index].saved : true
-                updateDocument(id, {
-                    saved: newVal
-                })
-                return true; // stop searching
-            } else {
-                return false
-            }
-        });
+        console.log('todo: save image')
+        // notes.find((n, index) => {
+        //     if (n.id === id) {
+        //         const newVal = notes[index].saved ? !notes[index].saved : true
+        //         updateDocument(id, {
+        //             saved: newVal
+        //         })
+        //         return true; // stop searching
+        //     } else {
+        //         return false
+        //     }
+        // });
     }
 
     return (
@@ -31,7 +32,7 @@ export default function NoteList({ notes }) {
             }
             {notes.map(note => (
                 <li key={note.id} className={note.style}>
-                    <Note note={note} toggleHeart={toggleHeart}  />
+                    <Note note={note} toggleHeart={toggleHeart} />
                 </li>
             ))}
         </ul>

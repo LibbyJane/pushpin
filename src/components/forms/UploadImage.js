@@ -1,21 +1,21 @@
 import { useState, useEffect } from 'react'
-import { useEndpoint } from '../../hooks/useEndpoint'
+import { useMediaEndpoint } from '../../hooks/useMediaEndpoint'
 import Error from '../Error'
 
-export default function UploadImage({ draftImage, fieldId, labelText, handleFileUpdate, endpoint, method, handleResponse }) {
-    // const { imageURL } = useEndpoint('users')
+export default function UploadImage({ draftImage, fieldId, handleFileUpdate, labelText, endpoint, method }) {
+    // const { imageURL } = useendpoint('users')
     // const [users, setUsers] = useState([])
     const [image, setImage] = useState(draftImage ? draftImage : null)
     const [data, setData] = useState(null)
     const [imageError, setImageError] = useState(null)
 
-    const { documents, error } = useEndpoint(endpoint, method, data)
+    const { outcome, isLoading, error } = useMediaEndpoint(endpoint, method, data)
 
     useEffect(() => {
-        if (handleResponse) {
-            handleResponse(documents);
+        if (outcome) {
+            console.log('upload image', endpoint, method, data, outcome)
         }
-    }, [documents])
+    }, [outcome])
 
     const handleFileChange = (e) => {
         setImage(null)
@@ -36,22 +36,24 @@ export default function UploadImage({ draftImage, fieldId, labelText, handleFile
         }
 
         setImageError(null)
-        setImage(selected)
-        setData(selected.name)
+        const formData = new FormData();
+        formData.append('notePhoto', selected);
+        console.log('form data', formData)
+        setData(formData)
         selected.URL = URL.createObjectURL(selected)
-        handleFileUpdate(selected.URL)
+        setImage(selected)
+        handleFileUpdate(selected)
     }
-
-
 
     return (
         <>
+            <h1>endpoint? {endpoint}</h1>
             {labelText &&
                 <label htmlFor={fieldId ? fieldId : ''}>{labelText}</label>
             }
             <input
-                name={fieldId ? fieldId : 'noteImage'}
-                id={fieldId ? fieldId : 'noteImage'}
+                name={fieldId ? fieldId : 'notePhoto'}
+                id={fieldId ? fieldId : 'notePhoto'}
                 required
                 type="file"
                 onChange={handleFileChange}

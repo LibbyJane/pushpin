@@ -54,6 +54,10 @@
         );
     }
 
+    &.is-postcard {
+        min-height: 0;
+    }
+
     &[data-background] {
         background: attr(data-background);
     }

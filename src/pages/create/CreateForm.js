@@ -16,7 +16,7 @@ import Error from '../../components/Error'
 import './Create.css'
 
 
-export default function CreateForm({ noteDraft, handleFormSubmit }) {
+export default function CreateForm({ noteDraft, handleFormSubmit, imageEndpoint, imageEndpointMethod }) {
     // useEffect(() => {
     //     setPageTitle('Send a note')
     // })
@@ -38,7 +38,7 @@ export default function CreateForm({ noteDraft, handleFormSubmit }) {
     const navigate = useNavigate()
     const { user } = useAuthContext()
     const [note, setNote] = useState(null)
-    const [image, setImage] = useState(noteDraft && noteDraft.noteImage ? noteDraft.noteImage : null)
+    const [image, setImage] = useState(noteDraft && noteDraft.notePhoto ? noteDraft.notePhoto : null)
 
 
     // const [expiryDate, setExpiryDate] = useState('')
@@ -46,7 +46,14 @@ export default function CreateForm({ noteDraft, handleFormSubmit }) {
     const [style, setStyle] = useState(noteDraft && noteDraft.style ? noteDraft.style : 'stickynote')
     const [color, setColor] = useState(noteDraft && noteDraft.color ? noteDraft.color : 'var(--white)')
     const [recipients, setRecipients] = useState(noteDraft && noteDraft.recipientsList ? noteDraft.recipientsList : [])
+
     const [formError, setFormError] = useState(null)
+
+
+    const handleFileUpdate = (image) => {
+        console.log('file updated', image.URL)
+        setImage(image.URL)
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -114,9 +121,11 @@ export default function CreateForm({ noteDraft, handleFormSubmit }) {
                 {style !== 'stickynote' && (
                     <>
                         <UploadImage
-                            fieldId="noteImage"
+                            fieldId="notePhoto"
                             labelText="Note image"
-                            handleFileUpdate={setImage}
+                            handleFileUpdate={handleFileUpdate}
+                            endpoint={imageEndpoint}
+                            method={imageEndpointMethod}
                         />
                     </>
                 )}

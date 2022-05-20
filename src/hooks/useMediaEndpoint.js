@@ -1,23 +1,20 @@
 import { useEffect, useState, useRef } from "react"
 import { useAuthContext } from './useAuthContext'
-import axios from "axios"
+import axios, { post } from "axios"
 import { apiBaseURL } from '../api/config';
-import { set } from "date-fns";
 
-
-export const useEndpoint = (endpoint, method, data, _query, _orderBy) => {
-    console.log('useEndpoint', endpoint, method, data)
-    const [documents, setDocuments] = useState(null)
+export const useMediaEndpoint = (endpoint, method, data) => {
+    console.log('useMediaEndpoint', endpoint, method, data)
+    const [outcome, setOutcome] = useState(null)
     const [error, setError] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
     const { dispatch, token } = useAuthContext()
-    // if we don't use a ref --> infinite loop in useEffect
-    // _query is an array and is "different" on every function call
-    const query = useRef(_query).current
-    const orderBy = useRef(_orderBy).current
+
 
     const config = {
-        headers: {},
+        headers: {
+            'content-type': 'multipart/form-data'
+        },
         baseURL: apiBaseURL,
         url: endpoint
     }
@@ -45,7 +42,7 @@ export const useEndpoint = (endpoint, method, data, _query, _orderBy) => {
             try {
                 const response = await axios(config)
                 console.log(endpoint + ' response ' + response)
-                setDocuments(response.data)
+                setOutcome(response.data)
                 setIsLoading(false)
             } catch (error) {
                 console.log("There was a problem.", error)
@@ -60,7 +57,7 @@ export const useEndpoint = (endpoint, method, data, _query, _orderBy) => {
                 ourRequest.cancel()
             }
         }
-    }, [endpoint, query, orderBy])
+    }, [endpoint, data])
 
-    return { documents, isLoading, error }
+    return { outcome, isLoading, error }
 }

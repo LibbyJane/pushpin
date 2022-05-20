@@ -1,27 +1,20 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Select from 'react-select'
 
 import { useEndpoint } from '../../hooks/useEndpoint'
-import { useAuthContext } from '../../hooks/useAuthContext'
-// import { useAddNote } from '../../hooks/useAddNote'
-// import { timestamp } from '../../firebase/config'
 
-import SelectUser from '../../components/forms/SelectUser'
-import Swatch from '../../components/forms/Swatch'
-import Note from '../../components/Note'
 import CreateForm from './CreateForm'
-import Error from '../../components/Error'
 
 import './Create.css'
-import UploadImage from '../../components/forms/UploadImage'
+
 
 
 export default function Create() {
     const navigate = useNavigate()
     const [note, setNote] = useState(null)
-    const [imageName, setImageName] = useState(null)
     const [endpoint, setEndpoint] = useState(null)
+    const [imageEndpoint, setImageEndpoint] = useState(null)
+    const [imageEndpointMethod, setImageEndpointMethod] = useState()
     const { documents, error } = useEndpoint(endpoint, 'POST', note)
 
     const sessionStorage = window.sessionStorage;
@@ -34,12 +27,17 @@ export default function Create() {
         setEndpoint('note')
     }
 
-    if (documents && imageName) {
-        console.log('upload image')
-        // UploadImage()
-        // setUploadImageEndpoint(`/upload/note_photo/:${documents.note.id}`);
-        // sessionStorage.removeItem('ppDraft');
-    }
+    useEffect(() => {
+        console.log('note created', documents)
+        if (documents) {
+            const endpoint = `/upload/note_photo/${documents.note.id}`
+            setImageEndpointMethod('PATCH')
+            setImageEndpoint(endpoint);
+            sessionStorage.removeItem('ppDraft');
+        }
+    }, [documents])
+
+
 
     if (error) {
         console.log('error', error)
@@ -49,10 +47,8 @@ export default function Create() {
         <CreateForm
             noteDraft={noteDraft}
             handleFormSubmit={createNote}
-            setImageName={setImageName}
-        // uploadImageEndpoint={uploadImageEndpoint}
-        // uploadImageMethod='PATCH'
-        // uploadImageResponse={uploadImageResponse}
+            imageEndpoint={imageEndpoint}
+            imageEndpointMethod={imageEndpointMethod}
         />
     )
 }
