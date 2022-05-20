@@ -198,8 +198,8 @@ module.exports.uploadNotePhoto = (db, config) => {
             // Figure out the store paths, urls etc.
             const fileName = notePhotoUuid + "." + extension;
             const thumbName = notePhotoUuid + "_tmb." + extension;
-            const imageUri = path.join('uploads', 'note', fileName);
-            const thumbUri = path.join('uploads', 'note', thumbName);
+            const imageUri = path.join('uploads', 'notes', fileName);
+            const thumbUri = path.join('uploads', 'notes', thumbName);
             const uploadPath = path.join(__dirname, 'public', imageUri);
             const uploadPathThumb = path.join(__dirname, 'public', thumbUri);
 
@@ -209,7 +209,7 @@ module.exports.uploadNotePhoto = (db, config) => {
                 host += `:${config.server.port}`;
             }
 
-            const imageUrl = path.join(host, imageUri);
+            const imageUrl = host + '/uploads/notes/' + fileName;
 
             try {
                 console.log('upload path', uploadPath)
