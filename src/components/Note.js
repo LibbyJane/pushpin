@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
@@ -9,59 +10,63 @@ import HeartToggle from './HeartToggle'
 import PushPin from '../assets/images/drawing-pin.webp'
 import './Note.scss'
 
+
 function Note({ note, toggleHeart }) {
-    console.log('note', note)
-    return (
-        <Link to={`/notes/${note.id}`} className={`note is-${note.style}`} data-saved={note.saved} style={{ backgroundColor: `${note.color ? note.color : ''}` }}>
-            <header className="note-header">
-                {toggleHeart &&
-                    <HeartToggle
-                        val={note.id}
-                        isSet={note.saved}
-                        callback={toggleHeart}
-                    />
+    if (note.id) {
+        return (
+            <Link to={`/notes/${note.id}`} className={`note is-${note.style}`} style={{ backgroundColor: `${note.color ? note.color : ''}` }} data-saved={note.saved} >
+                <NoteInner note={note} toggleHeart={toggleHeart} />
+            </Link>
+        )
+    }
+    else {
+        return (
+            <div className={`note is-${note.style}`} style={{ backgroundColor: `${note.color ? note.color : ''}` }} data-saved={note.saved} >
+                <NoteInner />
+            </div>
+        )
+    }
+
+    function NoteInner() {
+        return (
+            <>
+                <header className="note-header">
+                    {note.id && toggleHeart &&
+                        <HeartToggle
+                            val={note.id}
+                            isSet={note.saved}
+                            callback={toggleHeart}
+                        />
+                    }
+
+                    <img className="note-pin" src={PushPin} alt="Push Pin" />
+                </header>
+
+                {
+                    (note.imageURL && note.style !== 'stickynote') &&
+                    <>
+                        <img className='note-image' src={note.imageURL} alt="note image" />
+                    </>
                 }
 
-                <img className="note-pin" src={PushPin} alt="Push Pin" />
-            </header>
+                <ReactMarkdown
+                    className='note-message formatted-text'
+                    children={note.message}
+                    remarkPlugins={[remarkGfm]}
+                    allowedElements={["p", "br", "strong", "em", "h1", "h2", "h3", "h4", "h5", "h6", "ul", "ol", "li"]}
+                />
 
-            {note.imageURL &&
-                <img className='note-image' src={note.imageURL} alt={note.imageURL} />
-            }
-
-            <ReactMarkdown
-                className='note-message formatted-text'
-                children={note.message}
-                remarkPlugins={[remarkGfm]}
-                allowedElements={["p", "br", "strong", "em", "h1", "h2", "h3", "h4", "h5", "h6", "ul", "ol", "li"]}
-            />
-
-            <footer className="note-footer">
-                {/* <Avatar src={note.createdBy.imageURL} name={note.createdBy.displayName} /> */}
-                {/* <p className='note-author'>from {note.createdBy.displayName}</p> */}
-            </footer>
-
-
-            {/* <h4>{name}</h4>
-            <p>Due by {dueDate.toDate().toDateString()}</p>
-            <div className="assigned-to">
-                <p><strong>Assigned to:</strong></p>
-                <ul className="list-avatars">
-                    {assignedUsersList.map(user => (
-                        <li key={user.id}>
-                            <Avatar src={user.imageURL} />
-                        </li>
-                    ))}
-                </ul>
-            </div> */}
-
-        </Link>
-    )
+                <footer className="note-footer">
+                    {/* <Avatar src={note.createdBy.imageURL} name={note.createdBy.displayName} /> */}
+                    {/* <p className='note-author'>from {note.createdBy.displayName}</p> */}
+                </footer>
+            </>
+        )
+    }
 }
 
-Note.defaultProps = {
-    reverse: false,
-}
+
+
 
 Note.propTypes = {
     id: PropTypes.string,

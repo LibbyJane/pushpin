@@ -2,13 +2,14 @@ import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuthContext } from "./hooks/useAuthContext"
 
-import Corkboard from './pages/corkboard/Corkboard'
-import Create from './pages/create/Create'
-import Login from './pages/login/Login'
-import Note from './pages/note/Note'
 import NotFound from './pages/notfound/NotFound'
-import Account from './pages/account/Account'
-import Signup from './pages/signup/Signup'
+// import Signup from './pages/signup/Signup'
+import Login from './pages/login/Login'
+import Corkboard from './pages/corkboard/Corkboard'
+// import Note from './pages/note/Note'
+import Create from './pages/create/Create'
+// import Account from './pages/account/Account'
+
 
 import SiteHeader from './components/layout/SiteHeader'
 
@@ -50,7 +51,7 @@ function App() {
                                     element={user ? <Create /> : <Navigate to="/login" />}
                                 />
 
-                                <Route
+                                {/* <Route
                                     path="/notes/:id"
                                     element={user ? <Note /> : <Navigate to="/login" />}
                                 />
@@ -58,17 +59,17 @@ function App() {
                                 <Route
                                     path="/account"
                                     element={user ? <Account /> : <Navigate to="/login" />}
-                                />
+                                /> */}
 
                                 <Route
                                     path="/login"
                                     element={!user ? <Login /> : <Navigate to="/" />}
                                 />
-
+                                {/*
                                 <Route
                                     path="/signup"
                                     element={!user ? <Signup /> : <Navigate to="/" />}
-                                />
+                                /> */}
 
                                 <Route
                                     path="*"

@@ -13,7 +13,7 @@ const createToken = async (db, userId, userAgent, ipAddress) => {
     const expiresAt = createdAt + (86400 * 90); // Token will expire after 90 days
     const token = uuid.v4();
 
-    const queryPromise = new Promise(function(resolve, reject) {
+    const queryPromise = new Promise(function (resolve, reject) {
         db.run(sqlStatements.insert, [token, userId, createdAt, expiresAt, userAgent, ipAddress], (err) => {
             if (err) {
                 reject(err);
@@ -40,7 +40,7 @@ const createToken = async (db, userId, userAgent, ipAddress) => {
  * @returns {Promise<unknown>}
  */
 const getToken = async (db, tokenId, userAgent, ipAddress) => {
-    const queryPromise = new Promise(function(resolve, reject) {
+    const queryPromise = new Promise(function (resolve, reject) {
         db.get(sqlStatements.getToken, [tokenId], (err, token) => {
             if (err) {
                 reject(err);
@@ -66,7 +66,7 @@ const getToken = async (db, tokenId, userAgent, ipAddress) => {
  * @returns {Promise<unknown>}
  */
 const deleteToken = async (db, tokenId) => {
-    const queryPromise = new Promise(function(resolve, reject) {
+    const queryPromise = new Promise(function (resolve, reject) {
         db.run(sqlStatements.deleteToken, [tokenId], (err) => {
             if (err) {
                 reject(err);
@@ -88,7 +88,7 @@ const deleteToken = async (db, tokenId) => {
  * @param options
  * @returns {(function(*, *, *): Promise<void>)|*}
  */
-module.exports.checkTokenMiddleware = function(options) {
+module.exports.checkTokenMiddleware = function (options) {
     return async (req, res, next) => {
         // Check for a debug flag in the options - if debug is on, errors will be written to the console.
         const debugMode = options.debug || false;
@@ -114,7 +114,7 @@ module.exports.checkTokenMiddleware = function(options) {
         // It should look like this: Bearer ba48b7d3-82a0-4a3b-9d0b-910bae2214ee
         const authorizationHeader = req.headers['authorization'];
 
-        if ((!authorizationHeader) || (typeof authorizationHeader !== 'string') || (authorizationHeader.length <40)) {
+        if ((!authorizationHeader) || (typeof authorizationHeader !== 'string') || (authorizationHeader.length < 40)) {
             debugPrint("No authorization header found. It should be in format Authorization: Bearer ba48b7d3-82a0-4a3b-9d0b-910bae2214ee");
             res.status(403).json({
                 'error': accessDeniedErrorMessage
@@ -169,6 +169,7 @@ module.exports.checkTokenMiddleware = function(options) {
             const now = new Date().getTime();
             if (token.expiresAt <= now) {
                 try {
+                    console.warn('token has expired', token.expiresAt);
                     await deleteToken(db, token.id);
                 } catch (error) {
                     debugPrint("Error deleting token: ", error);

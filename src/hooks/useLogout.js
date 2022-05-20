@@ -16,14 +16,14 @@ export const useLogout = () => {
 
         const config = {
             headers: {
-                authorization: "Bearer " + token
+                'Content-type': 'application/json; charset=UTF-8',
+                'authorization': `Bearer ${token}`
             }
         }
 
-        console.log('log out with', config)
-
         try {
-            axios.get(`${apiBaseURL}logout`, config).then(() => {
+            axios.get(`${apiBaseURL}/logout`, config).then(() => {
+                console.log('logged out');
                 dispatch({ type: 'UNAUTHENTICATED' })
 
                 if (!isCancelled) {
