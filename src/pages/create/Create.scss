@@ -1,0 +1,30 @@
+.form-create {
+    background: url("../../assets/images/paper.jpg") top 3% left repeat;
+    background-size: 70%;
+    max-width: none;
+    margin: 0 0 var(--space);
+    padding: var(--space);
+    position: relative;
+}
+
+.note-preview {
+    margin-left: var(--space-lg);
+
+    .is-postcard {
+        border-radius: 0;
+        width: 100%;
+        min-height: 45vh;
+        min-width: 40vw;
+
+        &:first-child {
+            margin-bottom: var(--space);
+            pointer-events: none;
+        }
+
+        ~.is-postcard {
+            .note-image {
+                opacity: 0;
+            }
+        }
+    }
+}

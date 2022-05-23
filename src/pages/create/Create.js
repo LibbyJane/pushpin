@@ -1,54 +1,84 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-
+import { Link } from 'react-router-dom'
+import { useAppContext } from "../../hooks/useAppContext"
 import { useEndpoint } from '../../hooks/useEndpoint'
 
+import Error from "../../components/Error"
+import Alert from "../../components/Alert"
+import Button from "../../components/Button"
 import CreateForm from './CreateForm'
 
-import './Create.css'
-
+import './Create.scss'
 
 
 export default function Create() {
-    const navigate = useNavigate()
-    const [note, setNote] = useState(null)
+    const { dispatchApp } = useAppContext()
+
+    useEffect(() => {
+        dispatchApp({ type: 'SET_TITLE', payload: 'Send a note' })
+    }, [dispatchApp])
+
+    const [showAlert, setShowAlert] = useState(false)
+    const [resetForm, setResetForm] = useState(false)
+
     const [endpoint, setEndpoint] = useState(null)
+    const [note, setNote] = useState(null)
+    const { documents, error } = useEndpoint(endpoint, 'POST', note)
+
     const [imageEndpoint, setImageEndpoint] = useState(null)
     const [imageEndpointMethod, setImageEndpointMethod] = useState()
-    const { documents, error } = useEndpoint(endpoint, 'POST', note)
 
     const sessionStorage = window.sessionStorage;
     const noteDraft = sessionStorage.getItem('ppDraft') ? sessionStorage.getItem('ppDraft') : null;
 
     const createNote = (data) => {
-        console.log('create note with', data)
         sessionStorage.setItem('ppDraft', data)
         setNote(data)
         setEndpoint('note')
     }
 
+    const resetPage = () => {
+        sessionStorage.removeItem('ppDraft')
+        setNote(null)
+        setEndpoint(null)
+        setImageEndpoint(null)
+        setResetForm(true)
+
+        setTimeout(() => {
+            setResetForm(false)
+        }, 200);
+    }
+
     useEffect(() => {
-        console.log('note created', documents)
         if (documents) {
             const endpoint = `/upload/note_photo/${documents.note.id}`
             setImageEndpointMethod('PATCH')
             setImageEndpoint(endpoint);
-            sessionStorage.removeItem('ppDraft');
+            resetPage();
+            setShowAlert(true);
         }
     }, [documents])
 
-
-
-    if (error) {
-        console.log('error', error)
-    }
-
     return (
-        <CreateForm
-            noteDraft={noteDraft}
-            handleFormSubmit={createNote}
-            imageEndpoint={imageEndpoint}
-            imageEndpointMethod={imageEndpointMethod}
-        />
+        <>
+            {/* <Button variant="highlighted" onClick={() => resetPage()}>test</Button> */}
+            <Alert variant="success" visible={showAlert} setVisible={setShowAlert}>
+                <p>Your note has been sent! Would you like to <Button variant="highlighted" onClick={() => setShowAlert(false)}>send another</Button> or <Link to={`/`} className="is-highlighted">go back to your board</Link>?</p>
+            </Alert>
+
+            <CreateForm
+                noteDraft={noteDraft}
+                handleFormSubmit={createNote}
+                imageEndpoint={imageEndpoint}
+                imageEndpointMethod={imageEndpointMethod}
+                resetForm={resetForm}
+                id="createForm"
+            />
+            {
+                error && (
+                    <Error message={error} />
+                )
+            }
+        </>
     )
 }

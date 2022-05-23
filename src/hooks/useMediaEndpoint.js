@@ -4,7 +4,6 @@ import axios, { post } from "axios"
 import { apiBaseURL } from '../api/config';
 
 export const useMediaEndpoint = (endpoint, method, data) => {
-    console.log('useMediaEndpoint', endpoint, method, data)
     const [outcome, setOutcome] = useState(null)
     const [error, setError] = useState(null)
     const [isLoading, setIsLoading] = useState(true)

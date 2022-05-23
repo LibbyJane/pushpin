@@ -46,7 +46,9 @@ function Note({ note, toggleHeart }) {
                 {
                     (note.imageURL && note.style !== 'stickynote') &&
                     <>
-                        <img className='note-image' src={note.imageURL} alt="note image" />
+                        <div className='note-image' style={{ backgroundImage: `${note.imageURL ? 'url(' + note.imageURL + ')' : ''}` }}>
+                            <img src={note.imageURL} alt="note image" />
+                        </div>
                     </>
                 }
 

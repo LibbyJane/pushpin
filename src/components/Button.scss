@@ -23,4 +23,16 @@
             border-color: transparent;
         }
     }
+
+    &.is-underlined {
+        border: 0 none;
+        border-bottom: 1px solid;
+        border-radius: 0;
+        color: currentColor;
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: normal;
+        margin: 0;
+        padding: 0;
+    }
 }

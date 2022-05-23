@@ -1,11 +1,7 @@
-import { useState, useEffect, createContext } from 'react'
+import { useState, useEffect, createRef, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Select from 'react-select'
 
-import { useEndpoint } from '../../hooks/useEndpoint'
 import { useAuthContext } from '../../hooks/useAuthContext'
-// import { useAddNote } from '../../hooks/useAddNote'
-// import { timestamp } from '../../firebase/config'
 
 import SelectUser from '../../components/forms/SelectUser'
 import Swatch from '../../components/forms/Swatch'
@@ -13,10 +9,7 @@ import UploadImage from '../../components/forms/UploadImage'
 import Note from '../../components/Note'
 import Error from '../../components/Error'
 
-import './Create.css'
-
-
-export default function CreateForm({ noteDraft, handleFormSubmit, imageEndpoint, imageEndpointMethod }) {
+export default function CreateForm({ id, noteDraft, handleFormSubmit, imageEndpoint, imageEndpointMethod, resetForm }) {
     // useEffect(() => {
     //     setPageTitle('Send a note')
     // })
@@ -38,8 +31,7 @@ export default function CreateForm({ noteDraft, handleFormSubmit, imageEndpoint,
     const navigate = useNavigate()
     const { user } = useAuthContext()
     const [note, setNote] = useState(null)
-    const [image, setImage] = useState(noteDraft && noteDraft.notePhoto ? noteDraft.notePhoto : null)
-
+    const [imageURL, setImageURL] = useState(noteDraft && noteDraft.notePhoto ? noteDraft.notePhoto : null)
 
     // const [expiryDate, setExpiryDate] = useState('')
     const [message, setMessage] = useState(noteDraft && noteDraft.message ? noteDraft.message : '')
@@ -49,10 +41,19 @@ export default function CreateForm({ noteDraft, handleFormSubmit, imageEndpoint,
 
     const [formError, setFormError] = useState(null)
 
+    useEffect(() => {
+        if (resetForm) {
+            setMessage('')
+            setRecipients([])
+            setImageURL(null)
+
+            console.log('message, recipients', message, recipients)
+        }
+    }, [resetForm])
 
     const handleFileUpdate = (image) => {
         console.log('file updated', image.URL)
-        setImage(image.URL)
+        setImageURL(image.URL)
     }
 
     const handleSubmit = async (e) => {
@@ -99,7 +100,7 @@ export default function CreateForm({ noteDraft, handleFormSubmit, imageEndpoint,
 
     return (
         <div className='cols'>
-            <form className="card form-create" onSubmit={handleSubmit}>
+            <form id={id} className="card form-create" onSubmit={handleSubmit}>
                 <label>Style:</label>
                 <ul className='checkable-list'>
                     {styles.map((s) => (
@@ -126,6 +127,7 @@ export default function CreateForm({ noteDraft, handleFormSubmit, imageEndpoint,
                             handleFileUpdate={handleFileUpdate}
                             endpoint={imageEndpoint}
                             method={imageEndpointMethod}
+                            reset={resetForm}
                         />
                     </>
                 )}
@@ -155,7 +157,7 @@ export default function CreateForm({ noteDraft, handleFormSubmit, imageEndpoint,
         /> */}
 
                 <label>Send to:</label>
-                <SelectUser handler={setRecipients} />
+                <SelectUser handler={setRecipients} reset={resetForm} />
 
                 {/* <select
             multiple
@@ -174,7 +176,8 @@ export default function CreateForm({ noteDraft, handleFormSubmit, imageEndpoint,
                 {formError && <Error message={formError} />}
             </form>
             <aside className='note-preview'>
-                <Note note={{ message, style, color, imageURL: image, "createdBy": user, variant: "preview" }} />
+                {style === 'postcard' && imageURL && <Note note={{ message, style, color, imageURL, "createdBy": user, variant: "preview" }} />}
+                <Note note={{ message, style, color, imageURL, "createdBy": user, variant: "preview" }} />
             </aside>
         </div>
     )

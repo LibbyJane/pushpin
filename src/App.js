@@ -12,6 +12,7 @@ import Create from './pages/create/Create'
 
 
 import SiteHeader from './components/layout/SiteHeader'
+import SiteFooter from './components/layout/SiteFooter'
 
 import './App.scss'
 
@@ -94,6 +95,8 @@ function App() {
                                     /> */}
                             </Routes>
                         </div>
+
+                        <SiteFooter />
                     </BrowserRouter>
                 </main>
             }

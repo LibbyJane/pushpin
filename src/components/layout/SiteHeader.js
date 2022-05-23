@@ -10,7 +10,7 @@ import Button from '../Button'
 import Avatar from "../Avatar"
 
 import './SiteHeader.scss'
-import Logo from '../../assets/icons/mail-opened.svg'
+import Logo from '../../assets/images/stamp-uk.svg'
 import CreateIcon from '../../assets/icons/mail-opened-filled.svg'
 import LogoutIcon from '../../assets/icons/log-out.svg'
 
@@ -18,7 +18,6 @@ export default function SiteHeader() {
     const { logout } = useLogout()
     const { user } = useAuthContext()
     const { headerTitle } = useAppContext()
-    console.log('user', user)
 
     return (
         <header className='site-header container'>

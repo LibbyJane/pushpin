@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useMediaEndpoint } from '../../hooks/useMediaEndpoint'
 import Error from '../Error'
 
-export default function UploadImage({ draftImage, fieldId, handleFileUpdate, labelText, endpoint, method }) {
+export default function UploadImage({ draftImage, fieldId, handleFileUpdate, labelText, endpoint, method, reset }) {
     // const { imageURL } = useendpoint('users')
     // const [users, setUsers] = useState([])
     const [image, setImage] = useState(draftImage ? draftImage : null)
+    const inputElement = useRef()
     const [data, setData] = useState(null)
     const [imageError, setImageError] = useState(null)
 
@@ -15,7 +16,12 @@ export default function UploadImage({ draftImage, fieldId, handleFileUpdate, lab
         if (outcome) {
             console.log('upload image', endpoint, method, data, outcome)
         }
-    }, [outcome])
+
+        if (reset) {
+            console.log('reset input')
+            inputElement.current.value = ''
+        }
+    }, [outcome, reset])
 
     const handleFileChange = (e) => {
         setImage(null)
@@ -56,6 +62,7 @@ export default function UploadImage({ draftImage, fieldId, handleFileUpdate, lab
                 required
                 type="file"
                 onChange={handleFileChange}
+                ref={inputElement}
             />
             {imageError && <Error message={imageError} />}
         </>

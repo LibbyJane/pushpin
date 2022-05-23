@@ -6,7 +6,6 @@ import { set } from "date-fns";
 
 
 export const useEndpoint = (endpoint, method, data, _query, _orderBy) => {
-    console.log('useEndpoint', endpoint, method, data)
     const [documents, setDocuments] = useState(null)
     const [error, setError] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
