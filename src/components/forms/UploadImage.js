@@ -47,7 +47,6 @@ export default function UploadImage({ draftImage, fieldId, handleFileUpdate, lab
 
     return (
         <>
-            <h1>endpoint? {endpoint}</h1>
             {labelText &&
                 <label htmlFor={fieldId ? fieldId : ''}>{labelText}</label>
             }

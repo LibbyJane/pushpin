@@ -49,7 +49,6 @@ export const useEndpoint = (endpoint, method, data, _query, _orderBy) => {
                 setIsLoading(false)
             } catch (error) {
                 console.log("There was a problem.", error)
-                setError(error)
                 setIsLoading(false)
                 if (error.response && error.response.status && error.response.status === 403) {
                     dispatch({ type: 'UNAUTHENTICATED' })

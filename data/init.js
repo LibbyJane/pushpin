@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const {stat} = require("fs");
+const { stat } = require("fs");
 
 const init = (db, callback) => {
     createTables(db, () => {
@@ -35,7 +35,8 @@ const init = (db, callback) => {
                 createdByID INTEGER NOT NULL,
                 message VARCHAR(255),
                 imageURL VARCHAR(80),
-                style VARCHAR(50)
+                style VARCHAR(50),
+                color VARCHAR(20)
             );
         `;
 
@@ -100,7 +101,7 @@ const init = (db, callback) => {
             });
         }
 
-        applyNextSqlStatement(db,0, callback);
+        applyNextSqlStatement(db, 0, callback);
     }
 
     function resetAllTables(db, callback) {
@@ -214,7 +215,8 @@ const init = (db, callback) => {
                 'createdByID': 1,
                 'message': 'Hello Cookie',
                 'imageURL': 'https://firebasestorage.googleapis.com/v0/b/thedojo-d76cf.appspot.com/o/noteImages%2F2XM5vxnZGhSqqs5AnEMTLbUxcCm2%2Fshortbreadcookies.jpg?alt=media&token=1e8470ee-bdf3-4c98-83fa-9383b6466981',
-                'style': 'polaroid'
+                'style': 'polaroid',
+                'color': 'var(--note-yellow)'
             },
             {
                 'createdByID': 2,
@@ -226,13 +228,14 @@ const init = (db, callback) => {
                 'createdByID': 3,
                 'message': 'Nothing to see here',
                 'imageURL': null,
-                'style': 'stickynote'
+                'style': 'stickynote',
+                'color': 'var(--note-pink)'
             },
         ];
 
         const createNoteSql = `
-                INSERT INTO notes(createdByID, message, imageURL, style)
-                VALUES (?, ?, ?, ?);
+                INSERT INTO notes(createdByID, message, imageURL, style, color)
+                VALUES (?, ?, ?, ?, ?);
             `
 
         const stmt = db.prepare(createNoteSql);

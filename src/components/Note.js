@@ -12,7 +12,7 @@ import './Note.scss'
 
 
 function Note({ note, toggleHeart }) {
-    console.log('note', note)
+    console.log('note', note.color)
     if (note.id) {
         return (
             <Link to={`/notes/${note.id}`} className={`note is-${note.style}`} style={{ backgroundColor: `${note.color ? note.color : ''}` }} data-saved={note.saved} >

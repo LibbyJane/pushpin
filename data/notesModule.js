@@ -33,6 +33,7 @@ module.exports.getNotesForLoggedInUser = (db) => {
 
 module.exports.createNote = (db, config) => {
     return async (req, res) => {
+        console.log('create note req body', req.body);
         let errors = [];
         const token = req.token;
 
@@ -47,9 +48,14 @@ module.exports.createNote = (db, config) => {
 
         // Message however may be empty/null.
         let message = null;
+        let color = null;
 
         if ((req.body.hasOwnProperty('message')) && (req.body.message.length > 0)) {
             message = req.body.message;
+        }
+
+        if ((req.body.hasOwnProperty('color')) && (req.body.color.length > 0)) {
+            color = req.body.color;
         }
 
         errors = validationModule.allStringsInArrayAreNotEmpty([
@@ -82,7 +88,7 @@ module.exports.createNote = (db, config) => {
         }
 
         // Insert the note into the database
-        const params = [token.userId, message, null, style];
+        const params = [token.userId, message, null, style, color];
 
         db.run(sqlStatements.insertNote, params, async (err) => {
             if (err) {
@@ -120,7 +126,8 @@ module.exports.createNote = (db, config) => {
                                     "message": message,
                                     "style": style,
                                     "imageUrl": null,
-                                    "recipientsList": recipientsList
+                                    "recipientsList": recipientsList,
+                                    "color": color
                                 }
                             });
                         }
@@ -180,7 +187,6 @@ module.exports.uploadNotePhoto = (db, config) => {
                 errors.push('Permission denied');
                 return res.status(403).json({ errors });
             }
-
 
             // Get the uploaded file
             const mediaService = mediaModule.getMediaService(config);
@@ -244,19 +250,19 @@ module.exports.uploadNotePhoto = (db, config) => {
 
 const sqlStatements = {
     "getNoteById": `
-    SELECT id, createdById, message, imageUrl, style
+    SELECT id, createdById, message, imageUrl, style, color
     FROM notes
     WHERE id = ?
     `,
     "getNotesForRecipient": `
-    SELECT n.id, n.createdById, n.message, n.imageUrl, n.style
+    SELECT n.id, n.createdById, n.message, n.imageUrl, n.style, n.color
     FROM notes n
     INNER JOIN recipients r ON n.id = r.noteId
     WHERE r.recipientId = ?
     `,
     "insertNote": `
-    INSERT INTO notes (createdById, message, imageUrl, style)
-    VALUES(?, ?, ?, ?);
+    INSERT INTO notes (createdById, message, imageUrl, style, color)
+    VALUES(?, ?, ?, ?, ?);
     `,
     "insertNoteRecipient": `
     INSERT INTO recipients (noteId, recipientId)
