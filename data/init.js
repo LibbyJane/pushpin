@@ -45,6 +45,8 @@ const init = (db, callback) => {
                 noteId INTEGER NOT NULL,
                 recipientId INTEGER NOT NULL,
                 status VARCHAR(50),
+                reaction VARCHAR(50),
+                reactionUpdatedAt INTEGER,
                 PRIMARY KEY (noteId, recipientId)
         );
         `;

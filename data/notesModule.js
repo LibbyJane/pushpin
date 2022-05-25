@@ -16,8 +16,6 @@ module.exports.getNotesForLoggedInUser = (db) => {
             return res.status(500).json({ errors });
         }
 
-        console.log('user id', token.userId, sqlStatements.getNotesForRecipient)
-
         const notes = [];
         await db.each(sqlStatements.getNotesForRecipient, [token.userId], (err, row) => {
             if (err) {
@@ -27,6 +25,46 @@ module.exports.getNotesForLoggedInUser = (db) => {
             notes.push(row);
         }, () => {
             return res.status(200).json(notes)
+        });
+    }
+};
+
+/**
+ * Returns note reactions for the logged in user (i.e. reactions on notes they have sent)
+ * for the last X days.  The number of days should be passed in the URL.
+ * @param db
+ * @returns {(function(*, *): Promise<*|undefined>)|*}
+ */
+module.exports.getNotesReactionsForLoggedInUser = (db) => {
+    return async (req, res) => {
+        const errors = [];
+
+        const token = req.token;
+        if (!token) {
+            errors.push('no token found');
+            return res.status(500).json({ errors });
+        }
+
+        // The number of days worth of reactions must be provided in the URL, and it MUST be a positive integer.
+        const numDays = parseInt(req.params.numDays, 10);
+
+        if (!validationModule.isPositiveInteger(numDays)) {
+            errors.push('noteId must be a positive integer');
+            return res.status(400).json({ errors });
+        }
+
+        const nowStamp = Math.floor((new Date().getTime()) / 1000);
+        const thresholdStamp = nowStamp - (numDays * 86_400);
+
+        const reactions = [];
+        await db.each(sqlStatements.getRecentNoteReactions, [token.userId, thresholdStamp], (err, row) => {
+            if (err) {
+                errors.push('Failed to load note reactions');
+                return res.status(500).json({ errors });
+            }
+            reactions.push(row);
+        }, () => {
+            return res.status(200).json(reactions)
         });
     }
 };
@@ -248,30 +286,193 @@ module.exports.uploadNotePhoto = (db, config) => {
     }
 }
 
+/**
+ * Updates the note status.  This can be used to 'save' or 'delete' the note for example.
+ * Pass the noteId in the URL and the new status in the json payload.
+ * @param db
+ * @returns {(function(*, *): Promise<*|undefined>)|*}
+ */
+module.exports.updateNoteStatus = (db) => {
+    return async (req, res) => {
+        let errors = [];
+
+        const token = req.token;
+        if (!token) {
+            errors.push('no token found');
+            return res.status(500).json({ errors });
+        }
+
+        // The noteId must be provided in the URL, and it MUST be a positive integer.
+        const noteId = parseInt(req.params.noteId, 10);
+
+        if (!validationModule.isPositiveInteger(noteId)) {
+            errors.push('noteId must be a positive integer');
+            return res.status(400).json({ errors });
+        }
+
+        const status = req.body.status;
+
+        errors = validationModule.allStringsInArrayAreNotEmpty([
+            {
+                "name": "status",
+                "value": status
+            },
+        ]);
+
+        if (errors.length !== 0) {
+            return res.status(400).json({ errors });
+        }
+
+        // First load the note and make sure the user has access to it
+        await db.get(sqlStatements.getNoteForRecipientByNoteId, [noteId, token.userId], async (err, note) => {
+            if (err) {
+                errors.push('Failed to load note for recipient');
+                return res.status(500).json({ errors });
+            }
+
+            if (!note) {
+                errors.push('Permission denied');
+                return res.status(403).json({ errors });
+            }
+
+            await db.run(sqlStatements.updateNoteStatus, [status, noteId, token.userId], (err) => {
+                if (err) {
+                    errors.push('Failed to update note status');
+                    return res.status(500).json({ errors });
+                }
+
+                note.status = status;
+
+                return res.status(200).json({
+                    'success': true,
+                    'note': note,
+                });
+            });
+        });
+    }
+};
+
+/**
+ * Updates the note reaction.  The note reaction can be set to any string you like.
+ * Pass the noteId in the URL and the new reaction in the json payload, e.g { "reaction": "loved"}.
+ * @param db
+ * @returns {(function(*, *): Promise<*|undefined>)|*}
+ */
+module.exports.updateNoteReaction = (db) => {
+    return async (req, res) => {
+        let errors = [];
+
+        const token = req.token;
+        if (!token) {
+            errors.push('no token found');
+            return res.status(500).json({ errors });
+        }
+
+        // The noteId must be provided in the URL, and it MUST be a positive integer.
+        const noteId = parseInt(req.params.noteId, 10);
+
+        if (!validationModule.isPositiveInteger(noteId)) {
+            errors.push('noteId must be a positive integer');
+            return res.status(400).json({ errors });
+        }
+
+        const reaction = req.body.reaction;
+
+        errors = validationModule.allStringsInArrayAreNotEmpty([
+            {
+                "name": "reaction",
+                "value": reaction
+            },
+        ]);
+
+        if (errors.length !== 0) {
+            return res.status(400).json({ errors });
+        }
+
+        // First load the note and make sure the user has access to it
+        await db.get(sqlStatements.getNoteForRecipientByNoteId, [noteId, token.userId], async (err, note) => {
+            if (err) {
+                errors.push('Failed to load note for recipient');
+                return res.status(500).json({ errors });
+            }
+
+            if (!note) {
+                errors.push('Permission denied');
+                return res.status(403).json({ errors });
+            }
+
+            // Get the current timestamp in seconds
+            const nowStamp = Math.floor((new Date().getTime()) / 1000);
+
+            await db.run(sqlStatements.updateNoteReaction, [reaction, nowStamp, noteId, token.userId], (err) => {
+                if (err) {
+                    errors.push('Failed to update note reaction');
+                    return res.status(500).json({ errors });
+                }
+
+                return res.status(200).json({
+                    'success': true,
+                });
+            });
+        });
+    }
+};
+
 const sqlStatements = {
     "getNoteById": `
-    SELECT id, createdById, message, imageUrl, style, color
-    FROM notes
-    WHERE id = ?
+        SELECT id, createdById, message, imageUrl, style, color
+        FROM notes
+        WHERE id = ?
+    `,
+    "getNoteForRecipientByNoteId": `
+        SELECT n.id, n.createdById, n.message, n.imageUrl, n.style, n.color
+        FROM notes n
+        INNER JOIN recipients r ON n.id = r.noteId
+        WHERE r.noteId = ?
+        AND r.recipientId = ?
+        AND r.status <> 'deleted'
     `,
     "getNotesForRecipient": `
-    SELECT n.id, n.createdById, n.message, n.imageUrl, n.style, n.color
-    FROM notes n
-    INNER JOIN recipients r ON n.id = r.noteId
-    WHERE r.recipientId = ?
+        SELECT n.id, n.createdById, n.message, n.imageUrl, n.style, n.color
+        FROM notes n
+        INNER JOIN recipients r ON n.id = r.noteId
+        WHERE r.recipientId = ?
+        AND r.status <> 'deleted'
     `,
     "insertNote": `
-    INSERT INTO notes (createdById, message, imageUrl, style, color)
-    VALUES(?, ?, ?, ?, ?);
+        INSERT INTO notes (createdById, message, imageUrl, style, color)
+        VALUES(?, ?, ?, ?, ?);
     `,
     "insertNoteRecipient": `
-    INSERT INTO recipients (noteId, recipientId)
-    VALUES(?, ?);
+        INSERT INTO recipients (noteId, recipientId)
+        VALUES(?, ?);
     `,
     "getLastInsertId": "select last_insert_rowid() as id",
     "setNoteImageUrl": `
-    UPDATE notes
-    SET imageUrl = ?
-    WHERE id = ?
+        UPDATE notes
+        SET imageUrl = ?
+        WHERE id = ?
+    `,
+    "updateNoteStatus": `
+        UPDATE recipients
+        SET status = ?
+        WHERE noteId = ?
+        AND recipientId = ?
+    `,
+    "updateNoteReaction": `
+        UPDATE recipients
+        SET reaction = ?, reactionUpdatedAt = ?
+        WHERE noteId = ?
+        AND recipientId = ?
+    `,
+    "getRecentNoteReactions": `
+        SELECT n.id, r.reaction, r.recipientId, u.displayName, r.reactionUpdatedAt
+        FROM notes n
+        INNER JOIN recipients r ON n.id = r.noteId
+        INNER JOIN users u ON u.id = r.recipientId
+        WHERE n.createdByID = ?
+        AND r.status != 'deleted'
+        AND r.reaction IS NOT NULL
+        AND r.reactionUpdatedAt > ?    
     `,
 }

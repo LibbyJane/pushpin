@@ -115,11 +115,22 @@ init.initialiseDatabase(db, async () => {
     // Get available notes for the logged in user
     app.get('/notes', tokens.checkTokenMiddleware({ "db": db, "debug": debugMode }), notesModule.getNotesForLoggedInUser(db));
 
+    // Gets any note reactions for the logged in user, where the reaction was recorded in the last <numDays> days
+    app.get('/note/reactions/:numDays', tokens.checkTokenMiddleware({ "db": db, "debug": debugMode }), notesModule.getNotesReactionsForLoggedInUser(db));
+
     // Insert/create a new note.
     app.post('/note', tokens.checkTokenMiddleware({ "db": db, "debug": debugMode }), notesModule.createNote(db, config));
 
     // Updates a note with a photo - Note this is a 'patch' request.  Send through "notePhoto" as the file name.
     app.patch('/upload/note_photo/:noteId', tokens.checkTokenMiddleware({ "db": db, "debug": debugMode }), notesModule.uploadNotePhoto(db, config));
+
+    // Updates a note status with a provided status.
+    // This is a PATCH request.  Pass the noteId in the url, and send { "status": "saved" } in the JSON Payload.
+    app.patch('/note/update_status/:noteId', tokens.checkTokenMiddleware({ "db": db, "debug": debugMode }), notesModule.updateNoteStatus(db));
+
+    // Updates a note reaction with a provided reaction string.
+    // This is a PATCH request.  Pass the noteId in the url, and send { "reaction": "loved" } in the JSON Payload.
+    app.patch('/note/update_reaction/:noteId', tokens.checkTokenMiddleware({ "db": db, "debug": debugMode }), notesModule.updateNoteReaction(db));
 
     // User Login
     app.post('/login', userModule.login(db));
