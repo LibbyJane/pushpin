@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from "react-router-dom"
 
 import { useAppContext } from "../../hooks/useAppContext"
 import { useLogin } from '../../hooks/useLogin'
@@ -6,13 +7,13 @@ import { useLogin } from '../../hooks/useLogin'
 import Button from '../../components/Button'
 import Error from '../../components/Error'
 
-import './Login.css'
+import './Login.scss'
 
 export default function Login() {
     const { dispatchApp } = useAppContext()
 
     useEffect(() => {
-        dispatchApp({ type: 'SET_TITLE', payload: 'Log In' })
+        dispatchApp({ type: 'SET_TITLE', payload: 'Welcome' })
     }, [dispatchApp])
 
     const [email, setEmail] = useState('')
@@ -25,33 +26,41 @@ export default function Login() {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="form-login card">
-            <header className="card-header">
-                Log In
-            </header>
+        <div className="cols">
+            <form onSubmit={handleSubmit} className="form-login card col">
+                <header className="card-header">
+                    Log In
+                </header>
 
-            <label>email:</label>
-            <input
-                type="email"
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-                required
-            />
+                <label>email:</label>
+                <input
+                    type="email"
+                    onChange={(e) => setEmail(e.target.value)}
+                    value={email}
+                    required
+                />
 
-            <label>
-                password:
-            </label>
-            <input
-                type="password"
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                required
-            />
+                <label>
+                    password:
+                </label>
+                <input
+                    type="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    value={password}
+                    required
+                />
 
-            {!isPending && <Button type="submit">log in</Button>}
-            {isPending && <Button type="submit" isDisabled={true}>loading</Button>}
+                {!isPending && <Button type="submit">log in</Button>}
+                {isPending && <Button type="submit" isDisabled={true}>loading</Button>}
 
-            {error && <Error message={error} />}
-        </form>
+                {error && <Error message={error} />}
+            </form>
+
+            <div className="col card is-reversed align-top width-small">
+                <h4>Don't have an account yet?</h4>
+                <p><Link to="/signup">Sign up here</Link></p>
+            </div>
+        </div >
+
     )
 }

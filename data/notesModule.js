@@ -1,9 +1,10 @@
 const validationModule = require("./validationModule");
 const uuid = require('uuid');
+const path = require('path');
 
 const mediaModule = require("./mediaModule");
 
-const validNoteStyles = ['polaroid', 'postcode', 'stickyNote'];
+// const validNoteStyles = ['polaroid', 'postcard', 'stickynote'];
 
 module.exports.getNotesForLoggedInUser = (db) => {
     return async (req, res) => {
@@ -12,14 +13,16 @@ module.exports.getNotesForLoggedInUser = (db) => {
         const token = req.token;
         if (!token) {
             errors.push('no token found');
-            return res.status(500).json({errors});
+            return res.status(500).json({ errors });
         }
+
+        console.log('user id', token.userId, sqlStatements.getNotesForRecipient)
 
         const notes = [];
         await db.each(sqlStatements.getNotesForRecipient, [token.userId], (err, row) => {
             if (err) {
                 errors.push('Failed to load notes');
-                return res.status(500).json({errors});
+                return res.status(500).json({ errors });
             }
             notes.push(row);
         }, () => {
@@ -30,12 +33,13 @@ module.exports.getNotesForLoggedInUser = (db) => {
 
 module.exports.createNote = (db, config) => {
     return async (req, res) => {
+        console.log('create note req body', req.body);
         let errors = [];
         const token = req.token;
 
         if (!token) {
             errors.push('no token found');
-            return res.status(500).json({errors});
+            return res.status(500).json({ errors });
         }
 
         // Every note MUST have a style.
@@ -44,9 +48,14 @@ module.exports.createNote = (db, config) => {
 
         // Message however may be empty/null.
         let message = null;
+        let color = null;
 
         if ((req.body.hasOwnProperty('message')) && (req.body.message.length > 0)) {
             message = req.body.message;
+        }
+
+        if ((req.body.hasOwnProperty('color')) && (req.body.color.length > 0)) {
+            color = req.body.color;
         }
 
         errors = validationModule.allStringsInArrayAreNotEmpty([
@@ -57,18 +66,18 @@ module.exports.createNote = (db, config) => {
         ]);
 
         if (errors.length !== 0) {
-            return res.status(400).json({errors});
+            return res.status(400).json({ errors });
         }
 
         // Make sure the note style is one of the valid ones (see top of this file for the definition).
-        if (validNoteStyles.indexOf(style) < 0) {
-            errors.push('invalid note style type')
-            return res.status(400).json({errors});
-        }
+        // if (validNoteStyles.indexOf(style) < 0) {
+        //     errors.push('invalid note style type')
+        //     return res.status(400).json({ errors });
+        // }
 
         if (!validationModule.isNonEmptyArray(recipientsList)) {
             errors.push('recipientsList must be a non-empty array');
-            return res.status(400).json({errors});
+            return res.status(400).json({ errors });
         }
 
         // Ensure each item in the recipientsList is a number.
@@ -79,18 +88,18 @@ module.exports.createNote = (db, config) => {
         }
 
         // Insert the note into the database
-        const params = [token.userId, message, null, style];
+        const params = [token.userId, message, null, style, color];
 
         db.run(sqlStatements.insertNote, params, async (err) => {
             if (err) {
                 errors.push(`Failed to insert note`);
-                return res.status(400).json({errors});
+                return res.status(400).json({ errors });
             }
 
             db.get(sqlStatements.getLastInsertId, [], async (err, row) => {
                 if (err) {
                     errors.push(`Failed to get last inserted note id`);
-                    return res.status(400).json({errors});
+                    return res.status(400).json({ errors });
                 }
 
                 const newNoteId = row.id;
@@ -104,7 +113,7 @@ module.exports.createNote = (db, config) => {
                         if (err) {
                             errors.push(`Failed to insert note recipient`);
                             console.log('error', err);
-                            return res.status(400).json({errors});
+                            return res.status(400).json({ errors });
                         }
 
                         if (recipientIndex < (recipientsList.length - 1)) {
@@ -117,7 +126,8 @@ module.exports.createNote = (db, config) => {
                                     "message": message,
                                     "style": style,
                                     "imageUrl": null,
-                                    "recipientsList": recipientsList
+                                    "recipientsList": recipientsList,
+                                    "color": color
                                 }
                             });
                         }
@@ -138,19 +148,19 @@ module.exports.uploadNotePhoto = (db, config) => {
 
         if (!token) {
             errors.push('no token found');
-            return res.status(500).json({errors});
+            return res.status(500).json({ errors });
         }
 
         // Get note id from URL.
         if (!req.files || (req.files.length === 0)) {
             errors.push('No profile photo was uploaded');
-            return res.status(400).json({errors});
+            return res.status(400).json({ errors });
         }
 
         const notePhotoFile = req.files.notePhoto;
         if (!notePhotoFile) {
             errors.push('No note photo was uploaded');
-            return res.status(400).json({errors});
+            return res.status(400).json({ errors });
         }
 
         // The noteId must be provided in the URL, and it MUST be a positive integer.
@@ -158,26 +168,25 @@ module.exports.uploadNotePhoto = (db, config) => {
 
         if (!validationModule.isPositiveInteger(noteId)) {
             errors.push('noteId must be a positive integer');
-            return res.status(400).json({errors});
+            return res.status(400).json({ errors });
         }
 
         // Load the note and make sure it belongs to the logged-in user
         db.get(sqlStatements.getNoteById, [noteId], async (err, note) => {
             if (err) {
                 errors.push('Failed to load note', err.toString());
-                return res.status(500).json({errors});
+                return res.status(500).json({ errors });
             }
 
             if (!note) {
                 errors.push('Could not find note');
-                return res.status(500).json({errors});
+                return res.status(500).json({ errors });
             }
 
             if (note.createdByID !== token.userId) {
                 errors.push('Permission denied');
-                return res.status(403).json({errors});
+                return res.status(403).json({ errors });
             }
-
 
             // Get the uploaded file
             const mediaService = mediaModule.getMediaService(config);
@@ -186,17 +195,19 @@ module.exports.uploadNotePhoto = (db, config) => {
             const extension = mediaService.getImageExtension(notePhotoFile);
             if (extension === '') {
                 errors.push('Invalid note photo file type');
-                return res.status(400).json({errors});
+                return res.status(400).json({ errors });
             }
 
             // Use a UUID as the name of the file.
             const notePhotoUuid = uuid.v4();
 
             // Figure out the store paths, urls etc.
-            const imageUri = 'uploads/note/' + notePhotoUuid + "." + extension;
-            const thumbUri = 'uploads/note/' + notePhotoUuid + "_tmb." + extension;
-            const uploadPath = __dirname + '/public/' + imageUri;
-            const uploadPathThumb = __dirname + '/public/' + thumbUri;
+            const fileName = notePhotoUuid + "." + extension;
+            const thumbName = notePhotoUuid + "_tmb." + extension;
+            const imageUri = path.join('uploads', 'notes', fileName);
+            const thumbUri = path.join('uploads', 'notes', thumbName);
+            const uploadPath = path.join(__dirname, 'public', imageUri);
+            const uploadPathThumb = path.join(__dirname, 'public', thumbUri);
 
             // Final url
             let host = config.server.host;
@@ -204,9 +215,10 @@ module.exports.uploadNotePhoto = (db, config) => {
                 host += `:${config.server.port}`;
             }
 
-            const imageUrl = host + `/${imageUri}`;
+            const imageUrl = host + '/uploads/notes/' + fileName;
 
             try {
+                console.log('upload path', uploadPath)
                 // Move the file to its final destination.
                 await mediaService.moveImage(notePhotoFile, uploadPath);
 
@@ -220,7 +232,7 @@ module.exports.uploadNotePhoto = (db, config) => {
                 db.run(sqlStatements.setNoteImageUrl, [imageUrl, noteId], (err) => {
                     if (err) {
                         errors.push('Failed to update node with image url');
-                        return res.status(500).json({errors});
+                        return res.status(500).json({ errors });
                     }
 
                     return res.status(200).json({
@@ -230,7 +242,7 @@ module.exports.uploadNotePhoto = (db, config) => {
                 });
             } catch (error) {
                 errors.push('Failed to handle uploaded note image: ' + error.toString());
-                return res.status(500).json({errors});
+                return res.status(500).json({ errors });
             }
         });
     }
@@ -238,23 +250,23 @@ module.exports.uploadNotePhoto = (db, config) => {
 
 const sqlStatements = {
     "getNoteById": `
-    SELECT id, createdById, message, imageUrl, style
+    SELECT id, createdById, message, imageUrl, style, color
     FROM notes
     WHERE id = ?
     `,
     "getNotesForRecipient": `
-    SELECT n.id, n.createdById, n.message, n.imageUrl, n.style
+    SELECT n.id, n.createdById, n.message, n.imageUrl, n.style, n.color
     FROM notes n
-    INNER JOIN recipients r ON n.id = r.note_id
-    WHERE r.recipient_id = ?    
+    INNER JOIN recipients r ON n.id = r.noteId
+    WHERE r.recipientId = ?
     `,
     "insertNote": `
-    INSERT INTO notes (createdById, message, imageUrl, style)
-    VALUES(?, ?, ?, ?);    
+    INSERT INTO notes (createdById, message, imageUrl, style, color)
+    VALUES(?, ?, ?, ?, ?);
     `,
     "insertNoteRecipient": `
     INSERT INTO recipients (noteId, recipientId)
-    VALUES(?, ?);    
+    VALUES(?, ?);
     `,
     "getLastInsertId": "select last_insert_rowid() as id",
     "setNoteImageUrl": `

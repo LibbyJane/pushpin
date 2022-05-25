@@ -1,5 +1,5 @@
 .site-header {
-    color: var(--heading-alt);
+    color: var(--white);
     margin: 0 0 var(--space-md);
     padding: 0;
 
@@ -12,33 +12,45 @@
     z-index: 100;
 
     .content {
-        background: url("../../assets/images/paper.jpg") top left repeat;
-        box-shadow: var(--box-shadow);
         display: flex;
-        align-items: center;
+            align-items: center;
         margin: 0 auto auto 0;
-        padding: var(--space);
+
         text-align: center;
-        transform: translateX(calc(var(--space-md) * -1)) translateY(-0.15rem)
-            rotate(-2deg);
+    }
+
+    a {
+        color: currentColor;
     }
 }
 
 .site-logo {
-    /* grid-area: site-logo; */
-    display: flex;
-    align-items: center;
-    font-weight: bold;
-    width: 2rem;
-    margin-right: auto;
+    margin: 0 -0.5rem auto -1rem;
+    width: 4rem;
+    transform: translateY(-0.15rem) rotate(-2deg);
 
     img {
         display: block;
+        // filter: invert(1);
         max-width: 100%;
     }
 }
 
-.site-user {
+.page-title {
+    box-shadow: var(--box-shadow);
+    display: block;
+    // font-size: 1.5rem;
+    font-weight: 500;
+    padding: var(--space);
+    background: url("../../assets/images/paper-lined.jpg") top left repeat;
+    color: var(--text);
+    font-family: var(--font-hand);
+
+    margin: 0 auto auto 0;
+    transform: translateY(-0.15rem) ;
+}
+
+.site-nav {
     /* grid-area: site-user; */
 
     background: url("../../assets/images/paper-dark.jpg") top left repeat;
@@ -61,14 +73,7 @@
     }
 }
 
-.page-title {
-    /* grid-area: page-title; */
-    color: var(--text);
-    font-size: 1rem;
-    font-weight: 500;
-    margin: 0;
-    padding: 0;
-}
+
 
 // .site-nav {
 //     /* grid-area: site-nav; */
@@ -94,6 +99,7 @@
 
     a,
     button {
+        background: transparent;
         color: var(--white);
         display: block;
         line-height: 0;
@@ -102,6 +108,7 @@
         padding: var(--space-sm);
 
         &:hover {
+            background: transparent;
             .icon {
                 transform: scale(1.2);
             }
@@ -111,9 +118,13 @@
     .icon {
         display: inline-block;
         filter: invert(1);
-        height: 1.6rem;
+        height: 1.2rem;
         width: 1.6rem;
         transition: transform var(--transition);
+    }
+
+    .is-create {
+        width: 2.4rem;
     }
 }
 

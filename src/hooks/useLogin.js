@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useAuthContext } from './useAuthContext'
-
 import axios from "axios"
 import { apiBaseURL } from '../api/config';
 
@@ -12,13 +11,12 @@ export const useLogin = () => {
 
 
     const login = async (email, password) => {
-        console.log('perform login')
         setError(null)
         setIsPending(true)
 
         try {
             axios.post(
-                `${apiBaseURL}login`,
+                `${apiBaseURL}/login`,
                 { email, password }).then((response) => {
                     console.log('response', response)
                     localStorage.setItem('ppTkn', response.data.tokenInfo.token)

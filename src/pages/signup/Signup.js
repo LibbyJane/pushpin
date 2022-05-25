@@ -1,5 +1,7 @@
-import { useState } from 'react'
-import { useSignup } from '../../hooks/useSignup'
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { useAppContext } from "../../hooks/useAppContext"
+import { useEndpoint } from '../../hooks/useEndpoint'
 import Error from '../../components/Error'
 
 import './Signup.css'
@@ -7,15 +9,26 @@ import './Signup.css'
 export default function Signup() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
     const [displayName, setDisplayName] = useState('')
+
     const [thumbnail, setThumbnail] = useState(null)
     const [thumbnailError, setThumbnailError] = useState(null)
-    const { signup, isPending, error } = useSignup()
+    // const { signup, isPending, error } = useSignup()
 
     const handleSubmit = (e) => {
-        e.preventDefault()
-        signup(email, password, displayName, thumbnail)
+        console.log('signup e', e);
+        // e.preventDefault()
+        // signup(email, password, firstName, lastName displayName)
     }
+
+    useEffect(() => {
+        if (!displayName.length) {
+            setDisplayName(firstName + lastName)
+        }
+    }, [firstName, lastName, displayName])
 
     const handleFileChange = (e) => {
         setThumbnail(null)
@@ -44,33 +57,69 @@ export default function Signup() {
                 Sign Up
             </header>
 
-            <label>
-                <span>email:</span>
-                <input
-                    required
-                    type="email"
-                    onChange={(e) => setEmail(e.target.value)}
-                    value={email}
-                />
-            </label>
-            <label>
-                <span>password:</span>
-                <input
-                    required
-                    type="password"
-                    onChange={(e) => setPassword(e.target.value)}
-                    value={password}
-                />
-            </label>
-            <label>
-                <span>display name:</span>
-                <input
-                    required
-                    type="text"
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    value={displayName}
-                />
-            </label>
+            <fieldset className='cols wrap'>
+                <div className="field">
+                    <label for="firstName">First Name</label>
+                    <input
+                        id="firstName"
+                        required
+                        type="text"
+                        onChange={(e) => setFirstName(e.target.value)}
+                        value={firstName}
+                    />
+                </div>
+
+                <div className="field">
+                    <label for="lastName">Last Name</label>
+                    <input
+                        id="lastName"
+                        required
+                        type="text"
+                        onChange={(e) => setLastName(e.target.value)}
+                        value={lastName}
+                    />
+                </div>
+
+                <div className="field">
+                    <label for="displayName">Display Name</label>
+                    <input
+                        id="displayName"
+                        required
+                        type="text"
+                        onChange={(e) => setDisplayName(e.target.value)}
+                        value={displayName}
+                    />
+                </div>
+
+                <label>
+                    <span>email:</span>
+                    <input
+                        required
+                        type="email"
+                        onChange={(e) => setEmail(e.target.value)}
+                        value={email}
+                    />
+                </label>
+                <label>
+                    <span>password:</span>
+                    <input
+                        required
+                        type="password"
+                        onChange={(e) => setPassword(e.target.value)}
+                        value={password}
+                    />
+                </label>
+                <label>
+                    <span>confirm password:</span>
+                    <input
+                        required
+                        type="password"
+                        onChange={(e) => setPassword(e.target.value)}
+                        value={password}
+                    />
+                </label>
+            </fieldset>
+
             <label>
                 <span>Profile thumbnail:</span>
                 <input
@@ -80,9 +129,9 @@ export default function Signup() {
                 />
                 {thumbnailError && <Error message={thumbnailError} />}
             </label>
-            {!isPending && <button className="btn" type="submit">Sign up</button>}
+            {/* {!isPending && <button className="btn" type="submit">Sign up</button>}
             {isPending && <button className="btn" disabled type="submit">loading</button>}
-            {error && <Error message={error} />}
+            {error && <Error message={error} />} */}
         </form>
     )
 }

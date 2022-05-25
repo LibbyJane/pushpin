@@ -10,15 +10,14 @@ import Button from '../Button'
 import Avatar from "../Avatar"
 
 import './SiteHeader.scss'
-import Logo from '../../assets/icons/mail-opened.svg'
-import CreateIcon from '../../assets/icons/mail-opened-filled.svg'
+import Logo from '../../assets/images/stamp-uk.svg'
+import CreateIcon from '../../assets/icons/envelope-arrow.svg'
 import LogoutIcon from '../../assets/icons/log-out.svg'
 
 export default function SiteHeader() {
     const { logout } = useLogout()
     const { user } = useAuthContext()
     const { headerTitle } = useAppContext()
-    console.log('user', user)
 
     return (
         <header className='site-header container'>
@@ -31,7 +30,7 @@ export default function SiteHeader() {
             </div>
 
             {user && (
-                <div className="site-user">
+                <div className="site-nav">
                     <Link to={`/account`}>
                         {user.imageURL && <Avatar src={user.imageURL} />}
                         <p>Hey {user.displayName}</p>
@@ -57,7 +56,7 @@ export default function SiteHeader() {
                     </nav>
                 </div>
             )}
-            {!user && (
+            {/* {!user && (
                 <nav className="site-nav">
                     <ul>
                         <>
@@ -66,7 +65,7 @@ export default function SiteHeader() {
                         </>
                     </ul>
                 </nav>
-            )}
+            )} */}
         </header>
     )
 }

@@ -32,7 +32,7 @@ const debugMode = true;
 const testCreateToken = async () => {
     try {
         await tokens.createToken(db, 1, "TestUserAgent", "127.0.0.1");
-    } catch(error) {
+    } catch (error) {
         console.log('Caught error whilst trying to create token: ', error);
     }
 };
@@ -45,8 +45,8 @@ init.initialiseDatabase(db, async () => {
         limits: {
             fileSize: 20_000_000
         },
-        useTempFiles : true,
-        tempFileDir : config.files.tmpUploadPath,
+        useTempFiles: true,
+        tempFileDir: config.files.tmpUploadPath,
         safeFileNames: true,
         preserveExtension: true,
     }
@@ -85,7 +85,7 @@ init.initialiseDatabase(db, async () => {
         });
 
     // Setup endpoints
-    app.get('/', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), async (req, res) => {
+    app.get('/', tokens.checkTokenMiddleware({ "db": db, "debug": debugMode }), async (req, res) => {
         const query = `
     SELECT id, firstName, lastName, displayName, email
     FROM users
@@ -99,14 +99,27 @@ init.initialiseDatabase(db, async () => {
         });
     });
 
+    app.get('/users', tokens.checkTokenMiddleware({ "db": db, "debug": debugMode }), async (req, res) => {
+        const query = `
+            SELECT id, firstName, lastName, displayName, email, imageURL
+            FROM users
+        `;
+        const users = [];
+        await db.each(query, (err, row) => {
+            users.push(row);
+        }, () => {
+            res.status(200).json(users)
+        });
+    });
+
     // Get available notes for the logged in user
-    app.get('/notes', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), notesModule.getNotesForLoggedInUser(db));
+    app.get('/notes', tokens.checkTokenMiddleware({ "db": db, "debug": debugMode }), notesModule.getNotesForLoggedInUser(db));
 
     // Insert/create a new note.
-    app.post('/note', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), notesModule.createNote(db, config));
+    app.post('/note', tokens.checkTokenMiddleware({ "db": db, "debug": debugMode }), notesModule.createNote(db, config));
 
     // Updates a note with a photo - Note this is a 'patch' request.  Send through "notePhoto" as the file name.
-    app.patch('/upload/note_photo/:noteId', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), notesModule.uploadNotePhoto(db, config));
+    app.patch('/upload/note_photo/:noteId', tokens.checkTokenMiddleware({ "db": db, "debug": debugMode }), notesModule.uploadNotePhoto(db, config));
 
     // User Login
     app.post('/login', userModule.login(db));
@@ -117,12 +130,12 @@ init.initialiseDatabase(db, async () => {
     // Upload profile photo
     app.post(
         '/upload/profile_photo',
-        tokens.checkTokenMiddleware({"db": db, "debug": debugMode}),
+        tokens.checkTokenMiddleware({ "db": db, "debug": debugMode }),
         userModule.uploadProfilePhoto(db, config)
     );
 
     // User Logout
-    app.get('/logout', tokens.checkTokenMiddleware({"db": db, "debug": debugMode}), async (req, res) => {
+    app.get('/logout', tokens.checkTokenMiddleware({ "db": db, "debug": debugMode }), async (req, res) => {
         try {
             await tokens.deleteToken(db, req.token.id);
 
@@ -137,7 +150,7 @@ init.initialiseDatabase(db, async () => {
     });
 
     // Capture All 404 errors
-    app.use(function (req,res,next){
+    app.use(function (req, res, next) {
         res.status(404).json({
             "error": "404 - Resource not found"
         });
