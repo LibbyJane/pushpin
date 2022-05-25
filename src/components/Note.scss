@@ -1,11 +1,18 @@
+@import '../styles/globals';
+
 .note {
+    --postcard-footer-width: 14rem;
     /* order: 1; */
     display: grid;
     grid-template-areas: "note-header" "note-image" "note-message" "note-footer";
 
     &.is-postcard {
-        grid-template-areas: "note-header" "note-message" "note-footer";
+        grid-template-areas:
+        "note-header note-header"
+        "note-message note-footer"
+        ;
     }
+
 }
 
 .note-header {
@@ -34,17 +41,32 @@
     background-blend-mode: multiply;
     border-radius: var(--radius-lg);
     box-shadow: var(--box-shadow);
-    color: var(--heading);
+    color: var(--text);
     margin: 0 auto 0 0;
-    min-width: 18rem;
-    max-width: 50vw;
-    min-height: 19rem;
-    max-height: 50vh;
+
     padding: 0 var(--space) var(--space);
     position: relative;
     // overflow: hidden; pin gets cut off
     text-decoration: none;
     transition: all 0.3s ease;
+    z-index: 1;
+
+
+    @include breakpoint(medium) {
+        min-width: 18rem;
+        min-height: 19rem;
+        // max-width: 50vw;
+        // max-height: 50vh;
+    }
+
+    &.note {
+        &:hover,
+        &:focus {
+            text-decoration: none;
+            transform: scale(1.1);
+        }
+    }
+
 
     &.is-stickynote {
         background-image: linear-gradient(
@@ -58,10 +80,10 @@
 
     &.is-postcard {
         background: {
-            image: url("../assets/images/postcard-bk.svg"),  url("../assets/images/stamp2.svg");
+            image: url("../assets/images/postcard-bk3.svg");
             position: top var(--space-lg) right var(--space-lg);
             repeat: no-repeat;
-            size: auto 75%;
+            size: calc(var(--postcard-footer-width) + var(--space-lg));
         }
         border-radius: 0;
     }
@@ -118,7 +140,7 @@
     position: relative;
     min-height: var(--icon-size);
     position: relative;
-    z-index: 10;
+    z-index: 15;
 
     .checkable {
         margin: 0;
@@ -136,11 +158,12 @@
     right: 0;
     left: 0;
     filter: sepia(1) hue-rotate(160deg) saturate(3);
+    z-index: 15;
 
-    .is-stickynote & {
-        left: auto;
-        right: -1.5rem;
-    }
+    // .is-stickynote & {
+    //     left: auto;
+    //     right: -1.5rem;
+    // }
 }
 
 .note-image {
@@ -149,7 +172,7 @@
     background-repeat: no-repeat;
     position: relative;
     overflow: hidden;
-    z-index: 1;
+    z-index: 10;
     max-height: 50vh;
 
     .is-postcard & {
@@ -200,10 +223,25 @@
     align-items: center;
     margin-top: auto;
 
+    .is-postcard & {
+        flex-wrap: wrap;
+        margin: 0 0 auto auto;
+        width: var(--postcard-footer-width);
+
+        h6 {
+            margin: 0;
+            width: 100%;
+        }
+    }
+
     .avatar {
-        --size: 1.2rem;
+        --size: 2rem;
         height: var(--size);
         width: var(--size);
+
+        .is-postcard & {
+            display: none;
+        }
     }
 
     p {
@@ -236,3 +274,35 @@
         width: 1.875rem;
         height: 1.875rem;
 } */
+
+
+.stamp {
+    --stamp-height: calc(var(--postcard-footer-width) / 2);
+    position: absolute;
+        top: var(--space-lg);
+        right: var(--space-lg);
+    width: var(--postcard-footer-width);
+    height: var(--stamp-height);
+
+
+    .avatar {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: auto 0;
+        border-radius: 0;
+        height: calc(var(--stamp-height) * 0.9);
+        width: calc(var(--stamp-height) * 0.56);
+        transform: translateY(0.2rem) translateX(-0.14rem);
+    }
+
+    .stamp-frame {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width:calc(var(--stamp-height) * 1.7);
+        height:var(--stamp-height);
+        z-index: 1;
+    }
+}
+

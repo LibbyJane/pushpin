@@ -101,7 +101,7 @@ init.initialiseDatabase(db, async () => {
 
     app.get('/users', tokens.checkTokenMiddleware({ "db": db, "debug": debugMode }), async (req, res) => {
         const query = `
-            SELECT id, firstName, lastName, displayName, email
+            SELECT id, firstName, lastName, displayName, email, imageURL
             FROM users
         `;
         const users = [];

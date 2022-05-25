@@ -56,5 +56,10 @@
     "cross-env": "^7.0.3",
     "mkcert": "^1.5.0",
     "sass": "^1.51.0"
-  }
+  },
+  "plugins": [
+    [
+      "babel-plugin-root-import"
+    ]
+  ]
 }

@@ -1,0 +1,82 @@
+// @keyframes spin {
+// 	0% {
+//         transform: scale(0.5) rotateX(0);
+//     }
+// 	100% {
+//         transform: scale(1) rotateY(360deg);
+// 	}
+// }
+
+// @keyframes turn-clockwise {
+//     from {
+//         transform: rotate(0);
+//     }
+//     to {
+//         transform: rotate(180deg);
+//     }
+// }
+
+// @keyframes turn-90 {
+//     from {
+//         transform: rotate(0);
+//     }
+//     to {
+//         transform: rotate(90deg);
+//     }
+// }
+
+// @keyframes turn-anticlockwise {
+//     from {
+//         transform: rotate(180deg);
+//     }
+//     to {
+//         transform: rotate(0);
+//     }
+// }
+
+// @keyframes grow {
+//     0% {
+//         width: 2%;
+//     }
+
+//     100% {
+//         width: 100%;
+//     }
+// }
+
+// @keyframes scale100 {
+//     0% {
+//         transform: scale(0);
+//     }
+
+//     100% {
+//         transform: scale(100%);
+//     }
+// }
+
+// @keyframes bounce {
+//     0% {
+//         transform: translateY(-0.125rem);
+//     }
+
+//     50% {
+//         transform: translateY(0.125rem);
+//     }
+
+//     100% {
+//         transform: translateY(-0.125rem);
+//     }
+// }
+
+// @keyframes expand {
+//     0% {
+//         opacity: 0;
+//         transform: scale(0);
+//     }
+
+//     100% {
+//         opacity: 1;
+//         transform: scale(100%);
+//     }
+// }
+

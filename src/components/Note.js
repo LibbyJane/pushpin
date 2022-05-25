@@ -5,28 +5,39 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
 import HeartToggle from './HeartToggle'
-// import Avatar from './Avatar'
+import Avatar from './Avatar'
+import Reactions from './Reactions'
 
 import PushPin from '../assets/images/drawing-pin.webp'
+import StampFrame from '../assets/images/stamp-postmark.svg'
+import Paperclip from '../assets/images/paperclip.svg'
+
 import './Note.scss'
 
 
 function Note({ note, toggleHeart }) {
-    console.log('note', note.color)
-    if (note.id) {
-        return (
-            <Link to={`/notes/${note.id}`} className={`note is-${note.style}`} style={{ backgroundColor: `${note.color ? note.color : ''}` }} data-saved={note.saved} >
-                <NoteInner note={note} toggleHeart={toggleHeart} />
-            </Link>
-        )
-    }
-    else {
-        return (
-            <div className={`note is-${note.style}`} style={{ backgroundColor: `${note.color ? note.color : ''}` }} data-saved={note.saved} >
-                <NoteInner />
-            </div>
-        )
-    }
+    // console.log('note', note)
+    return (
+        <div className={`note is-${note.style}`} style={{ backgroundColor: `${note.color ? note.color : ''}` }} data-saved={note.saved} >
+
+            <NoteInner />
+        </div>
+    )
+
+    // if (note.id) {
+    //     return (
+    //         <Link to={`/notes/${note.id}`} className={`note is-${note.style}`} style={{ backgroundColor: `${note.color ? note.color : ''}` }} data-saved={note.saved} >
+    //             <NoteInner note={note} toggleHeart={toggleHeart} />
+    //         </Link>
+    //     )
+    // }
+    // else {
+    //     return (
+    //         <div className={`note is-${note.style}`} style={{ backgroundColor: `${note.color ? note.color : ''}` }} data-saved={note.saved} >
+    //             <NoteInner />
+    //         </div>
+    //     )
+    // }
 
     function NoteInner() {
         return (
@@ -41,6 +52,7 @@ function Note({ note, toggleHeart }) {
                     }
 
                     <img className="note-pin" src={PushPin} alt="Push Pin" />
+                    <Reactions />
                 </header>
 
                 {
@@ -51,6 +63,12 @@ function Note({ note, toggleHeart }) {
                         </div>
                     </>
                 }
+                {note.style === 'postcard' && (
+                    <div className='stamp'>
+                        <img className='stamp-frame' src={StampFrame} alt="note image" />
+                        <Avatar id={note.createdByID} />
+                    </div>
+                )}
 
                 <ReactMarkdown
                     className='note-message formatted-text'
@@ -60,7 +78,9 @@ function Note({ note, toggleHeart }) {
                 />
 
                 <footer className="note-footer">
-                    {/* <Avatar src={note.createdBy.imageURL} name={note.createdBy.displayName} /> */}
+                    <h6>From:</h6>
+                    <Avatar id={note.createdByID} showName={true} />
+                    {/*  */}
                     {/* <p className='note-author'>from {note.createdBy.displayName}</p> */}
                 </footer>
             </>

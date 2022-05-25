@@ -1,5 +1,5 @@
 .site-header {
-    color: var(--heading-alt);
+    color: var(--white);
     margin: 0 0 var(--space-md);
     padding: 0;
 
@@ -18,6 +18,10 @@
 
         text-align: center;
     }
+
+    a {
+        color: currentColor;
+    }
 }
 
 .site-logo {
@@ -35,7 +39,7 @@
 .page-title {
     box-shadow: var(--box-shadow);
     display: block;
-    font-size: 1.5rem;
+    // font-size: 1.5rem;
     font-weight: 500;
     padding: var(--space);
     background: url("../../assets/images/paper-lined.jpg") top left repeat;
@@ -46,7 +50,7 @@
     transform: translateY(-0.15rem) ;
 }
 
-.site-user {
+.site-nav {
     /* grid-area: site-user; */
 
     background: url("../../assets/images/paper-dark.jpg") top left repeat;
@@ -95,6 +99,7 @@
 
     a,
     button {
+        background: transparent;
         color: var(--white);
         display: block;
         line-height: 0;
@@ -103,6 +108,7 @@
         padding: var(--space-sm);
 
         &:hover {
+            background: transparent;
             .icon {
                 transform: scale(1.2);
             }
@@ -112,9 +118,13 @@
     .icon {
         display: inline-block;
         filter: invert(1);
-        height: 1.6rem;
+        height: 1.2rem;
         width: 1.6rem;
         transition: transform var(--transition);
+    }
+
+    .is-create {
+        width: 2.4rem;
     }
 }
 

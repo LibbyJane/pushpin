@@ -4,18 +4,26 @@ export const AuthContext = createContext()
 export const authReducer = (state, action) => {
     switch (action.type) {
         case 'AUTHENTICATED':
+            console.log('dispatched AUTHENTICATED', action)
             return { ...state, user: action.payload.user, token: action.payload.token, authIsReady: true }
         case 'UNAUTHENTICATED':
-            localStorage.removeItem('ppTkn')
-            localStorage.removeItem('ppSessionExpiry')
-            localStorage.removeItem('ppUser')
+            clearStorage()
             return { ...state, user: null, token: null, authIsReady: true }
         case 'API':
             state.axiosInstance = action.payload.axiosInstance;
             return { ...state, axiosInstance: action.payload.axiosInstance }
+        case 'FRIENDS':
+            return { ...state, friends: action.payload.friends }
         default:
             return state
     }
+}
+
+const clearStorage = () => {
+    localStorage.removeItem('ppTkn')
+    localStorage.removeItem('ppSessionExpiry')
+    localStorage.removeItem('ppUser')
+    sessionStorage.removeItem('ppFriends')
 }
 
 export const AuthContextProvider = ({ children }) => {
@@ -23,7 +31,8 @@ export const AuthContextProvider = ({ children }) => {
         user: null,
         token: null,
         axiosInstance: null,
-        authIsReady: null
+        authIsReady: null,
+        friends: null
     })
 
 

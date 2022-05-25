@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
 import Select from 'react-select'
 import { useAuthContext } from '../../hooks/useAuthContext'
-import { useEndpoint } from '../../hooks/useEndpoint'
 
 export default function SelectUsers({ handler, reset }) {
-    const { documents } = useEndpoint('users')
-    const [users, setUsers] = useState([])
+    const [friendsArray, setFriendsArray] = useState([])
     const { user } = useAuthContext()
+    const friends = JSON.parse(sessionStorage.getItem('ppFriends'))
     const selectInputRef = useRef();
+
+    console.log(user, friends)
 
     const userObject = (u) => {
         if (u.id != user.id) {
@@ -25,23 +26,23 @@ export default function SelectUsers({ handler, reset }) {
     }
 
     useEffect(() => {
-        if (documents) {
-            let usersList = documents.map(userObject)
-            usersList.splice(usersList.indexOf(null), 1) // remove empty spot left by current user
-            setUsers(usersList)
+        if (friends) {
+            let tempFriends = friends.map(userObject)
+            tempFriends.splice(tempFriends.indexOf(null), 1) // remove empty spot left by current user
+            setFriendsArray(tempFriends)
         }
 
         if (reset) {
             selectInputRef.current.clearValue();
         }
-    }, [documents, reset])
+    }, [friends, reset])
 
     return (
         <Select
             className='react-select-container'
             classNamePrefix="react-select"
             onChange={(option) => handler(option)}
-            options={users}
+            options={friendsArray}
             ref={selectInputRef}
             isMulti
         />

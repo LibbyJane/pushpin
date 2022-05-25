@@ -3,18 +3,16 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuthContext } from "./hooks/useAuthContext"
 
 import NotFound from './pages/notfound/NotFound'
-// import Signup from './pages/signup/Signup'
+import Signup from './pages/signup/Signup'
 import Login from './pages/login/Login'
 import Corkboard from './pages/corkboard/Corkboard'
 // import Note from './pages/note/Note'
 import Create from './pages/create/Create'
 // import Account from './pages/account/Account'
 
-
 import SiteHeader from './components/layout/SiteHeader'
 import SiteFooter from './components/layout/SiteFooter'
 
-import './App.scss'
 
 function App() {
     const { dispatch, user, authIsReady } = useAuthContext()
@@ -66,11 +64,11 @@ function App() {
                                     path="/login"
                                     element={!user ? <Login /> : <Navigate to="/" />}
                                 />
-                                {/*
+
                                 <Route
                                     path="/signup"
                                     element={!user ? <Signup /> : <Navigate to="/" />}
-                                /> */}
+                                />
 
                                 <Route
                                     path="*"

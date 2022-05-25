@@ -3,13 +3,13 @@ import { useEndpoint } from '../../hooks/useEndpoint'
 
 import { useAppContext } from "../../hooks/useAppContext"
 import { useAuthContext } from '../../hooks/useAuthContext'
-
+import UseFriends from '../../hooks/useFriends'
 import NoteList from '../../components/NoteList'
 import Error from "../../components/Error"
 import FilterList from "../../components/FilterList"
 
 
-import './Corkboard.css'
+import './Corkboard.scss'
 
 export default function Corkboard() {
     const [notes, setNotes] = useState([])
@@ -17,7 +17,7 @@ export default function Corkboard() {
     const filters = ['all', 'saved', 'has image']
     const [filter, setFilter] = useState('all')
     const { documents, error } = useEndpoint('notes')
-
+    UseFriends()
 
     useEffect(() => {
         if (documents) {

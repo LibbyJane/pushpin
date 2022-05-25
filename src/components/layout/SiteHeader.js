@@ -11,7 +11,7 @@ import Avatar from "../Avatar"
 
 import './SiteHeader.scss'
 import Logo from '../../assets/images/stamp-uk.svg'
-import CreateIcon from '../../assets/icons/mail-opened-filled.svg'
+import CreateIcon from '../../assets/icons/envelope-arrow.svg'
 import LogoutIcon from '../../assets/icons/log-out.svg'
 
 export default function SiteHeader() {
@@ -30,7 +30,7 @@ export default function SiteHeader() {
             </div>
 
             {user && (
-                <div className="site-user">
+                <div className="site-nav">
                     <Link to={`/account`}>
                         {user.imageURL && <Avatar src={user.imageURL} />}
                         <p>Hey {user.displayName}</p>
@@ -56,7 +56,7 @@ export default function SiteHeader() {
                     </nav>
                 </div>
             )}
-            {!user && (
+            {/* {!user && (
                 <nav className="site-nav">
                     <ul>
                         <>
@@ -65,7 +65,7 @@ export default function SiteHeader() {
                         </>
                     </ul>
                 </nav>
-            )}
+            )} */}
         </header>
     )
 }

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 // import { useFirestore } from "../hooks/useFirestore"
 import Note from './Note'
 
-import './NoteList.css'
+import './NoteList.scss'
 
 export default function NoteList({ notes }) {
     // const { updateDocument } = useFirestore('notes')
