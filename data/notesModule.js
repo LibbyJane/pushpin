@@ -433,7 +433,7 @@ const sqlStatements = {
         AND r.status <> 'deleted'
     `,
     "getNotesForRecipient": `
-        SELECT n.id, n.createdById, n.message, n.imageUrl, n.style, n.color
+        SELECT n.id, n.createdById, n.message, n.imageUrl, n.style, n.color, r.reaction, r.status
         FROM notes n
         INNER JOIN recipients r ON n.id = r.noteId
         WHERE r.recipientId = ?
@@ -473,6 +473,6 @@ const sqlStatements = {
         WHERE n.createdByID = ?
         AND r.status != 'deleted'
         AND r.reaction IS NOT NULL
-        AND r.reactionUpdatedAt > ?    
+        AND r.reactionUpdatedAt > ?
     `,
 }

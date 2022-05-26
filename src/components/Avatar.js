@@ -9,7 +9,6 @@ export default function Avatar({ id, showName }) {
         friend = friends.filter(matchId)[0];
 
         function matchId(user) {
-            console.log(user)
             return user.id === id
         }
     }
@@ -24,7 +23,7 @@ export default function Avatar({ id, showName }) {
             )}
 
             {friend && showName && (
-                <span class="avatar-name">{friend.displayName}</span>
+                <span className="avatar-name">{friend.displayName}</span>
             )}
         </>
 

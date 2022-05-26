@@ -59,13 +59,13 @@
         // max-height: 50vh;
     }
 
-    &.note {
-        &:hover,
-        &:focus {
-            text-decoration: none;
-            transform: scale(1.06);
-        }
-    }
+    // &.note {
+    //     &:hover,
+    //     &:focus {
+    //         text-decoration: none;
+    //         transform: scale(1.06);
+    //     }
+    // }
 
 
     &.is-stickynote {
@@ -107,25 +107,28 @@
         font-weight: 400;
     }
 
-    .checkable {
+    .is-save {
+        margin: 0;
+        padding: var(--space-sm);
+            padding-left: 0;
+
         &:hover,
         &:focus {
             img {
                 opacity: 1;
             }
         }
-        img {
-            height: var(--icon-size);
-            width: var(--icon-size);
-            opacity: 0.5;
-        }
-    }
 
-    input {
         &:checked {
             ~ img {
                 opacity: 1;
             }
+        }
+
+        img {
+            height: var(--icon-size);
+            width: var(--icon-size);
+            opacity: 0.5;
         }
     }
 }
@@ -141,12 +144,6 @@
     min-height: var(--icon-size);
     position: relative;
     z-index: 15;
-
-    .checkable {
-        margin: 0;
-        padding: var(--space-sm);
-        padding-left: 0;
-    }
 }
 
 .note-pin {
@@ -265,8 +262,20 @@
 }
 
 .note-message {
+    h4 {
+        color: var(--font-heading);
+        font-family: var(--font-hand);
+        font-size: var(--h4);
+        margin: 0 0 var(--space);
+    }
+
     p {
-        font-size: 1.5rem;
+        font-size: var(--p);
+        margin: 0 0 var(--space-sm);
+    }
+
+    a {
+        font-weight: 700;
     }
 
     .is-postcard & {

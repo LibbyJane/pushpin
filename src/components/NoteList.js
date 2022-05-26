@@ -5,7 +5,7 @@ import Note from './Note'
 import './NoteList.scss'
 
 export default function NoteList({ notes }) {
-    // const { updateDocument } = useFirestore('notes')
+    console.log(notes)
 
     const toggleHeart = async (id) => {
         console.log('todo: save image')
@@ -25,16 +25,27 @@ export default function NoteList({ notes }) {
     return (
         <ul className="list-notes">
             {notes.length === 0 &&
-                <li className="card">
-                    <h4>Welcome</h4>
-                    <p>Looks like you don&rsquo;t have any notes at the moment. Would you like to <Link to='/create'>send one?</Link></p>
+                <li className="stickynote">
+                    <div className="note is-stickynote" style={{ backgroundColor: `var(--note-yellow)` }} >
+                        <header className="note-header">
+                            <img className="note-pin" src="/static/media/drawing-pin.98ca32a2.webp" alt="Push Pin" />
+                        </header>
+                        <div className="note-message">
+                            <h4>Hello!</h4>
+                            <p>It looks like you don&rsquo;t have any notes to show here at the moment.</p>
+                            <p>Would you like to <Link to='/create'>send one?</Link></p>
+                        </div>
+
+                    </div>
                 </li>
             }
-            {notes.map(note => (
-                <li key={note.id} className={note.style}>
-                    <Note note={note} toggleHeart={toggleHeart} />
-                </li>
-            ))}
-        </ul>
+            {
+                notes.map(note => (
+                    <li key={note.id} className={note.style}>
+                        <Note note={note} toggleHeart={toggleHeart} />
+                    </li>
+                ))
+            }
+        </ul >
     )
 }

@@ -33,7 +33,7 @@ function App() {
     return (
         <>
             {authIsReady &&
-                <main className="app">
+                <main className={user ? `app is-authenticated` : `app`}>
                     <BrowserRouter>
                         {/* <Sidebar /> */}
                         <SiteHeader />

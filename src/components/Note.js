@@ -6,7 +6,7 @@ import remarkGfm from 'remark-gfm'
 
 import HeartToggle from './HeartToggle'
 import Avatar from './Avatar'
-import Reactions from './Reactions'
+import Reactions from './forms/Reactions'
 
 import PushPin from '../assets/images/drawing-pin.webp'
 import StampFrame from '../assets/images/stamp-postmark.svg'
@@ -16,10 +16,8 @@ import './Note.scss'
 
 
 function Note({ note, toggleHeart }) {
-    // console.log('note', note)
     return (
-        <div className={`note is-${note.style}`} style={{ backgroundColor: `${note.color ? note.color : ''}` }} data-saved={note.saved} >
-
+        <div className={`note is-${note.style}`} style={{ backgroundColor: `${note.color ? note.color : ''}` }} data-status={note.status} >
             <NoteInner />
         </div>
     )
@@ -52,7 +50,7 @@ function Note({ note, toggleHeart }) {
                     }
 
                     <img className="note-pin" src={PushPin} alt="Push Pin" />
-                    <Reactions />
+                    <Reactions noteID={note.id} reaction={note.reaction} />
                 </header>
 
                 {

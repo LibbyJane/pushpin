@@ -6,7 +6,7 @@ import './HeartToggle.scss'
 export default function HeartToggle({ val, isSet, callback }) {
 
     return (
-        <label className="checkable is-toggle">
+        <label className="checkable is-toggle is-save">
             <input
                 type="checkbox"
                 value={val}
