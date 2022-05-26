@@ -11,6 +11,8 @@ import Avatar from "../Avatar"
 
 import './SiteHeader.scss'
 import Logo from '../../assets/images/stamp-uk.svg'
+import Create from '../../assets/images/envelope.png'
+
 import CreateIcon from '../../assets/icons/envelope-arrow.svg'
 import LogoutIcon from '../../assets/icons/log-out.svg'
 
@@ -18,6 +20,7 @@ export default function SiteHeader() {
     const { logout } = useLogout()
     const { user } = useAuthContext()
     const { headerTitle } = useAppContext()
+    console.log(user)
 
     return (
         <header className='site-header container'>
@@ -30,31 +33,29 @@ export default function SiteHeader() {
             </div>
 
             {user && (
-                <div className="site-nav">
-                    <Link to={`/account`}>
-                        {user.imageURL && <Avatar src={user.imageURL} />}
-                        <p>Hey {user.displayName}</p>
-                    </Link>
-
-                    <nav className="user-nav">
-                        <ul>
-                            <li>
-                                <NavLink to="/create">
-                                    <img data-tip="Send a note" data-for="send" className="icon is-create" src={CreateIcon} alt="note icon" />
-                                    <span className="visually-hidden">Send a note</span>
-                                </NavLink>
-                                <ReactTooltip id="send" className="tooltip" />
-                            </li>
-                            <li>
-                                <Button variant="text" onClick={logout}>
-                                    <img data-tip="Log out" data-for="logout" className="icon is-logout" src={LogoutIcon} alt="logout icon" />
-                                    <span className="visually-hidden">Log out</span>
-                                    <ReactTooltip id="logout" className="tooltip" />
-                                </Button>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
+                <nav className="user-nav">
+                    <ul>
+                        <li>
+                            <NavLink to="/create" className='nav-create'>
+                                <img data-tip="Send a note" data-for="send" className="icon is-create" src={CreateIcon} alt="Click to send a note" />
+                            </NavLink>
+                            <ReactTooltip id="send" className="tooltip" />
+                        </li>
+                        <li>
+                            <Link to={`/account`} className='nav-account'>
+                                {user.id && <Avatar src={user.id} />}
+                                <p>Hey {user.displayName}</p>
+                            </Link>
+                        </li>
+                        <li>
+                            <Button variant="text" onClick={logout}>
+                                <img data-tip="Log out" data-for="logout" className="icon is-logout" src={LogoutIcon} alt="logout icon" />
+                                <span className="visually-hidden">Log out</span>
+                                <ReactTooltip id="logout" className="tooltip" />
+                            </Button>
+                        </li>
+                    </ul>
+                </nav>
             )}
             {/* {!user && (
                 <nav className="site-nav">

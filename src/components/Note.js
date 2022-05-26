@@ -10,7 +10,7 @@ import Reactions from './Reactions'
 
 import PushPin from '../assets/images/drawing-pin.webp'
 import StampFrame from '../assets/images/stamp-postmark.svg'
-import Paperclip from '../assets/images/paperclip.svg'
+
 
 import './Note.scss'
 
@@ -64,7 +64,7 @@ function Note({ note, toggleHeart }) {
                     </>
                 }
                 {note.style === 'postcard' && (
-                    <div className='stamp'>
+                    <div className='stamp-postmark'>
                         <img className='stamp-frame' src={StampFrame} alt="note image" />
                         <Avatar id={note.createdByID} />
                     </div>
@@ -78,7 +78,7 @@ function Note({ note, toggleHeart }) {
                 />
 
                 <footer className="note-footer">
-                    <h6>From:</h6>
+                    <h6>From</h6>
                     <Avatar id={note.createdByID} showName={true} />
                     {/*  */}
                     {/* <p className='note-author'>from {note.createdBy.displayName}</p> */}

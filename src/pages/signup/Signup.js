@@ -1,137 +1,138 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useAppContext } from "../../hooks/useAppContext"
+import { useAuthContext } from '../../hooks/useAuthContext'
+import { useAppContext } from '../../hooks/useAppContext'
 import { useEndpoint } from '../../hooks/useEndpoint'
 import Error from '../../components/Error'
 
-import './Signup.css'
-
 export default function Signup() {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const { dispatch } = useAuthContext()
 
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [displayName, setDisplayName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
 
-    const [thumbnail, setThumbnail] = useState(null)
-    const [thumbnailError, setThumbnailError] = useState(null)
-    // const { signup, isPending, error } = useSignup()
+    const [passwordError, setPasswordError] = useState('')
+    const [formError, setFormError] = useState('')
 
-    const handleSubmit = (e) => {
-        console.log('signup e', e);
-        // e.preventDefault()
-        // signup(email, password, firstName, lastName displayName)
-    }
+    const [endpoint, setEndpoint] = useState(null)
+    const [data, setData] = useState(null)
+    const { documents, error } = useEndpoint(endpoint, 'POST', data)
 
     useEffect(() => {
-        if (!displayName.length) {
-            setDisplayName(firstName + lastName)
+        if (password && confirmPassword) {
+            password === confirmPassword ? setPasswordError(null) : setPasswordError('Passwords must match');
         }
-    }, [firstName, lastName, displayName])
+    }, [firstName, lastName, displayName, email, password, confirmPassword])
 
-    const handleFileChange = (e) => {
-        setThumbnail(null)
-        let selected = e.target.files[0]
+    useEffect(() => {
+        if (documents) {
+            const payload = {
+                user: documents.user,
+                token: documents.tokenInfo.token
+            }
 
-        if (!selected) {
-            setThumbnailError('Please select a file')
-            return
-        }
-        if (!selected.type.includes('image')) {
-            setThumbnailError('Selected file must be an image')
-            return
-        }
-        if (selected.size > 100000) {
-            setThumbnailError('Image file size must be less than 100kb')
-            return
+            dispatch({ type: 'AUTHENTICATED', payload })
         }
 
-        setThumbnailError(null)
-        setThumbnail(selected)
+        if (error) {
+            console.log('returned error', error)
+            setFormError(error.response.data.errors[0])
+        }
+    }, [documents, error])
+
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        setData({ firstName, lastName, displayName, email, password })
+        setEndpoint('register')
     }
 
-    return (
-        <form onSubmit={handleSubmit} className="form-signup card">
+    const updateDisplayName = (value) => {
+        if (!displayName.length) {
+            setDisplayName(value)
+        }
+    }
+
+    return (<div className="cols">
+        <form onSubmit={handleSubmit} className="form-signup card col">
             <header className="card-header">
                 Sign Up
             </header>
 
-            <fieldset className='cols wrap'>
-                <div className="field">
-                    <label for="firstName">First Name</label>
-                    <input
-                        id="firstName"
-                        required
-                        type="text"
-                        onChange={(e) => setFirstName(e.target.value)}
-                        value={firstName}
-                    />
-                </div>
+            <label htmlFor="firstName">First Name <abbr title="used to help friends find you">*</abbr></label>
+            <input
+                id="firstName"
+                required
+                type="text"
+                minLength="2"
+                onChange={(e) => setFirstName(e.target.value)}
+                onBlur={(e) => updateDisplayName(e.target.value)}
+                value={firstName}
+            />
 
-                <div className="field">
-                    <label for="lastName">Last Name</label>
-                    <input
-                        id="lastName"
-                        required
-                        type="text"
-                        onChange={(e) => setLastName(e.target.value)}
-                        value={lastName}
-                    />
-                </div>
+            <label htmlFor="lastName">Last Name <abbr title="used to help friends find you">*</abbr></label>
+            <input
+                id="lastName"
+                required
+                type="text"
+                minLength="2"
+                onChange={(e) => setLastName(e.target.value)}
+                value={lastName}
+            />
 
-                <div className="field">
-                    <label for="displayName">Display Name</label>
-                    <input
-                        id="displayName"
-                        required
-                        type="text"
-                        onChange={(e) => setDisplayName(e.target.value)}
-                        value={displayName}
-                    />
-                </div>
+            <label htmlFor="displayName">Display Name<abbr title="used to help friends find you">*</abbr> (used to sign your notes)</label>
+            <input
+                id="displayName"
+                required
+                type="text"
+                minLength="2"
+                onChange={(e) => setDisplayName(e.target.value)}
+                value={displayName}
+            />
 
-                <label>
-                    <span>email:</span>
-                    <input
-                        required
-                        type="email"
-                        onChange={(e) => setEmail(e.target.value)}
-                        value={email}
-                    />
-                </label>
-                <label>
-                    <span>password:</span>
-                    <input
-                        required
-                        type="password"
-                        onChange={(e) => setPassword(e.target.value)}
-                        value={password}
-                    />
-                </label>
-                <label>
-                    <span>confirm password:</span>
-                    <input
-                        required
-                        type="password"
-                        onChange={(e) => setPassword(e.target.value)}
-                        value={password}
-                    />
-                </label>
-            </fieldset>
 
-            <label>
-                <span>Profile thumbnail:</span>
-                <input
-                    required
-                    type="file"
-                    onChange={handleFileChange}
-                />
-                {thumbnailError && <Error message={thumbnailError} />}
-            </label>
-            {/* {!isPending && <button className="btn" type="submit">Sign up</button>}
-            {isPending && <button className="btn" disabled type="submit">loading</button>}
-            {error && <Error message={error} />} */}
+            <label htmlFor="emailAddress">email: <abbr title="used to help friends find you">*</abbr></label>
+            <input
+                id="emailAddress"
+                required
+                type="email"
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
+            />
+
+            <label htmlFor="password">password: <abbr title="at least 6 characters">*</abbr></label>
+            <input
+                id="password"
+                required
+                type="password"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+                minLength="6"
+                maxLength="80"
+            />
+            <label htmlFor="confirmPassword">confirm password: <abbr title="must match password">*</abbr></label>
+            <input
+                id="confirmPassword"
+                required
+                type="password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={confirmPassword}
+                minLength="6"
+                maxLength="80"
+            />
+
+            {passwordError && <Error message={passwordError} />}
+            {formError && <Error message={formError} />}
+            <button className="btn" type="submit">Sign up</button>
         </form>
+        <div className="col card is-reversed align-top width-small">
+            <h4>Already have an account?</h4>
+            <p><Link to="/login">Log in here</Link></p>
+        </div>
+    </div>
     )
 }

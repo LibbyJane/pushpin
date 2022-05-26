@@ -8,11 +8,10 @@
 // }
 
 .reaction {
-    --size: 1.2rem;
+    --size: 1.6rem;
     height: var(--size);
     width: var(--size);
     position: absolute;
     top: 0.5rem;
     right: 0;
-    transform: rotate(5deg)
 }

@@ -12,7 +12,6 @@ export default function Avatar({ id, showName }) {
             console.log(user)
             return user.id === id
         }
-        console.log('avatar', friends, id, friend)
     }
 
 

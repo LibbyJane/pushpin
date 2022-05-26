@@ -50,40 +50,12 @@
     transform: translateY(-0.15rem) ;
 }
 
-.site-nav {
-    /* grid-area: site-user; */
-
-    background: url("../../assets/images/paper-dark.jpg") top left repeat;
-    box-shadow: var(--box-shadow);
-    color: var(--white);
-    margin-left: auto;
-    padding: var(--space);
-    padding-bottom: 0;
-    text-align: center;
-    transform: translateX(var(--space)) translateY(-0.5rem) rotate(2deg);
-
-    a {
-        color: currentColor;
-        text-decoration: none;
-    }
-
-    p {
-        margin: 0;
-        padding: 0;
-    }
-}
-
-
-
-// .site-nav {
-//     /* grid-area: site-nav; */
-//     /* margin-bottom: var(--space-lg); */
-//     /* color: var(--heading-alt);
-//     padding: var(--space-lg) 0; */
-//     /* width: 100%; */
-// }
 
 .user-nav {
+    margin-left: auto;
+    padding: 0 var(--space);
+    text-align: center;
+
     ul {
         display: flex;
         align-items: center;
@@ -99,21 +71,36 @@
 
     a,
     button {
-        background: transparent;
+        background: url("../../assets/images/paper-dark.jpg") top left repeat;
+        box-shadow: var(--box-shadow);
         color: var(--white);
         display: block;
-        line-height: 0;
+            margin: 0;
+            padding: var(--space-sm);
+        text-decoration: none;
         text-align: center;
-        margin: 0;
-        padding: var(--space-sm);
+        transition: all var(--transition);
+        transform: translateY(-1rem) rotate(2deg);
+        transform-origin: top center;
 
         &:hover {
-            background: transparent;
-            .icon {
-                transform: scale(1.2);
-            }
+            transform: scale(1.1) translateX(var(--space)) translateY(-1.5rem) rotate(2deg);
         }
     }
+
+    .nav-create {
+        background: url("../../assets/images/paper-graph.jpg") top left repeat;
+        background: var(--note-pink);
+        background-size: 3rem;
+        color: var(--heading);
+        padding: var(--space-md) var(--space) var(--space);
+        transform: translateY(-1rem);
+
+        &.active {
+            display: none;
+        }
+    }
+
 
     .icon {
         display: inline-block;
@@ -124,6 +111,7 @@
     }
 
     .is-create {
+        filter: none;
         width: 2.4rem;
     }
 }
