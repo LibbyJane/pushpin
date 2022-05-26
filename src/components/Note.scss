@@ -63,7 +63,7 @@
         &:hover,
         &:focus {
             text-decoration: none;
-            transform: scale(1.1);
+            transform: scale(1.06);
         }
     }
 
@@ -170,6 +170,7 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    margin: 0 0 var(--space);
     position: relative;
     overflow: hidden;
     z-index: 10;
@@ -200,9 +201,7 @@
         &:focus {
             opacity: 0;
         }
-
     }
-
 
     img {
         display: block;
@@ -220,17 +219,31 @@
 
 .note-footer {
     display: flex;
+    font-size: var(--p-sm);
+
     align-items: center;
     margin-top: auto;
 
     .is-postcard & {
         flex-wrap: wrap;
+        font-size: var(--p);
         margin: 0 0 auto auto;
         width: var(--postcard-footer-width);
+    }
 
-        h6 {
-            margin: 0;
+    h6 {
+        font-size: var(--p-sm);
+        margin: 0;
+        padding: 0;
+
+        .is-postcard & {
+            font-size: var(--p);
+            margin-bottom: var(--space);
             width: 100%;
+
+            &:after {
+                content: ':';
+            }
         }
     }
 
@@ -238,6 +251,7 @@
         --size: 2rem;
         height: var(--size);
         width: var(--size);
+        margin: 0 var(--space-xs);
 
         .is-postcard & {
             display: none;
@@ -276,14 +290,13 @@
 } */
 
 
-.stamp {
+.stamp-postmark {
     --stamp-height: calc(var(--postcard-footer-width) / 2);
     position: absolute;
         top: var(--space-lg);
         right: var(--space-lg);
     width: var(--postcard-footer-width);
     height: var(--stamp-height);
-
 
     .avatar {
         position: absolute;

@@ -32,18 +32,20 @@ export default function Login() {
                     Log In
                 </header>
 
-                <label>email:</label>
+                <label for="email">email:</label>
                 <input
+                    id="email"
                     type="email"
                     onChange={(e) => setEmail(e.target.value)}
                     value={email}
                     required
                 />
 
-                <label>
+                <label for="password">
                     password:
                 </label>
                 <input
+                    id="password"
                     type="password"
                     onChange={(e) => setPassword(e.target.value)}
                     value={password}

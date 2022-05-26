@@ -38,7 +38,7 @@ function App() {
                         {/* <Sidebar /> */}
                         <SiteHeader />
 
-                        <div className="container">
+                        <div className="container site-main">
                             <Routes>
                                 <Route
                                     path="/"

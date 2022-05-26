@@ -1,26 +1,26 @@
 .error {
     /* background: var(--danger-bg); */
     color: var(--danger);
-    font-size: 0.9rem;
-    line-height: 1.2;
+    display: flex;
+        align-items: center;
     position: relative;
     padding: 0 0 var(--space-sm);
-    padding-left: calc(var(--space) + var(--space-sm));
 
     &::before {
-        --size: calc(var(--space) - var(--border-width) - var(--border-width));
+        --text-size: 16px;
+        --size: calc(var(--text-size) + 4px);
 
-        border: var(--border);
         border-radius: 50%;
+        border: var(--border) var(--danger);
         content: "!";
-        font-size: 12px;
+        display: inline-block;
         height: var(--size);
         width: var(--size);
-        line-height: 1;
-        font-weight: 600;
-        position: absolute;
-        top: var(--space-xs);
-        left: 0;
+        font-size: var(--text-size);
+        line-height: var(--size);
+        margin-right: var(--space-xs);
+        text-indent: -3px;
         text-align: center;
+        font-weight: 700;
     }
 }
