@@ -1,4 +1,5 @@
 const https = require("https");
+const http = require("http");
 const fs = require("fs");
 const express = require('express')
 const bcrypt = require("bcrypt");
@@ -18,13 +19,6 @@ const init = require('./init');
 const tokens = require('./tokens');
 const userModule = require('./userModule');
 const notesModule = require('./notesModule');
-
-const keyFile = '../key.pem';
-const certFile = '../cert.pem';
-const sslOptions = {
-    key: fs.readFileSync(keyFile,),
-    cert: fs.readFileSync(certFile),
-};
 
 // Switch to true to get extra diagnostics from endpoints.
 const debugMode = true;
@@ -71,8 +65,20 @@ init.initialiseDatabase(db, async () => {
         .use(cors())
         .use(fileUpload(fileUploadParams));
 
+    let server = http.createServer();
 
-    const server = https.createServer(sslOptions);
+    if (config.server.host.indexOf('https') >= 0) {
+        console.log('Using SSL');
+        const keyFile = '../key.pem';
+        const certFile = '../cert.pem';
+        const sslOptions = {
+            key: fs.readFileSync(keyFile,),
+            cert: fs.readFileSync(certFile),
+        };
+
+        server = https.createServer(sslOptions);
+    }
+
     server
         .on('request', app)
         .listen(config.server.port, () => {
