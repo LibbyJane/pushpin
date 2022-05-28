@@ -4,7 +4,6 @@ export const AuthContext = createContext()
 export const authReducer = (state, action) => {
     switch (action.type) {
         case 'AUTHENTICATED':
-            console.log('dispatched AUTHENTICATED', action)
             return { ...state, user: action.payload.user, token: action.payload.token, authIsReady: true }
         case 'UNAUTHENTICATED':
             clearStorage()
@@ -12,6 +11,10 @@ export const authReducer = (state, action) => {
         case 'API':
             state.axiosInstance = action.payload.axiosInstance;
             return { ...state, axiosInstance: action.payload.axiosInstance }
+        case 'USER-UPDATE': {
+            console.log('update', action.payload)
+            // return { ...state, user: action.payload.user }
+        }
         case 'FRIENDS':
             return { ...state, friends: action.payload.friends }
         default:

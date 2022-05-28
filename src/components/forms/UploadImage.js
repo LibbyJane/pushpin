@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useMediaEndpoint } from '../../hooks/useMediaEndpoint'
 import Error from '../Error'
 
-export default function UploadImage({ draftImage, fieldId, handleFileUpdate, labelText, endpoint, method, reset }) {
+export default function UploadImage({ draftImage, fieldId, handleFileUpdate, labelText, endpoint, method, reset, setResponse }) {
     // const { imageURL } = useendpoint('users')
     // const [users, setUsers] = useState([])
     const [image, setImage] = useState(draftImage ? draftImage : null)
@@ -13,7 +13,8 @@ export default function UploadImage({ draftImage, fieldId, handleFileUpdate, lab
     const { outcome, isLoading, error } = useMediaEndpoint(endpoint, method, data)
 
     useEffect(() => {
-        if (outcome) {
+        if (outcome && setResponse) {
+            setResponse(outcome)
             console.log('upload image', endpoint, method, data, outcome)
         }
 
@@ -21,7 +22,7 @@ export default function UploadImage({ draftImage, fieldId, handleFileUpdate, lab
             console.log('reset input')
             inputElement.current.value = ''
         }
-    }, [outcome, reset])
+    }, [outcome, reset, setResponse])
 
     const handleFileChange = (e) => {
         setImage(null)
@@ -43,7 +44,7 @@ export default function UploadImage({ draftImage, fieldId, handleFileUpdate, lab
 
         setImageError(null)
         const formData = new FormData();
-        formData.append('notePhoto', selected);
+        formData.append(`${fieldId}`, selected);
         console.log('form data', formData)
         setData(formData)
         selected.URL = URL.createObjectURL(selected)

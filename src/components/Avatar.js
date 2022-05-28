@@ -1,29 +1,30 @@
+import { useAuthContext } from '../hooks/useAuthContext'
+import { useState, useEffect, useRef } from 'react'
 
 import './Avatar.scss'
 
 export default function Avatar({ id, showName }) {
+    const { user } = useAuthContext()
     const friends = JSON.parse(sessionStorage.getItem('ppFriends'))
-    let friend = null;
+    const friendsRef = useRef(friends).current
+    const idRef = useRef(id).current
 
-    if (friends) {
-        friend = friends.filter(matchId)[0];
+    let avatarSrc = user.id === idRef ? user : friendsRef ? friendsRef.filter(matchId)[0] : null;
 
-        function matchId(user) {
-            return user.id === id
-        }
+    function matchId(u) {
+        return u.id === idRef
     }
-
 
     return (
         <>
-            {friend && (
-                <div className="avatar" style={{ backgroundImage: `url(${friend.imageURL})` }}>
-                    <img src={friend.imageURL} alt={`${friend.displayName}'s avatar`} title={friend.displayName} />
+            {avatarSrc && (
+                <div className="avatar" style={{ backgroundImage: `url(${avatarSrc.imageURL})` }}>
+                    <img src={avatarSrc.imageURL} alt={`${avatarSrc.displayName}'s avatar`} title={avatarSrc.displayName} />
                 </div>
             )}
 
-            {friend && showName && (
-                <span className="avatar-name">{friend.displayName}</span>
+            {avatarSrc && showName && (
+                <span className="avatar-name">{avatarSrc.displayName}</span>
             )}
         </>
 

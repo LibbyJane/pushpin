@@ -11,9 +11,7 @@ import Avatar from "../Avatar"
 
 import './SiteHeader.scss'
 import Logo from '../../assets/images/stamp-uk.svg'
-import Create from '../../assets/images/envelope.png'
-
-import CreateIcon from '../../assets/icons/envelope-arrow.svg'
+import CreateIcon from '../../assets/icons/envelope.svg'
 import LogoutIcon from '../../assets/icons/log-out.svg'
 
 export default function SiteHeader() {
@@ -35,26 +33,27 @@ export default function SiteHeader() {
             {user && (
                 <nav className="user-nav">
                     <ul>
-                        <li>
-                            <NavLink to="/create" className='nav-create'>
-                                <img data-tip="Send a note" data-for="send" className="icon is-create" src={CreateIcon} alt="Click to send a note" />
+                        <li className='nav-create' data-tip="Send a note" data-for="tt-send" data-background-color="var(--biro)" >
+                            <NavLink to="/create">
+                                <img className="icon" src={CreateIcon} alt="Click to send a note" />
                             </NavLink>
-                            <ReactTooltip id="send" className="tooltip" />
+
                         </li>
-                        <li>
-                            <Link to={`/account`} className='nav-account'>
-                                {user.id && <Avatar src={user.id} />}
-                                <p>Hey {user.displayName}</p>
-                            </Link>
+                        <li className='nav-account' data-tip="Your account" data-for="tt-account" data-background-color="var(--biro)" >
+                            <NavLink to={`/account`}>
+                                {user.id && <Avatar id={user.id} />}
+                            </NavLink>
                         </li>
-                        <li>
-                            <Button variant="text" onClick={logout}>
-                                <img data-tip="Log out" data-for="logout" className="icon is-logout" src={LogoutIcon} alt="logout icon" />
+                        <li className='nav-logout' data-tip="Log out" data-for="tt-logout" data-background-color="var(--biro)">
+                            <button type="button" onClick={logout}>
+                                <img className="icon" src={LogoutIcon} alt="logout icon" />
                                 <span className="visually-hidden">Log out</span>
-                                <ReactTooltip id="logout" className="tooltip" />
-                            </Button>
+                            </button>
+                            <ReactTooltip id="tt-logout" className="tooltip" />
                         </li>
                     </ul>
+                    <ReactTooltip id="tt-send" className="tooltip" />
+                    <ReactTooltip id="tt-account" className="tooltip" />
                 </nav>
             )}
             {/* {!user && (

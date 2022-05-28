@@ -7,8 +7,7 @@ export default function SelectUsers({ handler, reset }) {
     const { user } = useAuthContext()
     const friends = JSON.parse(sessionStorage.getItem('ppFriends'))
     const selectInputRef = useRef();
-
-    console.log(user, friends)
+    const friendsRef = useRef(friends).current
 
     const userObject = (u) => {
         if (u.id != user.id) {
@@ -26,8 +25,8 @@ export default function SelectUsers({ handler, reset }) {
     }
 
     useEffect(() => {
-        if (friends) {
-            let tempFriends = friends.map(userObject)
+        if (friendsRef) {
+            let tempFriends = friendsRef.map(userObject)
             tempFriends.splice(tempFriends.indexOf(null), 1) // remove empty spot left by current user
             setFriendsArray(tempFriends)
         }
@@ -35,16 +34,19 @@ export default function SelectUsers({ handler, reset }) {
         if (reset) {
             selectInputRef.current.clearValue();
         }
-    }, [friends, reset])
+    }, [friendsRef, reset])
+
 
     return (
-        <Select
-            className='react-select-container'
-            classNamePrefix="react-select"
-            onChange={(option) => handler(option)}
-            options={friendsArray}
-            ref={selectInputRef}
-            isMulti
-        />
+        <>
+            <Select
+                className='react-select-container'
+                classNamePrefix="react-select"
+                onChange={(option) => handler(option)}
+                options={friendsArray}
+                ref={selectInputRef}
+                isMulti
+            />
+        </>
     )
 }

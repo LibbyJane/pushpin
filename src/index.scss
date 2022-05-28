@@ -479,3 +479,7 @@ body,
 html {
     scroll-behavior: smooth;
 }
+
+.tooltip {
+    font-size: var(--p-sm) !important;
+}

@@ -15,9 +15,13 @@ import StampFrame from '../assets/images/stamp-postmark.svg'
 import './Note.scss'
 
 
-function Note({ note, toggleHeart }) {
+function Note({ note, toggleHeart, variant }) {
+
     return (
-        <div className={`note is-${note.style}`} style={{ backgroundColor: `${note.color ? note.color : ''}` }} data-status={note.status} >
+        <div
+            className={`note is-${note.style}`}
+            style={{ backgroundColor: `${note.color ? note.color : ''}` }}
+            data-status={note.status} >
             <NoteInner />
         </div>
     )
@@ -50,7 +54,12 @@ function Note({ note, toggleHeart }) {
                     }
 
                     <img className="note-pin" src={PushPin} alt="Push Pin" />
-                    <Reactions noteID={note.id} reaction={note.reaction} />
+
+                    {variant !== 'preview' &&
+                        <Reactions noteID={note.id} reaction={note.reaction} />
+                    }
+
+
                 </header>
 
                 {

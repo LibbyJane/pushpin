@@ -107,30 +107,6 @@
         font-weight: 400;
     }
 
-    .is-save {
-        margin: 0;
-        padding: var(--space-sm);
-            padding-left: 0;
-
-        &:hover,
-        &:focus {
-            img {
-                opacity: 1;
-            }
-        }
-
-        &:checked {
-            ~ img {
-                opacity: 1;
-            }
-        }
-
-        img {
-            height: var(--icon-size);
-            width: var(--icon-size);
-            opacity: 0.5;
-        }
-    }
 }
 
 .note-header {

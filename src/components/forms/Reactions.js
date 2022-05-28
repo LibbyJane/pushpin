@@ -4,10 +4,10 @@ import { useEndpoint } from '../../hooks/useEndpoint'
 
 import './Reactions.scss'
 
-import Heart from '../../assets/images/reaction-heart.png'
-import Smile from '../../assets/images/reaction-smile.png'
-import Cool from '../../assets/images/reaction-cool.png'
-import Star from '../../assets/images/reaction-star.png'
+import Heart from '../../assets/images/reaction-heart.svg'
+import Smile from '../../assets/images/reaction-smile.svg'
+import Cool from '../../assets/images/reaction-cool.svg'
+import Star from '../../assets/images/reaction-star.svg'
 
 
 export default function Reactions({ noteID, reaction }) {

@@ -10,7 +10,8 @@
         cursor: pointer;
         display: flex;
             align-items: center;
-        font-size: 0.94rem;
+        font-size: var(--p-sm);
+        font-weight: 400;
         padding-right: var(--space)
     }
 

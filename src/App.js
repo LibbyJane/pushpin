@@ -6,9 +6,8 @@ import NotFound from './pages/notfound/NotFound'
 import Signup from './pages/signup/Signup'
 import Login from './pages/login/Login'
 import Corkboard from './pages/corkboard/Corkboard'
-// import Note from './pages/note/Note'
 import Create from './pages/create/Create'
-// import Account from './pages/account/Account'
+import Account from './pages/account/Account'
 
 import SiteHeader from './components/layout/SiteHeader'
 import SiteFooter from './components/layout/SiteFooter'
@@ -53,12 +52,12 @@ function App() {
                                 {/* <Route
                                     path="/notes/:id"
                                     element={user ? <Note /> : <Navigate to="/login" />}
-                                />
+                                /> */}
 
                                 <Route
                                     path="/account"
                                     element={user ? <Account /> : <Navigate to="/login" />}
-                                /> */}
+                                />
 
                                 <Route
                                     path="/login"

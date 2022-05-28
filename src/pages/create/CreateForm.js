@@ -46,8 +46,6 @@ export default function CreateForm({ id, noteDraft, handleFormSubmit, imageEndpo
             setMessage('')
             setRecipients([])
             setImageURL(null)
-
-            console.log('message, recipients', message, recipients)
         }
     }, [resetForm])
 
@@ -176,8 +174,8 @@ export default function CreateForm({ id, noteDraft, handleFormSubmit, imageEndpo
                 {formError && <Error message={formError} />}
             </form>
             <aside className='note-preview'>
-                {style === 'postcard' && imageURL && <Note note={{ message, style, color, imageURL, "createdBy": user, variant: "preview" }} />}
-                <Note note={{ message, style, color, imageURL, "createdBy": user, variant: "preview" }} />
+                {style === 'postcard' && imageURL && <Note note={{ message, style, color, imageURL, "createdByID": user.id }} variant="preview" />}
+                <Note note={{ message, style, color, imageURL, "createdByID": user.id }} variant="preview" />
             </aside>
         </div>
     )
