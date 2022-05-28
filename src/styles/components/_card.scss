@@ -50,7 +50,7 @@
     font-size: var(--h4);
     font-family: var(--font-hand);
     font-weight: 700;
-    margin: calc(var(--space) * -1);
+    margin: calc(-1 * var(--space));
     margin-bottom: var(--space);
     padding: var(--space);
     position: relative;

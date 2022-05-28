@@ -2,10 +2,10 @@
 :root {
     --zi-base: 10;
     --zi-header: 30;
-    --zi-header-nav: calc(--zi-header + 1);
-    --zi-hamburger: calc(--zi-header + 10);
-    --zi-popup: calc(--zi-header + 20);
-    --zi-blocker: calc(--zi-header + 50)
+    --zi-header-nav: calc(30 + 1);
+    --zi-hamburger: calc(30 + 10);
+    --zi-popup: calc(30 + 20);
+    --zi-blocker: calc(30 + 50)
 }
 
 // Shorthand
