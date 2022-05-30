@@ -1,5 +1,7 @@
 const request = require('supertest');
 const appModule = require('./../../app');
+const fixture = require('./../../modules/testing/fixture.json');
+
 const app = appModule.app;
 
 describe('Login Test', () => {
@@ -9,21 +11,20 @@ describe('Login Test', () => {
             .post('/login')
             .set('User-Agent', "PushPinTestClient")
             .send({
-                "email": "McTesterson@example.com",
-                "password": "McTesterson2023",
+                "email": fixture.users.mctest.email,
+                "password": "Wr0ngPassw0rd!",
             });
 
         expect(res.statusCode).toBe(400)
     });
 
     it('Login will succeed with correct credentials', async () => {
-        // Missing password field.
         const res = await request(app)
             .post('/login')
             .set('User-Agent', "PushPinTestClient")
             .send({
-                "email": "mctest@example.com",
-                "password": "McTest#2022",
+                "email": fixture.users.mctest.email,
+                "password": fixture.users.mctest.password,
             });
 
         expect(res.statusCode).toBe(200)

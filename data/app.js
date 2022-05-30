@@ -5,6 +5,7 @@ const fileUpload = require("express-fileupload");
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('pushpin.db');
+const databaseManager = require('./database');
 
 const tokens = require("./tokens");
 const notesModule = require("./notesModule");
@@ -56,7 +57,7 @@ app.get('/', tokens.checkTokenMiddleware({ "debug": config.debugMode }), async (
     });
 });
 
-app.get('/users', tokens.checkTokenMiddleware({ "db": db, "debug": config.debugMode }), async (req, res) => {
+app.get('/users', tokens.checkTokenMiddleware({ "debug": config.debugMode }), async (req, res) => {
     const query = `
             SELECT id, firstName, lastName, displayName, email, imageURL
             FROM users
@@ -90,22 +91,22 @@ app.patch('/note/update_status/:noteId', tokens.checkTokenMiddleware({ "debug": 
 app.patch('/note/update_reaction/:noteId', tokens.checkTokenMiddleware({ "debug": config.debugMode }), notesModule.updateNoteReaction(db));
 
 // User Login
-app.post('/login', userModule.login(db));
+app.post('/login', userModule.login());
 
 // Register user
-app.post('/register', userModule.register(db));
+app.post('/register', userModule.register());
 
 // Upload profile photo
 app.post(
     '/upload/profile_photo',
     tokens.checkTokenMiddleware({ "debug": config.debugMode }),
-    userModule.uploadProfilePhoto(db, config)
+    userModule.uploadProfilePhoto(config)
 );
 
 // User Logout
 app.get('/logout', tokens.checkTokenMiddleware({ "debug": config.debugMode }), async (req, res) => {
     try {
-        await tokens.deleteToken(db, req.token.id);
+        await tokens.deleteToken(databaseManager.dbManager, req.token.id);
 
         res.status(200).json({
             'success': true

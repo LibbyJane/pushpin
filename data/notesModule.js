@@ -71,7 +71,6 @@ module.exports.getNotesReactionsForLoggedInUser = (db) => {
 
 module.exports.createNote = (db, config) => {
     return async (req, res) => {
-        console.log('create note req body', req.body);
         let errors = [];
         const token = req.token;
 

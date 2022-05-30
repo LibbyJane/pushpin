@@ -1,0 +1,29 @@
+{
+  "notes": {
+    "polaroid1": {
+      "style": "polaroid",
+      "message": "Hey there - you have a very nice face!",
+      "recipientsList": [2]
+    }
+  },
+  "ipAddress": "127.0.0.1",
+  "userAgent": "TestUserAgent",
+  "users": {
+    "mctest": {
+      "id": 1,
+      "firstName": "Testy",
+      "lastName": "McTesterson",
+      "displayName": "McTest",
+      "email": "mctest@example.com",
+      "password": "McTest#2022"
+    },
+    "mcfuzz": {
+      "id": 2,
+      "firstName": "Fuzzy",
+      "lastName": "McFuzzerson",
+      "displayName": "McFuzz",
+      "email": "mcfuzz@example.com",
+      "password": "McFuzz#2022"
+    }
+  }
+}

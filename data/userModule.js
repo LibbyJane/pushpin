@@ -5,7 +5,7 @@ const mediaModule = require('./mediaModule');
 const database = require('./database');
 const userRegistrationService = require('./modules/users/services/userRegistrationService');
 
-module.exports.login = (db) => {
+module.exports.login = () => {
     return async (req, res) => {
         const email = req.body.email;
         const password = req.body.password;
@@ -76,7 +76,7 @@ module.exports.login = (db) => {
     }
 }
 
-module.exports.register = (db) => {
+module.exports.register = () => {
     return async (req, res) => {
         const firstName = req.body.firstName;
         const lastName = req.body.lastName;
@@ -102,7 +102,7 @@ module.exports.register = (db) => {
     }
 }
 
-module.exports.uploadProfilePhoto = (db, config) => {
+module.exports.uploadProfilePhoto = (config) => {
     return async (req, res) => {
         const errors = [];
 
