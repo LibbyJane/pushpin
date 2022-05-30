@@ -4,16 +4,19 @@ import { useState, useEffect, useRef } from 'react'
 import './Avatar.scss'
 
 export default function Avatar({ id, showName }) {
-    const { user } = useAuthContext()
     const friends = JSON.parse(sessionStorage.getItem('ppFriends'))
     const friendsRef = useRef(friends).current
     const idRef = useRef(id).current
-
-    let avatarSrc = user.id === idRef ? user : friendsRef ? friendsRef.filter(matchId)[0] : null;
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('ppUser')))
+    const [avatarSrc, setAvatarSrc] = useState(null)
 
     function matchId(u) {
         return u.id === idRef
     }
+
+    useEffect(() => {
+        setAvatarSrc(user.id === idRef ? user : friendsRef ? friendsRef.filter(matchId)[0] : null)
+    }, [id])
 
     return (
         <>

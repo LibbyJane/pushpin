@@ -32,7 +32,7 @@ export default function Login() {
                     Log In
                 </header>
 
-                <label for="email">email:</label>
+                <label htmlFor="email">email:</label>
                 <input
                     id="email"
                     type="email"
@@ -41,7 +41,7 @@ export default function Login() {
                     required
                 />
 
-                <label for="password">
+                <label htmlFor="password">
                     password:
                 </label>
                 <input

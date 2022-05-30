@@ -59,13 +59,12 @@
         // max-height: 50vh;
     }
 
-    // &.note {
-    //     &:hover,
-    //     &:focus {
-    //         text-decoration: none;
-    //         transform: scale(1.06);
-    //     }
-    // }
+    &.note {
+        &:hover,
+        &:focus {
+            text-decoration: none;
+        }
+    }
 
 
     &.is-stickynote {

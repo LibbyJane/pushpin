@@ -437,7 +437,7 @@ const sqlStatements = {
         FROM notes n
         INNER JOIN recipients r ON n.id = r.noteId
         WHERE r.recipientId = ?
-        AND r.status <> 'deleted'
+        AND ((r.status is null) OR (r.status <> 'deleted'))
     `,
     "insertNote": `
         INSERT INTO notes (createdById, message, imageUrl, style, color)

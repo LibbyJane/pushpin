@@ -28,13 +28,14 @@ export default function Account() {
         setImageEndpoint('/upload/profile_photo');
     }
 
-    const handleResponse = (outcome) => {
-        console.log('outcome', outcome)
-    }
-
     useEffect(() => {
         if (response && response.success === true) {
-            dispatch({ type: 'USER-UPDATE', payload: { ...user, imageURL: response.imageUrl } })
+            console.log('success', response)
+            let updatedUser = { ...user, imageURL: response.imageUrl }
+            localStorage.setItem('ppUser', JSON.stringify(updatedUser))
+
+            console.log('updated user', updatedUser)
+            dispatch({ type: 'USER-UPDATE', payload: { updatedUser } })
         }
     }, [response])
 

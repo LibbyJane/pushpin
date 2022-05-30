@@ -37,8 +37,8 @@ export default function UploadImage({ draftImage, fieldId, handleFileUpdate, lab
             return
         }
 
-        if (selected.size > 100000) {
-            setImageError('Image file size must be less than 100kb')
+        if (selected.size > 200000) {
+            setImageError('Image file size must be less than 200kb')
             return
         }
 

@@ -49,11 +49,12 @@ export default function SiteHeader() {
                                 <img className="icon" src={LogoutIcon} alt="logout icon" />
                                 <span className="visually-hidden">Log out</span>
                             </button>
-                            <ReactTooltip id="tt-logout" className="tooltip" />
                         </li>
                     </ul>
                     <ReactTooltip id="tt-send" className="tooltip" />
                     <ReactTooltip id="tt-account" className="tooltip" />
+                    <ReactTooltip id="tt-logout" className="tooltip" />
+
                 </nav>
             )}
             {/* {!user && (

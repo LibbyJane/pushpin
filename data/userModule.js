@@ -22,13 +22,13 @@ module.exports.login = (db) => {
         ]);
 
         if (errors.length !== 0) {
-            res.status(400).json({errors});
+            res.status(400).json({ errors });
             return;
         }
 
         if (!validationModule.isEmailAddress(email)) {
             errors.push('You must supply a valid email address');
-            res.status(400).json({errors});
+            res.status(400).json({ errors });
             return;
         }
 
@@ -108,19 +108,19 @@ module.exports.register = (db) => {
         ]);
 
         if (errors.length !== 0) {
-            res.status(400).json({errors});
+            res.status(400).json({ errors });
             return;
         }
 
         if (!validationModule.isEmailAddress(email)) {
             errors.push('You must supply a valid email address');
-            res.status(400).json({errors});
+            res.status(400).json({ errors });
             return;
         }
 
         if (password.length < 6) {
             errors.push('Your password must be at least 6 characters long');
-            res.status(400).json({errors});
+            res.status(400).json({ errors });
             return;
         }
 
@@ -134,7 +134,7 @@ module.exports.register = (db) => {
 
             if (user) {
                 errors.push(`This email address is already registered with us`);
-                res.status(400).json({errors});
+                res.status(400).json({ errors });
                 return;
             }
 
@@ -174,7 +174,7 @@ module.exports.register = (db) => {
             });
         } catch (error) {
             errors.push(error.toString());
-            res.status(400).json({errors});
+            res.status(400).json({ errors });
         }
     }
 }
@@ -186,7 +186,7 @@ module.exports.uploadProfilePhoto = (db, config) => {
         const token = req.token;
         if (!token) {
             errors.push('no token found');
-            return res.status(400).json({errors});
+            return res.status(400).json({ errors });
         }
 
         // Make sure a file with the correct name was uploaded
@@ -199,7 +199,7 @@ module.exports.uploadProfilePhoto = (db, config) => {
         const profilePhotoFile = req.files.profilePhoto;
         if (!profilePhotoFile) {
             errors.push('No profile photo was uploaded');
-            return res.status(400).json({errors});
+            return res.status(400).json({ errors });
         }
 
         // Make sure the file has a supported mime type (jpeg or png)
@@ -208,7 +208,7 @@ module.exports.uploadProfilePhoto = (db, config) => {
         const extension = mediaService.getImageExtension(profilePhotoFile);
         if (extension === '') {
             errors.push('Invalid file type');
-            return res.status(400).json({errors});
+            return res.status(400).json({ errors });
         }
 
         // Figure out the paths and urls for storage.
@@ -229,7 +229,7 @@ module.exports.uploadProfilePhoto = (db, config) => {
         await profilePhotoFile.mv(uploadPath, async (err) => {
             if (err) {
                 errors.push('Failed to move uploaded file');
-                return res.status(500).json({errors});
+                return res.status(500).json({ errors });
             }
 
             try {
@@ -240,7 +240,6 @@ module.exports.uploadProfilePhoto = (db, config) => {
                 await mediaService.resizePhoto(uploadPath, uploadPath, 400);
 
                 // The image has now been uploaded and resized, update the user database with the imageUrl
-
                 const databaseManager = database.dbManager;
 
                 await databaseManager.execute(sqlStatements.updateUserPhoto, [uploadUrl, token.userId]);
@@ -281,7 +280,7 @@ const sqlStatements = {
     getUserByEmail: `
     SELECT id, firstName, lastName, displayName, imageURL, email, password
     FROM users
-    WHERE email = ?    
+    WHERE email = ?
     `,
     insertUser: `
     INSERT INTO users(firstName, lastName, displayName, email, uid, password)
