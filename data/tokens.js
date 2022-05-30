@@ -1,82 +1,57 @@
 const uuid = require('uuid');
+const database = require('./database');
 
 /**
  * Creates a new token for the given userId.  You must also pass in the the userAgent and user IP address.
- * @param db
+ * @param databaseManager
  * @param {number} userId
  * @param {string} userAgent
  * @param {string} ipAddress
  * @returns {Promise<unknown>}
  */
-const createToken = async (db, userId, userAgent, ipAddress) => {
+const createToken = async (databaseManager, userId, userAgent, ipAddress) => {
     const createdAt = new Date().getTime();
     const expiresAt = createdAt + (86400 * 90); // Token will expire after 90 days
     const token = uuid.v4();
 
-    const queryPromise = new Promise(function (resolve, reject) {
-        db.run(sqlStatements.insert, [token, userId, createdAt, expiresAt, userAgent, ipAddress], (err) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve({
-                    token,
-                    createdAt,
-                    expiresAt
-                });
-            }
-        });
-    });
+    await databaseManager.execute(sqlStatements.insert, [token, userId, createdAt, expiresAt, userAgent, ipAddress]);
 
-    return queryPromise;
+    return {
+        token,
+        createdAt,
+        expiresAt
+    };
 }
 
 /**
  * Gets the given token from the database.  Note, if the userAgent doesn't match,
  * the token will not be returned.
- * @param db
+ * @param databaseManager
  * @param {string} tokenId
  * @param {string} userAgent
  * @param {string} ipAddress
- * @returns {Promise<unknown>}
+ * @returns {object|null}
  */
-const getToken = async (db, tokenId, userAgent, ipAddress) => {
-    const queryPromise = new Promise(function (resolve, reject) {
-        db.get(sqlStatements.getToken, [tokenId], (err, token) => {
-            if (err) {
-                reject(err);
-            } else {
-                if (!token) {
-                    reject('Invalid token id');
-                } else if (token.userAgent != userAgent) {
-                    reject('Invalid token');
-                } else {
-                    resolve(token);
-                }
-            }
-        });
-    });
-
-    return queryPromise;
+const getToken = async (databaseManager, tokenId, userAgent, ipAddress) => {
+    try {
+        return await databaseManager.getRow(sqlStatements.getToken, [tokenId]);
+    } catch(error) {
+        console.log('Caught error trying to load token: ' + error.toString());
+        return null;
+    }
 }
 
 /**
  * Deletes the given token out of the database
- * @param db
+ * @param databaseManager
  * @param {string}tokenId
- * @returns {Promise<unknown>}
  */
-const deleteToken = async (db, tokenId) => {
-    const queryPromise = new Promise(function (resolve, reject) {
-        db.run(sqlStatements.deleteToken, [tokenId], (err) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve();
-            }
-        });
-    });
-
-    return queryPromise;
+const deleteToken = async (databaseManager, tokenId) => {
+    try {
+        await databaseManager.execute(sqlStatements.deleteToken, [tokenId]);
+    } catch(error) {
+        console.log('Caught error trying to load token: ' + error.toString());
+    }
 }
 
 
@@ -102,13 +77,7 @@ module.exports.checkTokenMiddleware = function (options) {
             console.log(message);
         }
 
-        // Make sure the database object is present in the options.
-        if ((!options.db) || (typeof options.db !== 'object')) {
-            debugPrint('No database object defined in options');
-            res.send(500, 'Server error');
-        }
-
-        const db = options.db;
+        const databaseManager = database.dbManager;
 
         // Get the authorization bearer token from the headers.
         // It should look like this: Bearer ba48b7d3-82a0-4a3b-9d0b-910bae2214ee
@@ -156,7 +125,7 @@ module.exports.checkTokenMiddleware = function (options) {
         const userIpAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
         try {
-            const token = await getToken(db, tokenId, userAgent, userIpAddress);
+            const token = await getToken(databaseManager, tokenId, userAgent, userIpAddress);
             if (!token) {
                 res.status(403).json({
                     'error': 'access denied'
@@ -170,7 +139,7 @@ module.exports.checkTokenMiddleware = function (options) {
             if (token.expiresAt <= now) {
                 try {
                     console.warn('token has expired', token.expiresAt);
-                    await deleteToken(db, token.id);
+                    await deleteToken(databaseManager, token.id);
                 } catch (error) {
                     debugPrint("Error deleting token: ", error);
                 }

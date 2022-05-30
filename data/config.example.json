@@ -1,4 +1,5 @@
 {
+  "debugMode": false,
   "server": {
     "host": "https://localhost",
     "port": 4000

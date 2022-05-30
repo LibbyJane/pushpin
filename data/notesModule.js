@@ -191,7 +191,7 @@ module.exports.uploadNotePhoto = (db, config) => {
 
         // Get note id from URL.
         if (!req.files || (req.files.length === 0)) {
-            errors.push('No profile photo was uploaded');
+            errors.push('No files were found');
             return res.status(400).json({ errors });
         }
 

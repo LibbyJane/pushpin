@@ -1,9 +1,9 @@
 const bcrypt = require("bcrypt");
 const tokens = require("./tokens");
 const validationModule = require("./validationModule");
-const im = require("imagemagick");
-const config = require("./config.json");
 const mediaModule = require('./mediaModule');
+const database = require('./database');
+const {dbManager} = require("./database");
 
 module.exports.login = (db) => {
     return async (req, res) => {
@@ -32,10 +32,10 @@ module.exports.login = (db) => {
             return;
         }
 
-        const stmt = db.prepare(sqlStatements.getUserByEmail);
+        const databaseManager = database.dbManager;
 
         try {
-            const user = await getUserByEmail(db, email);
+            const user = await getUserByEmail(databaseManager, email);
 
             bcrypt.compare(password, user.password, async (err, success) => {
                 if (err) {
@@ -51,7 +51,7 @@ module.exports.login = (db) => {
                     const userIpAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
                     try {
-                        const token = await tokens.createToken(db, user.id, req.headers['user-agent'], userIpAddress);
+                        const token = await tokens.createToken(databaseManager, user.id, req.headers['user-agent'], userIpAddress);
 
                         res.status(200).json({
                             "tokenInfo": token,
@@ -124,9 +124,13 @@ module.exports.register = (db) => {
             return;
         }
 
+        const databaseManager = database.dbManager;
+
         try {
             // Make sure the user doesn't already exist in the system.
-            const user = await getUserByEmail(db, email, false);
+            const user = await getUserByEmail(databaseManager, email, false);
+
+            console.log("User", user);
 
             if (user) {
                 errors.push(`This email address is already registered with us`);
@@ -137,7 +141,7 @@ module.exports.register = (db) => {
             const saltRounds = 10;
 
             // Hash the users password and store the user in our database.
-            bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
+            bcrypt.hash(password, saltRounds, async (err, hashedPassword) => {
                if (err) {
                    errors.push(`Failed to encrypt user password`);
                    res.status(400).json({errors});
@@ -145,41 +149,28 @@ module.exports.register = (db) => {
                }
 
                const params = [firstName, lastName, displayName, email, '', hashedPassword];
-               console.log(params);
 
-               db.run(sqlStatements.insertUser, params, async (err) => {
-                   if (err) {
-                       errors.push(`Failed to create user`);
-                       res.status(400).json({errors});
-                       return;
-                   }
+               try {
+                   // Insert the new user
+                   await dbManager.execute(sqlStatements.insertUser, params);
+
+                   // Load the user and then delete the password attribute so we don't send that back to the client.
+                   const user = await getUserByEmail(databaseManager, email);
+                   delete user.password;
 
                    // Log the user in.
-                   try {
-                       const user = await getUserByEmail(db, email);
-                       delete user.password;
+                   const userIpAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+                   const token = await tokens.createToken(databaseManager, user.id, req.headers['user-agent'], userIpAddress);
 
-                       const userIpAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+                   res.status(200).json({
+                       "tokenInfo": token,
+                       user
+                   });
 
-                       try {
-                           const token = await tokens.createToken(db, user.id, req.headers['user-agent'], userIpAddress);
-
-                           res.status(200).json({
-                               "tokenInfo": token,
-                               user
-                           });
-                       } catch (error) {
-                           res.status(500).json({
-                               'error': error.toString()
-                           });
-                       }
-                   } catch(error) {
-                       if (err) {
-                           errors.push(`Could not load user after creating it`);
-                           res.status(400).json({errors});
-                       }
-                   }
-               });
+               } catch (error) {
+                   errors.push(`Registration failed: ${error}`);
+                   res.status(400).json({errors});
+               }
             });
         } catch (error) {
             errors.push(error.toString());
@@ -200,7 +191,7 @@ module.exports.uploadProfilePhoto = (db, config) => {
 
         // Make sure a file with the correct name was uploaded
         if (!req.files || (req.files.length === 0)) {
-            errors.push('No profile photo was uploaded');
+            errors.push('No files were found');
             return res.status(400).json({errors});
         }
 
@@ -249,54 +240,41 @@ module.exports.uploadProfilePhoto = (db, config) => {
                 await mediaService.resizePhoto(uploadPath, uploadPath, 400);
 
                 // The image has now been uploaded and resized, update the user database with the imageUrl
-                db.run(sqlStatements.updateUserPhoto, [uploadUrl, token.userId], (err) => {
-                    if (err) {
-                        errors.push(err.toString());
-                        return res.status(500).json({errors});
-                    }
 
-                    return res.send({
-                        "success": true,
-                        "imageUrl": uploadUrl,
-                    });
+                const databaseManager = database.dbManager;
+
+                await databaseManager.execute(sqlStatements.updateUserPhoto, [uploadUrl, token.userId]);
+
+                return res.send({
+                    "success": true,
+                    "imageUrl": uploadUrl,
                 });
             } catch (err) {
-                errors.push('Failed to move resize photo: ' + err.toString());
+                errors.push('Failed to upload user photo: ' + err.toString());
                 return res.status(500).json({errors});
             }
         });
     }
 }
 
-const getUserByEmail = (db, email, exceptionIfNotExisting = true) => {
-    return new Promise((resolve, reject) => {
-        const stmt = db.prepare(sqlStatements.getUserByEmail);
-        if (!stmt) {
-            reject('getUserByEmail::Failed to prepare statement');
-            return;
+/***
+ *
+ * @param databaseManager
+ * @param email
+ * @param exceptionIfNotExisting
+ * @returns {Promise<unknown>}
+ */
+const getUserByEmail = async (databaseManager, email, exceptionIfNotExisting = true) => {
+    const user = await databaseManager.getRow(sqlStatements.getUserByEmail, [email]);
+
+    // If no matching user was found, return a login failure message.
+    if (!user) {
+        if (exceptionIfNotExisting) {
+            throw new Error(`could not find user with email ${email}`);
         }
+    }
 
-        stmt.get(email, (err, user) => {
-            // If there was a query error - handle it.
-            if (err) {
-                reject(err);
-                return;
-            }
-
-            // If no matching user was found, return a login failure message.
-            if (!user) {
-                if (exceptionIfNotExisting) {
-                    reject(`could not find user with email ${email}`);
-                    return;
-                } else {
-                    resolve(null);
-                    return;
-                }
-            }
-
-            resolve(user);
-        });
-    });
+    return user;
 }
 
 const sqlStatements = {
