@@ -99,6 +99,11 @@ export default function CreateForm({ id, noteDraft, handleFormSubmit, imageEndpo
     return (
         <div className='cols'>
             <form id={id} className="card form-create" onSubmit={handleSubmit}>
+
+
+                <label>Send to:</label>
+                <SelectUser handler={setRecipients} reset={resetForm} />
+
                 <label>Style:</label>
                 <ul className='checkable-list'>
                     {styles.map((s) => (
@@ -153,10 +158,6 @@ export default function CreateForm({ id, noteDraft, handleFormSubmit, imageEndpo
             onChange={(e) => setExpiryDate(e.target.value)}
             value={expiryDate}
         /> */}
-
-                <label>Send to:</label>
-                <SelectUser handler={setRecipients} reset={resetForm} />
-
                 {/* <select
             multiple
             onChange={(e) => handleAssignUsers(e.target)}
@@ -167,8 +168,8 @@ export default function CreateForm({ id, noteDraft, handleFormSubmit, imageEndpo
         </select> */}
 
                 <fieldset className='form-actions'>
+                    <button type="submit" className="btn">Send note</button>
                     <button type="reset" className="btn" onClick={() => navigate('/')}>Cancel</button>
-                    <button type="submit" className="btn">Add note</button>
                 </fieldset>
 
                 {formError && <Error message={formError} />}

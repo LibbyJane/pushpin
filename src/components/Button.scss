@@ -13,9 +13,12 @@
         }
     }
 
-    &.is-text {
+    &.is-text.is-text {
+        background: transparent;
         border: 0 none;
         color: currentColor;
+        padding-left: 0;
+        padding-right: 0;
 
         &:hover,
         &:focus {

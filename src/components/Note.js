@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { useEndpoint } from '../hooks/useEndpoint'
 
 import HeartToggle from './HeartToggle'
 import Avatar from './Avatar'
@@ -11,11 +12,25 @@ import Reactions from './forms/Reactions'
 import PushPin from '../assets/images/drawing-pin.webp'
 import StampFrame from '../assets/images/stamp-postmark.svg'
 
-
 import './Note.scss'
 
-
 function Note({ note, toggleHeart, variant }) {
+    const [endpoint, setEndpoint] = useState(null)
+    const [data, setData] = useState(null)
+    const { documents, error } = useEndpoint(endpoint, 'PATCH', data)
+
+    const handleDeleteNote = async function (id) {
+        console.log('delete note id', id)
+        setData({ 'status': 'deleted' })
+        setEndpoint(`note/update_status/${id}`)
+        //app.patch('/note/update_status/:noteId' setImageEndpoint
+    }
+
+    useEffect(() => {
+        if (documents) {
+            console.log('documents?', documents)
+        }
+    }, [documents])
 
     return (
         <div
@@ -53,13 +68,23 @@ function Note({ note, toggleHeart, variant }) {
                         />
                     }
 
-                    <img className="note-pin" src={PushPin} alt="Push Pin" />
-
-                    {variant !== 'preview' &&
-                        <Reactions noteID={note.id} reaction={note.reaction} />
+                    {note.id &&
+                        <button
+                            className="note-delete"
+                            onClick={(e) => handleDeleteNote(note.id)}
+                            type="button"
+                        >
+                            <img className="note-pin" src={PushPin} alt="Push Pin" />
+                        </button>
                     }
 
+                    {!note.id &&
+                        <img className="note-pin" src={PushPin} alt="Push Pin" />
+                    }
 
+                    {note.id &&
+                        <Reactions noteID={note.id} reaction={note.reaction} />
+                    }
                 </header>
 
                 {
