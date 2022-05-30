@@ -4,7 +4,6 @@ const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
-
 const db = new sqlite3.Database('pushpin.db');
 
 const tokens = require("./tokens");

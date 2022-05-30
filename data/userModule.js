@@ -3,7 +3,7 @@ const tokens = require("./tokens");
 const validationModule = require("./validationModule");
 const mediaModule = require('./mediaModule');
 const database = require('./database');
-const {dbManager} = require("./database");
+const userRegistrationService = require('./modules/users/services/userRegistrationService');
 
 module.exports.login = (db) => {
     return async (req, res) => {
@@ -84,98 +84,21 @@ module.exports.register = (db) => {
         const email = req.body.email;
         const password = req.body.password;
 
-        const errors = validationModule.allStringsInArrayAreNotEmpty([
-            {
-                "name": "firstName",
-                "value": firstName
-            },
-            {
-                "name": "lastName",
-                "value": lastName,
-            },
-            {
-                "name": "displayName",
-                "value": displayName,
-            },
-            {
-                "name": "email",
-                "value": email,
-            },
-            {
-                "name": "password",
-                "value": password,
-            },
-        ]);
-
-        if (errors.length !== 0) {
-            res.status(400).json({ errors });
-            return;
-        }
-
-        if (!validationModule.isEmailAddress(email)) {
-            errors.push('You must supply a valid email address');
-            res.status(400).json({ errors });
-            return;
-        }
-
-        if (password.length < 6) {
-            errors.push('Your password must be at least 6 characters long');
-            res.status(400).json({ errors });
-            return;
-        }
+        const userIpAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        const userAgent = req.headers['user-agent'] || 'NoUserAgent';
 
         const databaseManager = database.dbManager;
+        const result = await userRegistrationService.do(databaseManager, firstName, lastName, displayName, email, password, userIpAddress, userAgent);
 
-        try {
-            // Make sure the user doesn't already exist in the system.
-            const user = await getUserByEmail(databaseManager, email, false);
-
-            console.log("User", user);
-
-            if (user) {
-                errors.push(`This email address is already registered with us`);
-                res.status(400).json({ errors });
-                return;
-            }
-
-            const saltRounds = 10;
-
-            // Hash the users password and store the user in our database.
-            bcrypt.hash(password, saltRounds, async (err, hashedPassword) => {
-               if (err) {
-                   errors.push(`Failed to encrypt user password`);
-                   res.status(400).json({errors});
-                   return;
-               }
-
-               const params = [firstName, lastName, displayName, email, '', hashedPassword];
-
-               try {
-                   // Insert the new user
-                   await dbManager.execute(sqlStatements.insertUser, params);
-
-                   // Load the user and then delete the password attribute so we don't send that back to the client.
-                   const user = await getUserByEmail(databaseManager, email);
-                   delete user.password;
-
-                   // Log the user in.
-                   const userIpAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-                   const token = await tokens.createToken(databaseManager, user.id, req.headers['user-agent'], userIpAddress);
-
-                   res.status(200).json({
-                       "tokenInfo": token,
-                       user
-                   });
-
-               } catch (error) {
-                   errors.push(`Registration failed: ${error}`);
-                   res.status(400).json({errors});
-               }
-            });
-        } catch (error) {
-            errors.push(error.toString());
-            res.status(400).json({ errors });
+        if (result.errors.length > 0) {
+            res.status(400).json({ "errors": result.errors });
+            return;
         }
+
+        return res.status(200).json({
+            "tokenInfo": result.token,
+            "user": result.user,
+        });
     }
 }
 

@@ -7,11 +7,12 @@ describe('Registration Test', () => {
         // Missing password field.
         const res = await request(app)
             .post('/register')
+            .set('User-Agent', "PushPinTestClient")
             .send({
-                "firstName": "Testy",
-                "lastName": "McTest",
-                "displayName": "McTesterson",
-                "email": "McTesterson@example.com",
+                "firstName": "Registration",
+                "lastName": "Test",
+                "displayName": "RegistrationTest",
+                "email": "registration@example.com",
             })
         expect(res.statusCode).toBe(400)
         expect(res.body).toHaveProperty('errors');
@@ -21,12 +22,12 @@ describe('Registration Test', () => {
         // Missing password field.
         const res = await request(app)
             .post('/register')
-            .set('User-Agent', "SuperTest")
+            .set('User-Agent', "PushPinTestClient")
             .send({
-                "firstName": "Testy",
-                "lastName": "McTest",
-                "displayName": "McTesterson",
-                "email": "McTesterson@example.com",
+                "firstName": "Registration",
+                "lastName": "Test",
+                "displayName": "RegistrationTest",
+                "email": "registration@example.com",
                 "password": "McTesterson2022",
             });
 

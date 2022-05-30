@@ -26,7 +26,9 @@ yarn-error.log*
 
 .idea
 data/pushpin.db
+data/pushpin_test.db
 data/config.json
 
 # Migrations
 .migrate
+.migrate_test
