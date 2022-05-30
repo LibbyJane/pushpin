@@ -22,13 +22,13 @@ module.exports.login = (db) => {
         ]);
 
         if (errors.length !== 0) {
-            res.status(400).json({errors});
+            res.status(400).json({ errors });
             return;
         }
 
         if (!validationModule.isEmailAddress(email)) {
             errors.push('You must supply a valid email address');
-            res.status(400).json({errors});
+            res.status(400).json({ errors });
             return;
         }
 
@@ -108,19 +108,19 @@ module.exports.register = (db) => {
         ]);
 
         if (errors.length !== 0) {
-            res.status(400).json({errors});
+            res.status(400).json({ errors });
             return;
         }
 
         if (!validationModule.isEmailAddress(email)) {
             errors.push('You must supply a valid email address');
-            res.status(400).json({errors});
+            res.status(400).json({ errors });
             return;
         }
 
         if (password.length < 6) {
             errors.push('Your password must be at least 6 characters long');
-            res.status(400).json({errors});
+            res.status(400).json({ errors });
             return;
         }
 
@@ -130,7 +130,7 @@ module.exports.register = (db) => {
 
             if (user) {
                 errors.push(`This email address is already registered with us`);
-                res.status(400).json({errors});
+                res.status(400).json({ errors });
                 return;
             }
 
@@ -138,52 +138,52 @@ module.exports.register = (db) => {
 
             // Hash the users password and store the user in our database.
             bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
-               if (err) {
-                   errors.push(`Failed to encrypt user password`);
-                   res.status(400).json({errors});
-                   return;
-               }
+                if (err) {
+                    errors.push(`Failed to encrypt user password`);
+                    res.status(400).json({ errors });
+                    return;
+                }
 
-               const params = [firstName, lastName, displayName, email, '', hashedPassword];
-               console.log(params);
+                const params = [firstName, lastName, displayName, email, '', hashedPassword];
+                console.log(params);
 
-               db.run(sqlStatements.insertUser, params, async (err) => {
-                   if (err) {
-                       errors.push(`Failed to create user`);
-                       res.status(400).json({errors});
-                       return;
-                   }
+                db.run(sqlStatements.insertUser, params, async (err) => {
+                    if (err) {
+                        errors.push(`Failed to create user`);
+                        res.status(400).json({ errors });
+                        return;
+                    }
 
-                   // Log the user in.
-                   try {
-                       const user = await getUserByEmail(db, email);
-                       delete user.password;
+                    // Log the user in.
+                    try {
+                        const user = await getUserByEmail(db, email);
+                        delete user.password;
 
-                       const userIpAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+                        const userIpAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
-                       try {
-                           const token = await tokens.createToken(db, user.id, req.headers['user-agent'], userIpAddress);
+                        try {
+                            const token = await tokens.createToken(db, user.id, req.headers['user-agent'], userIpAddress);
 
-                           res.status(200).json({
-                               "tokenInfo": token,
-                               user
-                           });
-                       } catch (error) {
-                           res.status(500).json({
-                               'error': error.toString()
-                           });
-                       }
-                   } catch(error) {
-                       if (err) {
-                           errors.push(`Could not load user after creating it`);
-                           res.status(400).json({errors});
-                       }
-                   }
-               });
+                            res.status(200).json({
+                                "tokenInfo": token,
+                                user
+                            });
+                        } catch (error) {
+                            res.status(500).json({
+                                'error': error.toString()
+                            });
+                        }
+                    } catch (error) {
+                        if (err) {
+                            errors.push(`Could not load user after creating it`);
+                            res.status(400).json({ errors });
+                        }
+                    }
+                });
             });
         } catch (error) {
             errors.push(error.toString());
-            res.status(400).json({errors});
+            res.status(400).json({ errors });
         }
     }
 }
@@ -195,20 +195,20 @@ module.exports.uploadProfilePhoto = (db, config) => {
         const token = req.token;
         if (!token) {
             errors.push('no token found');
-            return res.status(400).json({errors});
+            return res.status(400).json({ errors });
         }
 
         // Make sure a file with the correct name was uploaded
         if (!req.files || (req.files.length === 0)) {
             errors.push('No profile photo was uploaded');
-            return res.status(400).json({errors});
+            return res.status(400).json({ errors });
         }
 
         // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
         const profilePhotoFile = req.files.profilePhoto;
         if (!profilePhotoFile) {
             errors.push('No profile photo was uploaded');
-            return res.status(400).json({errors});
+            return res.status(400).json({ errors });
         }
 
         // Make sure the file has a supported mime type (jpeg or png)
@@ -217,7 +217,7 @@ module.exports.uploadProfilePhoto = (db, config) => {
         const extension = mediaService.getImageExtension(profilePhotoFile);
         if (extension === '') {
             errors.push('Invalid file type');
-            return res.status(400).json({errors});
+            return res.status(400).json({ errors });
         }
 
         // Figure out the paths and urls for storage.
@@ -238,7 +238,7 @@ module.exports.uploadProfilePhoto = (db, config) => {
         await profilePhotoFile.mv(uploadPath, async (err) => {
             if (err) {
                 errors.push('Failed to move uploaded file');
-                return res.status(500).json({errors});
+                return res.status(500).json({ errors });
             }
 
             try {
@@ -252,7 +252,7 @@ module.exports.uploadProfilePhoto = (db, config) => {
                 db.run(sqlStatements.updateUserPhoto, [uploadUrl, token.userId], (err) => {
                     if (err) {
                         errors.push(err.toString());
-                        return res.status(500).json({errors});
+                        return res.status(500).json({ errors });
                     }
 
                     return res.send({
@@ -262,7 +262,7 @@ module.exports.uploadProfilePhoto = (db, config) => {
                 });
             } catch (err) {
                 errors.push('Failed to move resize photo: ' + err.toString());
-                return res.status(500).json({errors});
+                return res.status(500).json({ errors });
             }
         });
     }
@@ -303,7 +303,7 @@ const sqlStatements = {
     getUserByEmail: `
     SELECT id, firstName, lastName, displayName, imageURL, email, password
     FROM users
-    WHERE email = ?    
+    WHERE email = ?
     `,
     insertUser: `
     INSERT INTO users(firstName, lastName, displayName, email, uid, password)
