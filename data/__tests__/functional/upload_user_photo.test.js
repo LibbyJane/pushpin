@@ -4,7 +4,7 @@ const fixture = require("../../modules/testing/fixture.json");
 const app = appModule.app;
 
 describe('Upload User Photo', () => {
-    it('Upload profile photo will fail if not photo sent', async () => {
+    it('Upload profile photo will succeed if photo is sent', async () => {
         let res = await request(app)
             .post('/login')
             .set('User-Agent', "PushPinTestClient")

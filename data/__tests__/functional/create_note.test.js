@@ -51,7 +51,7 @@ describe('Create Note Test', () => {
 
         const tokenInfo = loginResult.body.tokenInfo;
 
-        // Try and create a note with the recipients list missing
+        // Try and create a note with all required data present.
         const res = await request(app)
             .post('/note')
             .set('User-Agent', "PushPinTestClient")
