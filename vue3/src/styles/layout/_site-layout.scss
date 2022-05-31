@@ -1,0 +1,342 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&family=Klee+One:wght@400;600&family=Caveat:wght@400;600;700&display=swap&family=Inconsolata");
+
+/* variables */
+:root {
+    --font: Poppins, sans-serif;
+    --font-hand: "Caveat", cursive;
+    --font-mono: "Inconsolata", monospace;
+    --space: 1rem; /* 20px -> 1.25rem */
+    --space-xs: 0.25rem; /* 8px -> .5rem */
+    --space-xxs: 0.125rem;
+    --space-xs-neg: calc(var(--space-xs) * -1); /* 8px -> .5rem */
+    --space-xxs-neg: calc(var(--space-xxs) * -1); /* 8px -> .5rem */
+    --space-sm: 0.5rem; /* 8px -> .5rem */
+    --space-md: 1rem; /* 30px -> 1.875rem */
+    --space-lg: 1.5rem; /* 40px -> 2.5rem */
+    --radius: 0.25rem; /* 4px -> .25rem */
+    --radius-lg: 0.5rem;
+    --border-width: 2px;
+    --border-width-wide: 3px;
+    --border: var(--border-width) solid;
+    --max-content-width: 60rem; /* 960px -> 60rem */
+    --max-form-width-sm: 23rem;
+    --max-form-width-md: 30rem;
+    --box-shadow: 0px 8px 10px rgba(0, 0, 0, 0.25);
+    --transition-speed: 200ms;
+    --transition-type: ease-in-out;
+    --transition: var(--transition-speed) var(--transition-type);
+
+    --sidebar-space-h: var(var(--space-md));
+
+    --h1: 3rem;
+    --h2: 2.8rem;
+    --h3: 2.6rem;
+    --h4: 2.4rem;
+    --h5: 1.9rem;
+    --h6: 1.7rem;
+    --p: 1.6rem;
+    --p-sm: 1.3rem;
+    --sm: 0.9rem;
+
+    @include breakpoint(medium) {
+        --space-md: 2rem; /* 30px -> 1.875rem */
+        --space-lg: 2.5rem; /* 40px -> 2.5rem */
+    }
+}
+
+
+.app {
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: var(--max-content);
+    padding: 0 var(--space-md);
+
+}
+
+
+
+/* base styles */
+body {
+    background: var(--brick) url("@/assets/images/cork-bg.jpg") top left repeat;
+    /* background-size: 10rem auto; */
+    /* background-attachment: fixed; */
+    font-family: var(--font-hand);
+    font-size: 16px;
+    line-height: 1.2;
+    margin: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+address,
+li,
+input,
+select,
+textarea,
+.react-select-container {
+    margin: 0 0 var(--space);
+    padding: 0;
+}
+
+p,
+address,
+li,
+input,
+select,
+textarea,
+.react-select-container {
+    font-size: var(--p);
+}
+
+h1,
+.h1 {
+    font-size: var(--h1);
+}
+
+h2,
+.h2 {
+    font-size: var(--h2);
+}
+
+h3,
+.h3 {
+    font-size: var(--h3);
+}
+
+h4,
+.h4 {
+    font-size: var(--h4);
+}
+
+h5,
+.h5 {
+    font-size: var(--h5);
+}
+
+h6,
+.h6 {
+    font-size: var(--h6);
+}
+
+a {
+    .site-main & {
+        text-decoration-skip-ink: auto;
+        #{$hover-states} {
+            text-decoration: underline;
+
+        }
+    }
+}
+
+
+// #{headings(1,4)},
+// .has-swoosh {
+//     position: relative;
+
+//     &::before {
+//         content: '';
+//         background: url("./assets/images/swoosh.svg") top left no-repeat;
+//         background-size: contain;
+//         height: 1rem;
+//         width: 3rem;
+//         position: absolute;
+//             bottom: 0;
+//             left: 0;
+//     }
+// }
+
+
+strong {
+    font-weight: 900;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0 0 var(--space-sm);
+    padding: 0;
+}
+
+li {
+    margin-bottom: var(--space-sm);
+}
+
+.formatted-text {
+    ul {
+        list-style-type: disc;
+        margin-left: var(--space-md);
+    }
+}
+
+
+
+.btn,
+button[type="submit"] {
+    .site-main & {
+        background: {
+            image:  url("@/assets/images/drawn-circle.svg");
+            position: center;
+            repeat: no-repeat;
+            size: contain;
+        }
+        color: var(--text);
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: bold;
+        font-size: var(--p);
+        padding: var(--space);
+    }
+}
+
+.btn:hover,
+button[type="submit"]:hover {
+    background-image: url("@/assets/images/drawn-circle-hover.svg");
+    color: var(--heading);
+}
+
+// button[type="submit"] {
+//     background: transparent;
+//     border-radius: var(--radius);
+//     /* border: var(--border) var(--theme-alt);
+//     color: var(--theme-alt-dark); */
+//     cursor: pointer;
+//     font-weight: bold;
+//     font-size: 1em;
+//     padding: var(--space-sm) var(--space);
+// }
+
+/* button[type="submit"]:hover {
+    background-color: var(--theme-alt-dark);
+    border-color: var(--theme-alt-dark);
+    color: var(--white);
+} */
+
+button[type="reset"],
+.btn[type="reset"] {
+    background: transparent;
+    color: var(--text);
+    font-weight: 400;
+}
+
+button[type="reset"]:hover {
+    background: transparent;
+    color: var(--danger);
+}
+
+button:disabled {
+    filter: grayscale(0.75);
+    font-weight: 400;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.is-highlighted {
+    border: 0 none;
+    border-radius: 0;
+    color: currentColor;
+    display: inline-block;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: normal;
+    margin: 0 var(--space-xs);
+    padding: 0;
+
+    position: relative;
+    text-decoration: none;
+    z-index: 0;
+
+    &:hover,
+    &:focus {
+        background: transparent;
+        color: currentColor;
+
+        &::before {
+            min-width: 100%;
+            max-width: calc(100% + var(--space-xs) + var(--space-xs));
+        }
+    }
+
+    &::before,
+    &::after {
+        background: var(--highlighter);
+        content: "";
+        position: absolute;
+        top: var(--space-xxs-neg);
+        right: var(--space-xs-neg);
+        bottom: var(--space-xxs-neg);
+        left: var(--space-xs-neg);
+        max-width: 0;
+        min-width: 0%;
+        transition: all var(--transition);
+        z-index: -1;
+    }
+
+    &::after {
+        max-width: none;
+    }
+}
+
+
+
+
+.visually-hidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: auto;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    white-space: nowrap;
+}
+
+.cols {
+    display: grid;
+    grid-gap: 0 var(--space-md);
+    // grid-template-columns: repeat(auto, max-content);
+    grid-auto-flow: column;
+}
+
+.col {
+    flex: 0 0 auto;
+}
+
+.margin-left {
+    margin-left: var(--space-md);
+}
+
+.align-top {
+    align-self: flex-start;
+    margin-bottom: auto;
+}
+
+.wrap {
+    flex-wrap: wrap;
+}
+
+
+
+html,
+body,
+.site-wrapper {
+    min-height: 100vh;
+    min-width: 320px;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+.tooltip {
+    font-size: var(--p-sm) !important;
+}
