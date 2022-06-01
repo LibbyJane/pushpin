@@ -1,6 +1,7 @@
 import axios from "axios"
 import { apiBaseURL } from '@/api/config';
 import { useUserStore } from '@/stores/user';
+import router from '@/router'
 
 const endpoints = {
     register: {
@@ -60,10 +61,10 @@ const endpoints = {
 }
 
 export async function useAPI(endpoint, data, endpointID) {
-    console.log('endpoint, data, endpointID', endpoint, data, endpointID)
+    // console.log('endpoint, data, endpointID', endpoint, data, endpointID)
     const userStore = useUserStore();
-    const token = userStore && userStore.getAuth ? userStore.getAuth.token : null;
-    console.log('token', token)
+    const token = userStore && userStore.getAuth ? userStore.getAuth : null;
+    // console.log('token', token)
 
     if (endpoint && endpoints[endpoint]) {
         const config = {
@@ -85,17 +86,24 @@ export async function useAPI(endpoint, data, endpointID) {
             config.headers.authorization = `Bearer ${token}`
         }
 
-        console.log('axios config', config)
+        // console.log('axios config', config)
 
         // const ourRequest = axios.CancelToken.source()
         // config.cancelToken = ourRequest.token;
 
         try {
             const response = await axios(config)
+            // console.log('response', response)
             return response.data
-            console.log('response', response)
+
         } catch (error) {
-            console.log("There was a problem.", error)
+            // console.log("There was a problem.", error)
+            if (error.response.status === 403) {
+                console.log('bad token, logout')
+
+                userStore.performLogout;
+            }
+
         }
 
         // return () => {

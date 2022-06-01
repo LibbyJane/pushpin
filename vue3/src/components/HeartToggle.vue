@@ -1,10 +1,12 @@
 <script setup>
-    import HeartIcon from '@/assets/icons/Heart.svg';
-    import StampFrameImage from '@/components/images/StampFrame.vue';
+    import { reactive, ref, toRefs } from 'vue';
+    import HeartOutlineIcon from '@/assets/icons/heart-outline.svg';
+    import HeartIcon from '@/assets/icons/heart.svg';
     import { useNotesStore } from '@/stores/notes';
+
     const notesStore = useNotesStore();
 
-    defineProps({
+    const props = defineProps({
         noteID: {
             type: Number,
             required: true,
@@ -13,9 +15,35 @@
             type: String,
         },
     });
+
+    const { activeStatus, noteID } = toRefs(props);
+
+    let checked = ref();
+
+    if (activeStatus.value === 'saved') {
+        checked.value = true;
+    }
+
+    function handleChange() {
+        const status = checked.value ? 'saved' : 'null';
+        notesStore.setStatus(noteID.value, status);
+    }
 </script>
 
 <template>
-    <h1>Heart toggle component</h1>
-    <HeartIcon />
+    <label class="checkable is-toggle is-save">
+        <input
+            type="checkbox"
+            :value="activeStatus"
+            v-model="checked"
+            v-on:change="handleChange(checked)"
+        />
+        <img class="icon-checked" v-if="checked" :src="HeartIcon" alt="Heart Icon" />
+        <img
+            class="icon-unchecked"
+            v-else
+            :src="HeartOutlineIcon"
+            alt="Heart Outline Icon"
+        />
+    </label>
 </template>

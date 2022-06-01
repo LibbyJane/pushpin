@@ -2,13 +2,14 @@
     <header class="site-header container">
         <div class="content">
             <RouterLink class="site-logo" to="/">
-                <img src="{Logo}" alt="logo" />
+                <img :src="Logo" alt="logo" />
             </RouterLink>
 
             <!--  <h1 class="page-title">{headerTitle}</h1> -->
+            <h1 class="page-title">Welcome</h1>
         </div>
 
-        <nav class="user-nav">
+        <nav v-if="authenticated" class="user-nav">
             <ul>
                 <li
                     class="nav-create"
@@ -16,9 +17,9 @@
                     data-for="tt-send"
                     data-background-color="var(--biro)"
                 >
-                    <!-- <RouterLink to="/create">
-                        <img class="icon" src="{CreateIcon}" alt="Click to send a note" />
-                    </RouterLink> -->
+                    <RouterLink to="/create">
+                        <img class="icon" :src="CreateIcon" alt="Click to send a note" />
+                    </RouterLink>
                 </li>
                 <li
                     class="nav-account"
@@ -26,9 +27,9 @@
                     data-for="tt-account"
                     data-background-color="var(--biro)"
                 >
-                    <!-- <RouterLink to="/account">
-                         {user.id && <Avatar id={user.id} />}
-                    </RouterLink> -->
+                    <RouterLink to="/account">
+                        <Avatar showName="true" />
+                    </RouterLink>
                 </li>
                 <li
                     class="nav-logout"
@@ -36,11 +37,10 @@
                     data-for="tt-logout"
                     data-background-color="var(--biro)"
                 >
-                    <!-- <RouterLink type="button" onClick="{logout}">
-                      <img class="icon" src={LogoutIcon} alt="logout icon" />
+                    <button type="button" v-on:click="userStore.performLogout">
+                        <img class="icon" :src="LogoutIcon" alt="Click to send a note" />
                         <span class="visually-hidden">Log out</span>
-                    </RouterLink>
-                </li> -->
+                    </button>
                 </li>
             </ul>
 
@@ -49,7 +49,7 @@
                     <ReactTooltip id="tt-logout" class="tooltip" /> -->
         </nav>
 
-        <nav class="site-nav">
+        <nav v-else class="site-nav">
             <ul>
                 <li><RouterLink to="/login">Login</RouterLink></li>
                 <li><RouterLink to="/signup">Signup</RouterLink></li>
@@ -57,3 +57,14 @@
         </nav>
     </header>
 </template>
+
+<script setup>
+    import { ref, reactive } from 'vue';
+    import Avatar from '@/components/Avatar.vue';
+    import Logo from '@/assets/images/stamp-uk.svg';
+    import CreateIcon from '@/assets/icons/envelope.svg';
+    import LogoutIcon from '@/assets/icons/log-out.svg';
+    import { useUserStore } from '@/stores/user';
+    const userStore = useUserStore();
+    const authenticated = ref(userStore.getAuth);
+</script>

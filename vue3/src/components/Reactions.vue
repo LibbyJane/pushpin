@@ -1,8 +1,10 @@
 <script setup>
+    import { reactive, ref, toRefs } from 'vue';
     import { useNotesStore } from '@/stores/notes';
     const notesStore = useNotesStore();
+    // props: ['noteID', 'activeReaction'];
 
-    defineProps({
+    const props = defineProps({
         noteID: {
             type: Number,
             required: true,
@@ -31,17 +33,21 @@
         },
     ];
 
+    const { activeReaction, noteID } = toRefs(props);
+
+    let checked = ref();
+
+    if (activeReaction.value) {
+        checked.value = activeReaction.value;
+    }
+
     function getImageUrl(id) {
         return new URL(`../../src/assets/images/reaction-${id}.svg`, import.meta.url)
             .href;
     }
 
-    function ActiveStatus(id, selectedId) {
-        return id == selectedId;
-    }
-
-    function handleSelect(noteID, reactionID) {
-        notesStore.setReaction(noteID, reactionID);
+    function handleChange() {
+        notesStore.setReaction(noteID.value, checked.value);
     }
 </script>
 
@@ -53,8 +59,9 @@
                     type="radio"
                     :name="`reaction-${noteID}`"
                     :value="reaction.id"
-                    :checked="reaction.id === activeReaction"
-                    v-on:click="handleSelect(noteID, reaction.id)"
+                    :id="reaction.id"
+                    v-model="checked"
+                    v-on:change="handleChange()"
                 />
                 <img
                     :src="getImageUrl(reaction.id)"

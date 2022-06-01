@@ -1,13 +1,16 @@
 <template>
+    <!-- <RouterView /> -->
     <SiteHeader />
-
-    <RouterView />
-
-    <!-- <router-view v-slot="{ Component }">
-        <keep-alive>
-            <component :is="Component" />
-        </keep-alive>
-    </router-view> -->
+    <router-view v-slot="{ Component }">
+        <suspense>
+            <template #default>
+                <component :is="Component"></component>
+            </template>
+            <template #fallback>
+                <div>Loading...</div>
+            </template>
+        </suspense>
+    </router-view>
 </template>
 
 <script setup>

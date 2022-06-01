@@ -18,10 +18,15 @@ export const useNotesStore = defineStore({
         },
         async setReaction(noteID, reactionID) {
             const response = await useAPI(`noteReaction`, { "reaction": `${reactionID}` }, noteID)
-            if (response.success) {
-                this.data[noteID].reaction = reactionID;
-            }
-            console.log('setReaction response, ', response)
+            // if (response.success) {
+            //     this.data[noteID].reaction = reactionID;
+            // }
+        },
+        async setStatus(noteID, status) {
+            const response = await useAPI(`noteStatus`, { "status": `${status}` }, noteID)
+            // if (response.success) {
+            //     this.data[noteID].status = status;
+            // }
         }
     },
     persist: {

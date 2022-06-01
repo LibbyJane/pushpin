@@ -1,8 +1,9 @@
 <script setup>
-    import PinImage from '@/components/images/Pin.vue';
-    import StampFrameImage from '@/components/images/StampFrame.vue';
     import Reactions from '@/components/Reactions.vue';
     import HeartToggle from '@/components/HeartToggle.vue';
+    import Avatar from '@/components/Avatar.vue';
+    import PinImage from '@/components/images/Pin.vue';
+    import StampFrameImage from '@/components/images/StampFrame.vue';
 
     defineProps({
         data: {
@@ -47,7 +48,7 @@
 
         <div v-if="data.style === 'postcard'" class="stamp-postmark">
             <StampFrameImage />
-            <!-- <Avatar id={note.createdByID} /> -->
+            <Avatar :userID="data.createdByID" />
         </div>
 
         <div class="note-message">
@@ -56,7 +57,7 @@
 
         <footer class="note-footer">
             <h6>From</h6>
-            <!-- <Avatar id={note.createdByID} showName={true} /> -->
+            <Avatar :userID="data.createdByID" showName="true" />
         </footer>
     </div>
 </template>
