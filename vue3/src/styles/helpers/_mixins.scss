@@ -1,0 +1,550 @@
+@mixin button-default {
+    @include font-size($button-text);
+    backface-visibility: hidden;
+    background: $secondary;
+    border :0;
+    border-radius: 0;
+    color: $white;
+    cursor: pointer;
+    display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    font-family: $font-heading;
+    font-weight: 600;
+    line-height: 1;
+    opacity: 1;
+    // overflow: hidden;
+    padding: $button-padding;
+    position: relative;
+    transition: background $ts $tt;
+    text-align: center;
+    text-transform: uppercase;
+    width: auto;
+    z-index: 1;
+
+    #{$hover-states} {
+        background: $accent;
+        color: $white;
+    }
+
+    &.is-small {
+        @include font-size($p-small);
+        padding: var(--small-space) var(--space);
+    }
+
+    .icon {
+        &:first-child {
+            margin-right: 0.5rem;
+        }
+
+        &:last-child {
+            margin-left: 0.5rem;
+        }
+    }
+}
+
+@mixin image-hover {
+    backface-visibility: hidden;
+    filter: brightness(1.1);
+    transform: scale(1.05);
+
+}
+
+@mixin styled-image {
+    background: {
+        size: cover;
+        position: center;
+    }
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 0;
+    padding-top: 100%;
+    position: relative;
+
+    img {
+        @include absolute-center;
+        opacity: 0;
+    }
+}
+
+@mixin underline-base {
+    position: relative;
+
+    &::after {
+        background: $accent;
+        content: '';
+        height: 3px;
+        width: 4rem;
+        position: absolute;
+    }
+}
+
+@mixin checkout-fw {
+    background: transparentize($bg, 0.5);
+    border: $border-width solid transparentize($accent, 0.93);
+    color: $accent;
+    padding: var(--space) var(--h-space);
+}
+
+@mixin underline {
+    @include underline-base;
+
+    &::after {
+        background: $accent;
+        content: '';
+        height: 3px;
+        width: 1.5rem;
+        margin: 0;
+        bottom: 0;
+        left: 0;
+    }
+}
+
+@mixin animated-underline($position: center) {
+    @include underline-base;
+
+    &::after {
+        background: $accent;
+        content: '';
+        height: 3px;
+        width: 4rem;
+        margin: 0 auto;
+        position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        transform: scaleX(0) translateY(var(--v-space));
+        transition: all $ts ease;
+
+        @if $position == left {
+            right: auto;
+            width: 3rem;
+            transform: scaleX(0) translateY(0.2rem);
+            transform-origin: center left;
+        }
+    }
+
+    #{$hover-states} {
+        &::after {
+            transform: scaleX(1) translateY(var(--v-space));
+
+            @if $position == left {
+                transform: scaleX(1) translateY(0.2rem);
+            }
+        }
+    }
+}
+
+@mixin overline {
+    padding-top: calc(var(--space) * 2);
+    position: relative;
+
+    &::before {
+        background: $accent;
+        content: '';
+        position: absolute;
+            top: 0;
+
+        height: 0.4rem;
+        width: 5rem;
+        // transform: translateX(var(--h-space));
+
+        @include breakpoint($header-breakpoint) {
+            height: 0.85rem;
+            width: 7.7rem;
+        }
+    }
+}
+
+
+@mixin bg-image {
+    background: {
+        color: lighten($black, 45);
+        position: center;
+        size: cover;
+        repeat: no-repeat;
+    }
+    background-blend-mode: multiply;
+    color: $white;
+    display: flex;
+        flex-direction: column;
+        justify-content: center;
+    min-height: 10rem;
+    position: relative;
+
+    @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+        &::before {
+            background: transparentize($black, 0.5);
+            content: '';
+            position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            z-index: 0;
+        }
+    }
+
+    .content {
+        z-index: 1;
+    }
+}
+
+@mixin disabled {
+    filter: grayscale(1);
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+@mixin enabled {
+    filter: grayscale(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+@mixin styled-link {
+    color: currentColor;
+    display: inline-block;
+    font-weight: inherit;
+    position: relative;
+    transition: all $ts $tt;
+
+    &::after {
+        border-bottom: $border;
+        content: '';
+        position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        transition: transform $ts $tt;
+        transform: scaleX(0);
+        transform-origin: bottom left;
+    }
+
+    #{$hover-states} {
+        &::after {
+            transform: scaleX(1);
+        }
+    }
+}
+
+@mixin styled-link-solid {
+    $offset: -10px;
+
+    color: currentColor;
+    display: inline-block;
+    font-weight: inherit;
+    position: relative;
+    transition: all $ts $tt;
+
+    #{$hover-states} {
+        color: $white;
+        opacity: 1 !important;
+
+        &::before {
+            transform: scaleX(0.5);
+        }
+
+        &::after {
+            transform: scaleX(1) skewX(-7deg);
+            border-right: 1px solid $yellow;
+        }
+    }
+
+    &::before,
+    &::after {
+        background: $primary;
+        content: '';
+        line-height: 1;
+        position: absolute;
+            top: $offset/5;
+            bottom: $offset/5;
+            left: $offset;
+            right: $offset;
+        transition: transform $ts $tt;
+        transform: scaleX(0) skewX(-5deg);
+        transform-origin: bottom left;
+        z-index: -1;
+    }
+}
+
+@mixin absolute-center {
+    margin: auto;
+    position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+}
+
+@mixin content($max-width: $max-content-width) {
+    max-width: $max-width;
+    margin: 0 auto;
+    // padding-left: var(--space);
+    // padding-right: var(--space);
+
+    @include breakpoint(large) {
+        // padding-left: calc(var(--space)*2);
+        // padding-right: calc(var(--space)*2);
+    }
+}
+
+@mixin h-space($amount: var(--h-space)) {
+    padding-left: $amount;
+    padding-right: $amount
+}
+
+@mixin clearfix {
+    &::before,
+    &::after {
+        content: "";
+        display: table;
+        flex-basis: 0;
+        order: 1;
+        width: 100%;
+    }
+
+    &::after {
+        clear: both;
+    }
+}
+
+@mixin cols() {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+@mixin content-box-padding {
+    padding: $v-space $v-space*0.75 1rem*0.5;
+
+    @include breakpoint(medium) {
+        padding: $v-space*1.5 $v-space 1rem;
+    }
+
+    @include breakpoint(large) {
+        padding: $v-space*2.5 $v-space-outer $v-space*1.5;
+    }
+}
+
+@mixin sharp-text {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+@mixin label {
+    @include font-size($p);
+    display: block;
+    font-family: $font-heading;
+    font-weight: bold;
+    letter-spacing: 0.01rem;
+    margin: 0;
+    padding: 0 0 0.5rem;
+    text-transform: uppercase;
+}
+
+// Font sizes
+@mixin font-size($fs-map, $fs-breakpoints: $breakpoints) {
+    @each $fs-breakpoint, $fs-font-size in $fs-map {
+        @if $fs-breakpoint == default {
+            font-size: $fs-font-size;
+        }
+
+        @else {
+            @if map-has-key($fs-breakpoints, $fs-breakpoint) {
+                $fs-breakpoint: map-get($fs-breakpoints, $fs-breakpoint);
+            }
+            @media screen and (min-width: $fs-breakpoint) {
+                font-size: $fs-font-size;
+            }
+        }
+    }
+}
+
+// for elements that need to go full screen width
+@mixin full-width {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+}
+
+@mixin reset-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+@mixin hide {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transition: all $ts $tt;
+
+    input {
+        transform: translateX(1000vw); // last pass injects some difficult to hide icons etc
+    }
+}
+
+@mixin show {
+    max-height: 200vh;
+    opacity: 1;
+    overflow: visible;
+    pointer-events: all;
+
+    input {
+        transform: translateX(0);
+    }
+}
+
+@mixin greyscale($percentage) {
+    -webkit-filter: grayscale($percentage); /* Safari 6.0 - 9.0 */
+    filter: grayscale($percentage);
+}
+
+@mixin placeholder {
+    $placeholders: ":-webkit-input" ":-moz" "-moz" "-ms-input";
+
+    @each $placeholder in $placeholders {
+        &:#{$placeholder}-placeholder {
+            @content;
+        }
+    }
+}
+
+@mixin size($size) {
+    height: $size;
+    width: $size;
+}
+
+@mixin triangle-up($size, $color) {
+    width: 0;
+    height: 0;
+    border-left: $size solid transparent;
+    border-right: $size solid transparent;
+    border-bottom:$size solid $color;
+}
+
+@mixin triangle-down($size, $color) {
+    width: 0;
+    height: 0;
+    border-left: $size solid transparent;
+    border-right: $size solid transparent;
+    border-top: $size solid $color;
+}
+
+@mixin triangle-left($size, $color) {
+    width: 0;
+    height: 0;
+    border-top: $size solid transparent;
+    border-right: $size solid $color;
+    border-bottom: $size solid transparent;
+}
+
+@mixin triangle-right ($size, $color) {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: $size 0 $size $size*1.5;
+    border-color: transparent transparent transparent $color;
+}
+
+@mixin visually-hidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+    position: absolute;
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    padding: 0;
+}
+
+// Media queries / breakpoints
+@mixin breakpoint($breakpoint, $max-width: false) {
+    @if map-has-key($breakpoints, $breakpoint) {
+        @if ($max-width){
+            $breakpointWidth: map-get($breakpoints, #{$breakpoint});
+
+            @media (max-width: #{$breakpointWidth - 1px}) {
+                @content;
+            }
+        }
+
+        @else {
+            @media (min-width: #{map-get($breakpoints, $breakpoint)}) {
+                @content;
+            }
+        }
+    }
+
+    @else {
+        @warn "`#{$breakpoint}` could not be found in `$breakpoints` map.";
+    }
+}
+
+@mixin mwbreakpoint($breakpoint) {
+    @if map-has-key($breakpoints, $breakpoint) {
+        $breakpointWidth: map-get($breakpoints, #{$breakpoint});
+
+        @media (max-width: #{$breakpointWidth - 1px}) {
+            @content;
+        }
+    }
+
+    @else {
+        @warn "`#{$breakpoint}` could not be found in `$breakpoints` map.";
+    }
+}
+
+@mixin breakpoint-test {
+    $colors: tomato orange gold YellowGreen RoyalBlue purple Magenta;
+
+    @each $breakpoint in $breakpoints {
+        $index: index($breakpoints, $breakpoint);
+        $color: nth($colors, $index);
+
+        // passing the just breakpoint name (but not the value) to the breakpoint mixin
+        @include breakpoint(nth($breakpoint, 1)) {
+            outline: 5px solid $color;
+
+            &::before {
+                content: nth($breakpoint, 1);
+                background: black;
+                color: white;
+                display: block;
+                position: absolute;
+                    top: 0;
+                    left: 0;
+                padding: 0.5rem;
+            }
+        }
+    }
+}
+
+@mixin scrollbars($size, $foreground-color, $background-color: mix($foreground-color, white,  50%)) {
+    // For Google Chrome
+    ::-webkit-scrollbar {
+        width:  $size;
+        height: $size;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: $foreground-color;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: $background-color;
+    }
+
+    // For Internet Explorer
+    body {
+        scrollbar-face-color: $foreground-color;
+        scrollbar-track-color: $background-color;
+    }
+}

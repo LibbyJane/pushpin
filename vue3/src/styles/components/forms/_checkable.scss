@@ -1,0 +1,66 @@
+.checkable,
+.checkable-list label {
+    cursor: pointer;
+    color: var(--text);
+    font-size: var(--p);
+    font-weight: 400;
+    position: relative;
+}
+
+.checkable {
+    img {
+        transition: all var(--transition);
+    }
+
+    input {
+        appearance: none;
+        cursor: pointer;
+        opacity: 0;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 10;
+
+        &:checked {
+            ~ .swatch {
+                border-radius: 0;
+
+                min-width: 100%;
+                min-height: 100%;
+            }
+        }
+    }
+}
+
+.checkable-text {
+    position: relative;
+    z-index: 1;
+}
+
+.checkable-list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+        font-size: var(--sm);
+        margin: 0 0 var(--space-sm);
+        padding: 0;
+    }
+
+    label {
+        cursor: pointer;
+
+        margin: 0 var(--space) var(--space-sm) 0;
+    }
+
+    input {
+        margin-right: var(--space-xs);
+    }
+}
+
