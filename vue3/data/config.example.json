@@ -1,0 +1,10 @@
+{
+  "server": {
+    "host": "https://localhost",
+    "port": 4000
+  },
+  "files": {
+    "tmpUploadPath": "/tmp/",
+    "imageMagikConvertPath": "/usr/bin/convert"
+  }
+}

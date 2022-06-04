@@ -1,0 +1,198 @@
+.site-header {
+    color: var(--white);
+    margin: 0 0 var(--space-md);
+    padding: 0;
+
+    display: flex;
+        justify-content: space-between;
+    /* margin: 0 calc(var(--space-lg) * -1); */
+    position: sticky;
+        top: 0;
+        left: 0;
+    z-index: 100;
+    width: auto;
+    margin-right: auto;
+
+    .is-authenticated & {
+        margin-right: 0;
+    }
+
+    .content {
+        display: flex;
+            align-items: center;
+        margin: 0 auto auto 0;
+
+        text-align: center;
+    }
+
+    a {
+        color: currentColor;
+    }
+}
+
+.site-logo {
+    margin: -1rem -0.5rem auto -1rem;
+    width: 5rem;
+    transform: rotate(-2deg);
+    transition: transform var(--transition);
+    z-index: 10;
+
+    &:hover {
+        transform: scale(1.1) translateY(-0.15rem) rotate(-2deg);
+    }
+
+    img {
+        display: block;
+        // filter: invert(1);
+        max-width: 100%;
+    }
+}
+
+.page-title {
+    box-shadow: var(--box-shadow);
+    display: block;
+    // font-size: 1.5rem;
+    font-weight: 500;
+    padding: var(--space);
+    background: url("@/assets/images/paper-lined.jpg") top left repeat;
+    color: var(--text);
+    font-family: var(--font-hand);
+
+    margin: 0 auto auto 0;
+    transform: translateY(-0.15rem) ;
+}
+
+
+.user-nav {
+    font-family: var(--font-hand);
+    margin-left: auto;
+    padding: 0 var(--space);
+    text-align: center;
+
+    ul {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        margin: 0;
+        padding: 0;
+        position: relative;
+        z-index: 0;
+    }
+
+    a,
+    button {
+        background: url("@/assets/images/paper-dark.jpg") top left repeat;
+        box-shadow: var(--box-shadow);
+        color: var(--white);
+        display: flex;
+            margin: 0;
+            padding: 0;
+        margin-bottom: auto;
+        text-decoration: none;
+        text-align: center;
+        transition: all var(--transition);
+        transform: translateY(-1.5rem) rotate(2deg);
+        transform-origin: top center;
+
+        &:hover,
+        &:focus {
+            transform: scale(1.1) translateY(-1.5rem);
+
+            .avatar {
+                filter: brightness(0.9);
+            }
+        }
+
+
+        &.active {
+            // display: none;
+            filter: grayscale(0.8);
+            pointer-events: none;
+
+
+            .avatar,
+            .icon {
+                opacity: 0.9;
+            }
+        }
+    }
+
+    .nav-create {
+        z-index: 10;
+
+        a {
+            background: {
+                color: var(--note-pink);
+                image: url("@/assets/images/paper-red.jpg");
+                blend-mode: multiply;
+                size: 6rem;
+            }
+            // filter: sepia(1) hue-rotate(300deg) saturate(2);
+            padding: var(--space-md) var(--space-md) var(--space);
+            transform: translateY(-1rem);
+            &:hover,
+            &:focus {
+                transform: scale(1.1) translateY(-0.9rem);
+
+                .avatar {
+                    filter: brightness(0.9);
+                }
+            }
+        }
+
+        .icon {
+            width: 2.4rem;
+            filter: invert(1);
+            margin-bottom: var(--space-sm)
+        }
+    }
+
+    .nav-account {
+        margin-left: -1rem;
+        margin-right: -0.25rem;
+        z-index: 4;
+
+        a {
+            background: var(--white);
+            padding: 10px;
+        }
+    }
+
+    .avatar {
+        filter: brightness(0.8) blur(0.2px);
+        border-radius: 0;
+        width: 4rem;
+        height: 5rem;
+        transition: filter var(--transition);
+    }
+
+    .icon {
+        display: inline-block;
+        height: 2rem;
+        width: 1.6rem;
+        transition: transform var(--transition);
+    }
+
+    .nav-logout {
+        button {
+            padding: var(--space) var(--space-sm);
+        }
+
+        .icon {
+            filter: invert(1) brightness(0.9);
+            height: 1.6rem;
+        }
+    }
+}
+
+/* .site-nav .site-logo img {
+    filter: invert(100%);
+    margin-right: var(--space-sm);
+    margin-top: calc(var(--space-sm) * -1);
+    width: var(--space-lg);
+} */

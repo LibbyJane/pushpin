@@ -1,0 +1,10 @@
+{
+  "server": {
+    "host": "https://localhost",
+    "port": 4000
+  },
+  "files": {
+    "tmpUploadPath": "D:/Users/Documents/temp/",
+    "imageMagikConvertPath": "D:/Program Files/ImageMagick-7.1.0-Q16-HDRI/convert.exe"
+  }
+}

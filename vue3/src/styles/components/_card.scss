@@ -1,0 +1,73 @@
+.card {
+    background: {
+        image: url("@/assets/images/paper.jpg"),linear-gradient(
+            0deg,
+            rgba(18, 18, 18, 0.15) 5%,
+            rgba(18, 18, 18, 0) 80%,
+            rgba(18, 18, 18, 0.1) 95%
+
+        ) ;
+
+        position: top left;
+        repeat: repeat;
+        blend-mode: color-burn;
+    }
+    // border-radius: var(--radius);
+    box-shadow: var(--box-shadow);
+    color: var(--heading);
+    margin: 0;
+    padding: var(--space);
+    // overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+
+    &.is-reversed {
+        background: {
+            image: url("@/assets/images/paper-dark.jpg"),linear-gradient(
+                0deg,
+                rgba(18, 18, 18, 0.15) 5%,
+                rgba(18, 18, 18, 0) 80%,
+                rgba(18, 18, 18, 0.1) 95%
+
+            ) ;
+        }
+        color: var(--off-white);
+    }
+
+    img {
+        display: block;
+        max-width: 100%;
+    }
+
+    a {
+        color: currentColor;
+    }
+}
+
+.card-header {
+    // background: url("@/assets/images/paper-dark.jpg") top left repeat;
+    // color: var(--white);
+    font-size: var(--h4);
+    font-family: var(--font-hand);
+    font-weight: 700;
+    margin: calc(-1 * var(--space));
+    margin-bottom: var(--space);
+    padding: var(--space);
+    position: relative;
+
+    &::before {
+        background: {
+            image:  linear-gradient( 0deg,
+                rgba(0, 0, 0, 0.05) 0%,
+                rgba(0, 0, 0, 0) 90%
+            ) ;
+            repeat: no-repeat;
+        }
+        content: '';
+        height: 1.5rem;
+        position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+    }
+}
