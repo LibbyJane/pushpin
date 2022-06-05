@@ -1,11 +1,22 @@
 {
   "debugMode": false,
-  "server": {
-    "host": "https://localhost",
-    "port": 4000
+  "email": {
+    "host": "mail.somehost.com",
+    "port": 2525,
+    "secure": false,
+    "checkCertificate": false,
+    "defaultFromEmailAddress": "some@emailaddress.com",
+    "auth": {
+      "user": "username",
+      "pass": "password"
+    }
   },
   "files": {
     "tmpUploadPath": "/tmp/",
     "imageMagikConvertPath": "/usr/bin/convert"
+  },
+  "server": {
+    "host": "https://localhost",
+    "port": 4000
   }
 }

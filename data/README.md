@@ -3,6 +3,8 @@
 * https://github.com/TryGhost/node-sqlite3
 * https://www.npmjs.com/package/express-fileupload
 * https://www.npmjs.com/package/imagemagick
+* https://nodemailer.com/
+* https://www.npmjs.com/package/twing (HTML template engine - implements TWIG)
 
 
 ## Migrations Module
