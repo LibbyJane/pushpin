@@ -1,0 +1,11 @@
+{% extends "./email/baseTextTemplate.twig" %}
+
+{% block content %}
+Well hello there {{ displayName }}, thanks for joining the PushPin!
+
+Your account has been created and you may now login.
+
+For future reference, your login email address is: {{ emailAddress }}.
+
+If you forget your password at any stage, you may use the password reset tool to change it.
+{% endblock %}

@@ -29,6 +29,8 @@ data/pushpin.db
 data/pushpin_test.db
 data/config.json
 
+data/cache/*
+
 # Migrations
 .migrate
 .migrate_test

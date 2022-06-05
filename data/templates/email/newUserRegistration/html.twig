@@ -1,0 +1,29 @@
+{% extends "./email/baseHtmlTemplate.twig" %}
+
+{% block title %}Your PushPin Registration{% endblock %}
+{% block pretext %}Thanks for joining the PushPin!{% endblock %}
+
+{% block content %}
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td align="left" style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">
+            Well hello there {{ displayName }}, welcome to the PushPin!
+        </td>
+    </tr>
+    <tr>
+        <td align="left" style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">
+            Your account registration has been successful and you may now login.
+        </td>
+    </tr>
+    <tr>
+        <td align="left" style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">
+            For future reference, your login email address is: {{ emailAddress }}
+        </td>
+    </tr>
+    <tr>
+        <td align="left" style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">
+            If you forget your password at any stage, you may use the password reset tool to change your password.
+        </td>
+    </tr>
+</table>
+{% endblock %}
