@@ -5,12 +5,13 @@
         :id="fieldID"
         :required="required"
         type="file"
-        v-on:change="setNoteImage"
+        v-on:change="setImage"
+        ref="fileUploadInput"
     />
 </template>
 
 <script setup>
-    import { reactive, ref, toRefs } from 'vue';
+    import { reactive, ref, toRefs, nextTick } from 'vue';
 
     const props = defineProps({
         fieldID: {
@@ -23,8 +24,11 @@
         },
     });
 
-    function setNoteImage(e) {
+    const fileUploadInput = ref(null);
+
+    async function setImage(e) {
         let selected = e.target.files[0];
+        console.log('selected', selected);
 
         if (!selected) {
             noteErrors.image = 'Please select a file';
@@ -41,5 +45,12 @@
         }
 
         props.onChangeHandler(selected);
+        // fileUploadInput.value = null;
+        // fileUploadInput.type = 'text';
+        // console.log('?', fileUploadInput.type);
+        // fileUploadInput.type = 'file';
+        // console.log('?', fileUploadInput.type);
+
+        // await nextTick();
     }
 </script>

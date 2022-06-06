@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { defineStore } from 'pinia'
 import { useAPI } from '@/api/useAPI'
 import router from '@/router'
@@ -97,6 +98,8 @@ export const useUserStore = defineStore({
             const response = await useAPI(`profilePhoto`, { "profilePhoto": data });
 
             if (response.success) {
+                this.info.imageURL = null;
+                await nextTick();
                 this.info.imageURL = response.imageUrl;
             }
         },

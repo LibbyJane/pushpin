@@ -26,9 +26,11 @@
     }
 
     if (userID.value) {
-        const friends = storeRef.getFriends;
-        const match = friends.filter(matchId);
-        data = match[0];
+        const friends = storeRef.getFriends.value;
+        if (friends) {
+            const match = friends.filter(matchId);
+            data = match[0];
+        }
     } else {
         data = storeRef.getInfo;
 

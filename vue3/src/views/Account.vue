@@ -28,7 +28,6 @@
     const user = storeRef.getInfo;
 
     const setProfilePhoto = async (selected) => {
-        console.log('selected', selected);
         await userStore.updatePhoto(selected);
     };
 </script>
