@@ -1,0 +1,30 @@
+.note {
+    --postcard-footer-width: 14rem;
+    /* order: 1; */
+    display: grid;
+    grid-template-areas: "note-header" "note-image" "note-message" "note-footer";
+
+    &.is-postcard {
+        grid-template-areas:
+        "note-header note-header"
+        "note-message note-footer"
+        ;
+    }
+
+}
+
+.note-header {
+    grid-area: note-header;
+}
+
+.note-image {
+    grid-area: note-image;
+}
+
+.note-message {
+    grid-area: note-message;
+}
+
+.note-footer {
+    grid-area: note-footer;
+}

@@ -1,0 +1,41 @@
+.has-swatch {
+    display: flex;
+    line-height: 1;
+    padding: var(--space-xs);
+    padding-left: calc(var(--space) + var(--space-sm));
+    position: relative;
+
+    :checked {
+        ~ .swatch {
+            .icon {
+                opacity: 1;
+            }
+        }
+    }
+    .icon {
+        height: var(--space);
+        width: var(--space);
+        display: block;
+        margin: auto var(--space-xs);
+        opacity: 0;
+    }
+}
+
+.swatch {
+    border-radius: var(--border);
+    display: inline-flex;
+    height: var(--space);
+    min-width: var(--space);
+    max-width: var(--space);
+    margin: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 0;
+    transition: min-width var(--transition);
+
+    [data-swatch*="white"] & {
+        border: var(--border) var(--off-white);
+    }
+}

@@ -56,22 +56,26 @@ const endpoints = {
 
     profilePhoto: {
         uri: `upload/profile_photo`,
-        method: 'POST'
+        method: 'PATCH'
     }
 }
 
 export async function useAPI(endpoint, data, endpointID) {
-    // console.log('endpoint, data, endpointID', endpoint, data, endpointID)
+    console.log('endpoint, data, endpointID', endpoint, data, endpointID)
     const userStore = useUserStore();
     const token = userStore && userStore.getAuth ? userStore.getAuth : null;
     // console.log('token', token)
 
     if (endpoint && endpoints[endpoint]) {
-        const config = {
+        let config = {
             headers: {},
             baseURL: apiBaseURL,
             url: endpoints[endpoint].uri,
             method: endpoints[endpoint].method
+        }
+
+        if (config.url.indexOf('upload') > -1) {
+            config.headers['content-type'] = 'multipart/form-data';
         }
 
         if (data) {
@@ -86,10 +90,7 @@ export async function useAPI(endpoint, data, endpointID) {
             config.headers.authorization = `Bearer ${token}`
         }
 
-        // console.log('axios config', config)
-
-        // const ourRequest = axios.CancelToken.source()
-        // config.cancelToken = ourRequest.token;
+        console.log('final config', config);
 
         try {
             const response = await axios(config)

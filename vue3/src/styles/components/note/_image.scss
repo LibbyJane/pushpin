@@ -1,0 +1,50 @@
+.note-image {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 0 0 var(--space);
+    position: relative;
+    overflow: hidden;
+    z-index: 10;
+    max-height: 50vh;
+
+    .is-postcard & {
+        --m: calc(var(--space) * -1);
+        --w: calc(var(--space) * 2 + 100%);
+        grid-column: 1/-1;
+        grid-row: 1/-1;
+
+        margin: 0 var(--m) var(--m);
+        transition: opacity var(--transition);
+        transition-delay: var(--transition-speed);
+        height: 0;
+        padding-top: 60%;
+        // // min-width: var(--w);
+        // min-width: 0;
+        // max-width: var(--w);
+        // max-height: 100%;
+        // height: auto;
+        // width: auto;
+        position: relative;
+        min-height: 19rem;
+        max-height: 50vh;
+
+        &:hover,
+        &:focus {
+            opacity: 0;
+        }
+    }
+
+    img {
+        display: block;
+        min-width: 100%;
+        max-width: 100%;
+        margin: auto;
+
+        .is-postcard & {
+            position: absolute;
+            opacity: 0;
+            max-height: 100%;
+        }
+    }
+}

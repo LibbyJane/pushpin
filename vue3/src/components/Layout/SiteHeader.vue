@@ -28,7 +28,7 @@
                     data-background-color="var(--biro)"
                 >
                     <RouterLink to="/account">
-                        <Avatar showName="true" />
+                        <Avatar />
                     </RouterLink>
                 </li>
                 <li
@@ -48,23 +48,19 @@
                     <ReactTooltip id="tt-account" class="tooltip" />
                     <ReactTooltip id="tt-logout" class="tooltip" /> -->
         </nav>
-
-        <nav v-else class="site-nav">
-            <ul>
-                <li><RouterLink to="/login">Login</RouterLink></li>
-                <li><RouterLink to="/signup">Signup</RouterLink></li>
-            </ul>
-        </nav>
     </header>
 </template>
 
 <script setup>
     import { ref, reactive } from 'vue';
+    import { storeToRefs } from 'pinia';
     import Avatar from '@/components/Avatar.vue';
     import Logo from '@/assets/images/stamp-uk.svg';
     import CreateIcon from '@/assets/icons/envelope.svg';
     import LogoutIcon from '@/assets/icons/log-out.svg';
     import { useUserStore } from '@/stores/user';
+
     const userStore = useUserStore();
-    const authenticated = ref(userStore.getAuth);
+    const storeRef = storeToRefs(userStore);
+    const authenticated = storeRef.getAuth;
 </script>

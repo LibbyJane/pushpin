@@ -1,0 +1,21 @@
+.note-message {
+    h4 {
+        color: var(--font-heading);
+        font-family: var(--font-hand);
+        font-size: var(--h4);
+        margin: 0 0 var(--space);
+    }
+
+    p {
+        font-size: var(--h6);
+        margin: 0 0 var(--space-sm);
+    }
+
+    a {
+        font-weight: 700;
+    }
+
+    .is-postcard & {
+        max-width: 50%;
+    }
+}

@@ -1,18 +1,20 @@
 <template>
     <!-- <RouterView /> -->
     <SiteHeader />
-    <router-view v-slot="{ Component }">
-        <suspense>
-            <template #default>
-                <component :is="Component"></component>
-            </template>
-            <template #fallback>
-                <div>Loading...</div>
-            </template>
-        </suspense>
-    </router-view>
+    <RouterView v-slot="{ Component }">
+        <template v-if="Component">
+            <Transition mode="out-in">
+                <KeepAlive>
+                    <Suspense>
+                        <component :is="Component"></component>
+                        <template #fallback> Loading... </template>
+                    </Suspense>
+                </KeepAlive>
+            </Transition>
+        </template>
+    </RouterView>
 </template>
 
 <script setup>
-    import SiteHeader from '@/components/Layout/SiteHeader.vue';
+    import SiteHeader from '@/components/layout/SiteHeader.vue';
 </script>

@@ -1,0 +1,14 @@
+.note-preview {
+    .is-postcard {
+        margin-bottom: var(--space);
+        .note-image {
+            pointer-events: none;
+        }
+
+        ~.is-postcard {
+            .note-image {
+                display: none;
+            }
+        }
+    }
+}

@@ -1,8 +1,6 @@
 .site-header {
     color: var(--white);
     margin: 0 0 var(--space-md);
-    padding: 0;
-
     display: flex;
         justify-content: space-between;
     /* margin: 0 calc(var(--space-lg) * -1); */
@@ -165,10 +163,13 @@
 
     .avatar {
         filter: brightness(0.8) blur(0.2px);
+        transition: filter var(--transition);
+    }
+
+    .avatar-image {
         border-radius: 0;
         width: 4rem;
         height: 5rem;
-        transition: filter var(--transition);
     }
 
     .icon {
@@ -188,6 +189,10 @@
             height: 1.6rem;
         }
     }
+}
+
+main {
+    padding: 0 var(--space);
 }
 
 /* .site-nav .site-logo img {

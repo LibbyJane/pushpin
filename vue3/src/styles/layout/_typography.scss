@@ -1,3 +1,21 @@
+:root {
+    --font: Poppins, sans-serif;
+    --font-hand: "Caveat", cursive;
+    --font-mono: "Inconsolata", monospace;
+
+
+    --h1: 3rem;
+    --h2: 2.8rem;
+    --h3: 2.6rem;
+    --h4: 2.4rem;
+    --h5: 1.9rem;
+    --h6: 1.7rem;
+    --p: 1.6rem;
+    --p-sm: 1.3rem;
+    --sm: 0.9rem;
+    --xs: 0.8rem;
+}
+
 // .xl {
 //     @include font-size($xl);
 

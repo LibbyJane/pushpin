@@ -2,9 +2,7 @@
 
 /* variables */
 :root {
-    --font: Poppins, sans-serif;
-    --font-hand: "Caveat", cursive;
-    --font-mono: "Inconsolata", monospace;
+
     --space: 1rem; /* 20px -> 1.25rem */
     --space-xs: 0.25rem; /* 8px -> .5rem */
     --space-xxs: 0.125rem;
@@ -20,7 +18,8 @@
     --border: var(--border-width) solid;
     --max-content-width: 60rem; /* 960px -> 60rem */
     --max-form-width-sm: 23rem;
-    --max-form-width-md: 30rem;
+    --max-form-width: 40rem;
+
     --box-shadow: 0px 8px 10px rgba(0, 0, 0, 0.25);
     --transition-speed: 200ms;
     --transition-type: ease-in-out;
@@ -52,7 +51,7 @@
 
 .container {
     max-width: var(--max-content);
-    padding: 0 var(--space-md);
+    padding: 0 var(--space);
 
 }
 
@@ -179,29 +178,6 @@ li {
 
 
 
-.btn,
-button[type="submit"] {
-    .site-main & {
-        background: {
-            image:  url("@/assets/images/drawn-circle.svg");
-            position: center;
-            repeat: no-repeat;
-            size: contain;
-        }
-        color: var(--text);
-        cursor: pointer;
-        font-family: inherit;
-        font-weight: bold;
-        font-size: var(--p);
-        padding: var(--space);
-    }
-}
-
-.btn:hover,
-button[type="submit"]:hover {
-    background-image: url("@/assets/images/drawn-circle-hover.svg");
-    color: var(--heading);
-}
 
 // button[type="submit"] {
 //     background: transparent;

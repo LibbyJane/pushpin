@@ -1,0 +1,29 @@
+.note-header {
+    --icon-size: 1rem;
+    background: transparent;
+    display: flex;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    min-height: var(--icon-size);
+    position: relative;
+    z-index: 15;
+}
+
+.note-pin {
+    display: block;
+    height: 2rem;
+    margin: 0 auto;
+    position: absolute;
+    top: -0.5rem;
+    right: 0;
+    left: 0;
+    filter: sepia(1) hue-rotate(160deg) saturate(3);
+    z-index: 15;
+
+    // .is-stickynote & {
+    //     left: auto;
+    //     right: -1.5rem;
+    // }
+}

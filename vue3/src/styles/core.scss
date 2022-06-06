@@ -20,11 +20,23 @@
 
 
 
-@import "components/card"
+@import
+        "components/avatar"
+        ,"components/buttons/base"
+        ,"components/card"
+        ,"components/forms/base"
         ,"components/forms/checkable"
         ,"components/forms/fields"
-        ,"components/noteList"
-        ,"components/note"
+        ,"components/note-list"
+        ,"components/note/layout"
+        ,"components/note/base"
+        ,"components/note/header"
+        ,"components/note/image"
+        ,"components/note/message"
+        ,"components/note/footer"
+        ,"components/note/postcard"
+        ,"components/note/preview"
         ,"components/reactions"
         ,"components/heart-toggle"
+        ,"components/swatch"
         ;

@@ -25,9 +25,8 @@ export const useUserStore = defineStore({
     },
     actions: {
         init() {
-            console.log('init');
             const now = Date.now();
-            console.log('init', now, localStorage.getItem('ppSessionExpiry'));
+
             if (localStorage.getItem('ppTkn') && localStorage.getItem('ppSessionExpiry') && (localStorage.getItem('ppSessionExpiry') > now)) {
                 console.log('valid')
             }
@@ -45,6 +44,22 @@ export const useUserStore = defineStore({
             }
         },
 
+
+        async performRegister(data) {
+            const response = await useAPI(`register`, data);
+
+            if (response.tokenInfo) {
+                this.updateAuth(response.tokenInfo);
+                this.info = response.user;
+
+                router.replace('/');
+            }
+            else {
+                console.log('reg response: ', response);
+            }
+        },
+
+
         async performSetFriends() {
             const response = await useAPI(`users`);
             console.log('friends', response);
@@ -52,23 +67,23 @@ export const useUserStore = defineStore({
         },
 
         async performLogout() {
-            if (this.auth.token) {
-                console.log('token?', this.auth.token)
-                const response = await useAPI(`logout`);
-                console.log('response', response)
 
+            if (this.auth.token) {
+                const response = await useAPI(`logout`);
+                this.reset();
+                router.replace('/login');
                 // if (response.success) {
-                //     this.reset();
+                //     this.reset();\\\\
                 // }
             }
         },
 
 
         reset() {
-            this.$reset()
+            this.$reset();
             localStorage.removeItem('ppTkn');
             localStorage.removeItem('ppSessionExpiry');
-            router.replace('/login');
+
         },
 
         updateAuth(data) {

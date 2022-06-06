@@ -15,16 +15,9 @@
                 required
             />
 
-            <label for="confirmPassword">confirm password: </label>
-            <input
-                id="confirmPassword"
-                type="password"
-                v-model="fields.confirmPassword.value"
-                required
-            />
             <!-- <Error name="password" class="error-feedback" /> -->
 
-            <button type="submit">log in</button>
+            <button class="btn" type="submit">log in</button>
         </form>
 
         <div class="col card is-reversed align-top width-small">
@@ -36,47 +29,19 @@
 
 <script setup>
     import { ref, reactive, provide } from 'vue';
-    import { useAPI } from '@/api/useAPI';
     import { useUserStore } from '@/stores/user';
     const userStore = useUserStore();
 
     const fields = reactive({
         email: {
-            value: 'cookie@monster.com',
+            value: null,
             error: null,
         },
         password: {
-            value: 'testtest',
-        },
-        confirmPassword: {
-            value: 'testtest',
+            value: null,
             error: null,
         },
     });
-
-    // watch(
-    //     fields.password.value: () => {
-    //         comparePasswords()
-    //     },
-
-    //     fields.confirmPassword.value: () => {
-    //         comparePasswords()
-    //     }
-    // );
-
-    const comparePasswords = () => {
-        if (
-            fields.password.value &&
-            fields.confirmPassword.value &&
-            fields.password.value !== fields.confirmPassword.value
-        ) {
-            fields.confirmPassword.error = 'Passwords must match';
-            console.log('error', fields.confirmPassword.error);
-        } else {
-            fields.confirmPassword.error = null;
-            console.log('no error', fields.confirmPassword.error);
-        }
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();

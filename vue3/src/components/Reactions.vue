@@ -72,25 +72,5 @@
                 <span class="visually-hidden">{{ reaction.name }}</span>
             </label>
         </li>
-        <!-- {
-                reactions.map(reaction => (
-                    <li key={reaction.id} data-active={ActiveStatus(reaction.id, selectedReaction)}>
-                        <label class='checkable is-reaction' >
-                            <input
-                                type="radio"
-                                name={`reaction-${noteID}`}
-                                value={reaction.id}
-                                onChange={(e) => handleChange(e.target.value)}
-                            />
-                            <img class="icon" src={reaction.image} alt={reaction.name} />
-                            <span class='visually-hidden'>{reaction.name}</span>
-                        </label>
-                    </li>
-                    // <li key={reaction.id} class={`reaction is-${reaction.name}`}>
-
-                    //     {reaction.name}
-                    // </li>
-                ))
-            } -->
     </ul>
 </template>
