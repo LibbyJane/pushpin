@@ -92,6 +92,15 @@ export const useUserStore = defineStore({
             localStorage.setItem('ppSessionExpiry', data.expiresAt)
         },
 
+        async updatePhoto(data) {
+            console.log('update user photo', data);
+            const response = await useAPI(`profilePhoto`, { "profilePhoto": data });
+
+            if (response.success) {
+                this.info.imageURL = response.imageUrl;
+            }
+        },
+
         updateInfo(data) {
             this.info = data
         }

@@ -16,8 +16,9 @@
                 class="card form-create has-max-width"
                 v-on:submit="handleSubmit"
             >
-                <label>Send to:</label>
                 <Multiselect
+                    fieldID="recipients"
+                    label="Send to:"
                     :selected="noteData.recipientsList"
                     :options="friendsList"
                     :handler="updateSelectedFriends"
@@ -38,16 +39,12 @@
                     </li>
                 </ul>
 
-                <div v-if="noteHasImage">
-                    <label for="notePhoto">Note Image</label>
-                    <input
-                        name="notePhoto"
-                        id="notePhoto"
-                        required
-                        type="file"
-                        v-on:change="setNoteImage"
-                    />
-                </div>
+                <UploadFile
+                    fieldID="notePhoto"
+                    label="Note Image"
+                    :required="true"
+                    :onChangeHandler="setNoteImage"
+                />
 
                 <label>Color:</label>
                 <ul class="checkable-list">
@@ -105,6 +102,7 @@
 
     import Note from '@/components/Note.vue';
     import Multiselect from '@/components/forms/Multiselect.vue';
+    import UploadFile from '@/components/forms/UploadFile.vue';
     import Alert from '@/components/Alert.vue';
     import Avatar from '@/components/Avatar.vue';
     import CheckIcon from '@/assets/icons/check.svg';
@@ -176,24 +174,7 @@
         noteData.recipientsList = friendsArray;
     }
 
-    function setNoteImage(e) {
-        let selected = e.target.files[0];
-        notePhoto = null;
-
-        if (!selected) {
-            noteErrors.image = 'Please select a file';
-            return;
-        }
-        if (!selected.type.includes('image')) {
-            noteErrors.image = 'Selected file must be an image';
-            return;
-        }
-
-        if (selected.size > 200000) {
-            noteErrors.image = 'Image file size must be less than 200kb';
-            return;
-        }
-
+    function setNoteImage(selected) {
         noteData.imageURL = URL.createObjectURL(selected);
         notePhoto = selected;
     }

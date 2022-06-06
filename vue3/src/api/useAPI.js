@@ -56,7 +56,7 @@ const endpoints = {
 
     profilePhoto: {
         uri: `upload/profile_photo`,
-        method: 'PATCH'
+        method: 'POST'
     }
 }
 

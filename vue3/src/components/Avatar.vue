@@ -1,9 +1,12 @@
 <script setup>
-    import { reactive, ref, toRefs } from 'vue';
+    import { toRefs } from 'vue';
+    import { storeToRefs } from 'pinia';
     import { useUserStore } from '@/stores/user';
+
     import DefaultAvatarImage from '@/assets/icons/person.svg';
 
     const userStore = useUserStore();
+    const storeRef = storeToRefs(userStore);
 
     const props = defineProps({
         userID: {
@@ -23,11 +26,11 @@
     }
 
     if (userID.value) {
-        const friends = userStore.getFriends;
+        const friends = storeRef.getFriends;
         const match = friends.filter(matchId);
         data = match[0];
     } else {
-        data = userStore.getInfo;
+        data = storeRef.getInfo;
 
         if (data.imageURL === null) {
             data.imageURL = DefaultAvatarImage;

@@ -3,13 +3,10 @@
         <div className="cols">
             <div className="card col">
                 <h1>hello {{ user.displayName }}</h1>
-
-                <label for="notePhoto">Profile Image</label>
-                <input
-                    name="profilePhoto"
-                    id="profilePhoto"
-                    type="file"
-                    v-on:change="setProfilePhoto"
+                <UploadFile
+                    fieldID="profilePhoto"
+                    label="Profile Image"
+                    :onChangeHandler="setProfilePhoto"
                 />
             </div>
 
@@ -24,14 +21,14 @@
     import { ref, reactive } from 'vue';
     import { storeToRefs } from 'pinia';
     import { useUserStore } from '@/stores/user';
+    import UploadFile from '@/components/forms/UploadFile.vue';
 
     const userStore = useUserStore();
     const storeRef = storeToRefs(userStore);
     const user = storeRef.getInfo;
 
-    console.log('user info', user);
-
-    const setProfilePhoto = async (e) => {
-        console.log('set photo');
+    const setProfilePhoto = async (selected) => {
+        console.log('selected', selected);
+        await userStore.updatePhoto(selected);
     };
 </script>

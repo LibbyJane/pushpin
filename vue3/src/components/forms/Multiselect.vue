@@ -1,5 +1,8 @@
 <template>
+    <label v-if="label" :for="fieldID">{{ label }}</label>
     <Multiselect
+        :id="fieldID"
+        :name="fieldID"
         v-on:change="handler"
         v-model="selected"
         mode="tags"
@@ -14,6 +17,9 @@
     import Multiselect from '@vueform/multiselect';
 
     const props = defineProps({
+        fieldID: {
+            type: String,
+        },
         handler: {
             type: Function,
         },
