@@ -24,6 +24,7 @@ select,
     box-sizing: border-box;
     font-family: var(--font-mono);
     font-size: 1rem;
+    margin: 0 0 var(--space);
     width: 100%;
 
     &:-webkit-autofill,

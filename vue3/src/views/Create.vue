@@ -40,6 +40,7 @@
                 </ul>
 
                 <UploadFile
+                    v-if="noteHasImage"
                     fieldID="notePhoto"
                     label="Note Image"
                     :required="true"
@@ -76,14 +77,6 @@
                 </fieldset>
             </form>
             <aside class="note-preview">
-                <div v-if="noteData.recipientsList.length" class="note-recipients">
-                    <h6>Sending to:</h6>
-                    <Avatar
-                        v-for="recipient in noteData.recipientsList"
-                        :userID="recipient"
-                        showName="true"
-                    />
-                </div>
                 <Note
                     v-if="noteData.style === 'postcard' && noteData.imageURL"
                     :data="noteData"

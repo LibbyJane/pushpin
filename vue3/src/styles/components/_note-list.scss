@@ -22,8 +22,14 @@
         grid-template-columns: repeat(12, 1fr);
     }
 
-    >li {
-        grid-area: span 1;
+    // >li,
+    // >div,
+    // >a {
+    //     grid-area: span 1;
+    // }
+
+    >a {
+        text-decoration: none;
     }
 }
 
@@ -32,7 +38,6 @@
         grid-area:  span 1 / span 2;
     }
 }
-
 
 .list-notes .is-polaroid {
 

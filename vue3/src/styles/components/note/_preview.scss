@@ -1,13 +1,21 @@
 .note-preview {
-    .is-postcard {
+    .note {
         margin-bottom: var(--space);
+
+        &:hover,
+        &:focus {
+            transform: none;
+        }
+    }
+
+    .is-postcard {
         .note-image {
             pointer-events: none;
         }
 
         ~.is-postcard {
             .note-image {
-                display: none;
+                opacity: 0;
             }
         }
     }

@@ -9,12 +9,32 @@
         :options="options"
         class="multiselect-themed"
         :close-on-select="true"
-    />
+    >
+        <template v-slot:tag="{ option, handleTagRemove, disabled }">
+            <div
+                class="multiselect-tag is-user"
+                :class="{
+                    'is-disabled': disabled,
+                }"
+            >
+                <Avatar :userID="option.value" />
+                {{ option.label }}
+                <span
+                    v-if="!disabled"
+                    class="multiselect-tag-remove"
+                    @mousedown.prevent="handleTagRemove(option, $event)"
+                >
+                    <span class="multiselect-tag-remove-icon"></span>
+                </span>
+            </div>
+        </template>
+    </Multiselect>
 </template>
 
 <script setup>
     import { reactive, ref, toRefs } from 'vue';
     import Multiselect from '@vueform/multiselect';
+    import Avatar from '@/components/Avatar.vue';
 
     const props = defineProps({
         fieldID: {

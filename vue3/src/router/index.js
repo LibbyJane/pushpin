@@ -36,6 +36,12 @@ const router = createRouter({
             component: () => import('../views/Account.vue'),
             meta: { requiresAuth: true },
         },
+        {
+            path: '/invite',
+            name: 'invite',
+            component: () => import('../views/Invite.vue'),
+            meta: { requiresAuth: true },
+        },
         // {
         //   path: '/postDetail/:id',
         //   name: 'postDetail',

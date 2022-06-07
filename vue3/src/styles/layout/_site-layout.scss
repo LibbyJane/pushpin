@@ -4,13 +4,19 @@
 :root {
 
     --space: 1rem; /* 20px -> 1.25rem */
-    --space-xs: 0.25rem; /* 8px -> .5rem */
     --space-xxs: 0.125rem;
-    --space-xs-neg: calc(var(--space-xs) * -1); /* 8px -> .5rem */
-    --space-xxs-neg: calc(var(--space-xxs) * -1); /* 8px -> .5rem */
+    --space-xs: 0.25rem; /* 8px -> .5rem */
     --space-sm: 0.5rem; /* 8px -> .5rem */
     --space-md: 1rem; /* 30px -> 1.875rem */
     --space-lg: 1.5rem; /* 40px -> 2.5rem */
+
+    --space-xxs-neg: calc(var(--space-xxs) * -1);
+    --space-xs-neg: calc(var(--space-xs) * -1);
+    --space-neg:  calc(var(--space) * -1);
+    --space-sm-neg: calc(var(--space-sm) * -1);
+    --space-md-neg: calc(var(--space-md) * -1);
+    --space-lg-neg: calc(var(--space-lg) * -1);
+
     --radius: 0.25rem; /* 4px -> .25rem */
     --radius-lg: 0.5rem;
     --border-width: 2px;
@@ -38,8 +44,8 @@
     --sm: 0.9rem;
 
     @include breakpoint(medium) {
-        --space-md: 2rem; /* 30px -> 1.875rem */
-        --space-lg: 2.5rem; /* 40px -> 2.5rem */
+        --space-md: 1.5rem; /* 30px -> 1.875rem */
+        --space-lg: 2rem; /* 40px -> 2.5rem */
     }
 }
 

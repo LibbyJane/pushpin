@@ -1,0 +1,103 @@
+.is-welcome {
+    grid-area:  span 2 / span 2;
+
+    @include breakpoint(xl) {
+        grid-area:  span 2 / span 5;
+    }
+
+    .note-image {
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.is-invitation {
+    grid-area:  span 1 / span 2;
+
+    @include breakpoint(xl) {
+        grid-area:  span 1 / span 4;
+    }
+
+    background-size: cover;
+    border-radius: 0;
+    padding: 0 20%;
+    text-align: center;
+
+    .note-header {
+        min-height: 0;
+    }
+
+    .invitation-heading {
+        font-size: var(--h5);
+        font-family: var(--font);
+        font-weight: 500;
+        letter-spacing: 0.05rem;
+        line-height: 1.1;
+        text-shadow:  -1px -1px 2px var(--white);
+        text-transform: lowercase;
+
+        strong {
+            font-size: var(--h4);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+    }
+
+    hr {
+        background: {
+            // image: @/assets/images/Swoosh.svg ;
+            image: url("@/assets/images/Swoosh.svg") ;
+            size: contain;
+            position: center;
+            repeat: no-repeat;
+        }
+        border: 0;
+        height: var(--space-xs);
+    }
+
+    .note-message {
+        padding: var(--space-md);
+        position: relative;
+
+        &::before {
+            background: url("@/assets/images/paper.jpg") ;
+            border: 3px solid var(--heading);
+            border-width: 0 3px;
+            content: '';
+            margin: 0 auto;
+            position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            z-index: -1;
+        }
+    }
+}
+
+
+.is-update-profile {
+    grid-area:  span 1 / span 2;
+
+    @include breakpoint(xl) {
+        grid-area:  span 1 / span 3;
+    }
+
+    background: url("@/assets/images/paper.jpg") ;
+    border-radius: 0;
+    text-align: center;
+}
+
+.note {
+    .tape {
+        position: absolute;
+            top: var(--space-neg);
+            left: var(--space-lg-neg);
+        +.tape {
+            left: auto;
+            right: var(--space-md-neg);
+            transform: rotateY(180deg) translateY(var(--space-xs-neg));
+        }
+    }
+}

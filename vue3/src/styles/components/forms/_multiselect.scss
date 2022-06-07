@@ -1,0 +1,9 @@
+.multiselect-tag {
+    .avatar-image {
+        --size: 1.5rem;
+        height: var(--size);
+        width: var(--size);
+        margin: var(--space-xs);
+        margin-left: 0;
+    }
+}

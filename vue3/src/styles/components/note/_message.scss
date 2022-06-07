@@ -8,6 +8,7 @@
 
     p {
         font-size: var(--h6);
+        line-height: 1.1;
         margin: 0 0 var(--space-sm);
     }
 
@@ -15,7 +16,5 @@
         font-weight: 700;
     }
 
-    .is-postcard & {
-        max-width: 50%;
-    }
+
 }

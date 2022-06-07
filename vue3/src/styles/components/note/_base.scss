@@ -15,6 +15,7 @@
     position: relative;
     // overflow: hidden; pin gets cut off
     text-decoration: none;
+    transform-origin: top center;
     transition: all 0.3s ease;
         // height: -webkit-fill-available;
     width: -webkit-fill-available;
@@ -22,17 +23,23 @@
 
 
 
-    @include breakpoint(medium) {
-        // min-width: 18rem;
-        // min-height: 19rem;
-        // max-width: 50vw;
-        // max-height: 50vh;
-    }
+    // @include breakpoint(medium) {
+    //     // min-width: 18rem;
+    //     // min-height: 19rem;
+    //     // max-width: 50vw;
+    //     // max-height: 50vh;
+    // }
 
     &.note {
         &:hover,
         &:focus {
             text-decoration: none;
+            transform: rotate(1deg);
+
+            .note-header img {
+                    transform-origin: center;
+                            transform: rotate(-1deg);
+            }
         }
     }
 

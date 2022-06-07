@@ -5,40 +5,54 @@
     align-items: center;
     margin-top: auto;
 
+
     .is-postcard & {
         flex-wrap: wrap;
         font-size: var(--p);
-        margin: auto 0 0 auto;
+        line-height: 1.8;
+        margin: auto 0 auto auto;
         width: var(--postcard-footer-width);
+        padding-left: var(--space);
         // outline: 2px solid red;
     }
 
-    h6 {
-        font-size: var(--p-sm);
-        margin: 0;
-        padding: 0;
+    // h6 {
+    //     font-size: var(--p-sm);
+    //     margin: 0;
+    //     padding: 0;
 
-        .is-postcard & {
-            font-size: var(--p);
-            margin-bottom: var(--space);
-            width: 100%;
+    //     .is-postcard & {
+    //         font-size: var(--p);
+    //         margin-bottom: var(--space);
+    //         width: 100%;
 
-            &:after {
-                content: ':';
-            }
-        }
-    }
+    //         &:after {
+    //             content: ':';
+    //         }
+    //     }
+    // }
 
     .avatar {
         flex-direction: row;
         margin: 0 var(--space-xs);
     }
 
+
+    .avatar-name {
+        &::before {
+            content: 'from ';
+
+            .is-postcard & {
+                content: 'Sender:';
+                display: block;
+            }
+        }
+    }
+
     .avatar-image {
         --size: 2rem;
         height: var(--size);
         width: var(--size);
-
 
         .is-postcard & {
             display: none;

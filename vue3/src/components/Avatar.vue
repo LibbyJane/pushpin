@@ -33,17 +33,29 @@
         }
     } else {
         data = storeRef.getInfo;
-
-        if (data.imageURL === null) {
-            data.imageURL = DefaultAvatarImage;
-        }
     }
 </script>
 
 <template>
     <div v-if="data" class="avatar">
-        <div class="avatar-image" :style="`background-image: url(${data.imageURL})`">
+        <div
+            v-if="data.imageURL"
+            class="avatar-image"
+            :style="`background-image: url(${data.imageURL})`"
+        >
             <img :src="data.imageURL" :alt="data.displayName" :title="data.displayName" />
+        </div>
+
+        <div
+            v-else
+            class="avatar-image"
+            :style="`background-image: url(${DefaultAvatarImage})`"
+        >
+            <img
+                :src="DefaultAvatarImage"
+                :alt="data.displayName"
+                :title="data.displayName"
+            />
         </div>
         <span v-if="showName" class="avatar-name">{{ data.displayName }}</span>
     </div>

@@ -1,14 +1,18 @@
 <template>
     <div class="list-notes">
         <Note v-for="note in notes" :data="note" />
+        <NoNotes v-if="notes.length === 0" />
     </div>
 </template>
 
 <script setup>
+    import { storeToRefs } from 'pinia';
     import { useNotesStore } from '@/stores/notes';
     import Note from '@/components/Note.vue';
-    const notesStore = useNotesStore();
-    await notesStore.setNotes();
+    import NoNotes from '@/components/NoNotes.vue';
 
-    const notes = notesStore.getNotes;
+    const notesStore = useNotesStore();
+    const notesStoreRef = storeToRefs(notesStore);
+    await notesStore.setNotes();
+    const notes = notesStoreRef.getNotes;
 </script>
