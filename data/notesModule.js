@@ -221,7 +221,7 @@ module.exports.uploadNotePhoto = (db, config) => {
             }
 
             if (note.createdByID !== token.userId) {
-                errors.push('Permission denied');
+                errors.push('uploadNotePhoto: Permission denied');
                 return res.status(403).json({ errors });
             }
 
@@ -330,7 +330,7 @@ module.exports.updateNoteStatus = (db) => {
             }
 
             if (!note) {
-                errors.push('Permission denied');
+                errors.push('updateNoteStatus: no note returned; permission denied');
                 return res.status(403).json({ errors });
             }
 
@@ -396,7 +396,7 @@ module.exports.updateNoteReaction = (db) => {
             }
 
             if (!note) {
-                errors.push('Permission denied');
+                errors.push('updateNoteReaction: no note returned; permission denied');
                 return res.status(403).json({ errors });
             }
 
@@ -429,7 +429,7 @@ const sqlStatements = {
         INNER JOIN recipients r ON n.id = r.noteId
         WHERE r.noteId = ?
         AND r.recipientId = ?
-        AND r.status <> 'deleted'
+        AND ((r.status IS null) OR (r.status <> 'deleted'))
     `,
     "getNotesForRecipient": `
         SELECT n.id, n.createdById, n.message, n.imageUrl, n.style, n.color, r.reaction, r.status
