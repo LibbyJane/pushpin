@@ -4,6 +4,7 @@ const validationModule = require("./validationModule");
 const mediaModule = require('./mediaModule');
 const database = require('./database');
 const userRegistrationService = require('./modules/users/services/userRegistrationService');
+const uuid = require('uuid');
 
 module.exports.login = () => {
     return async (req, res) => {
@@ -179,12 +180,106 @@ module.exports.uploadProfilePhoto = (config) => {
     }
 }
 
+/**
+ * Creates a new invitation for the logged in user
+ * @returns {(function(*, *): Promise<*|undefined>)|*}
+ */
+module.exports.createInvitation = () => {
+    return async (req, res) => {
+        let errors = [];
+        const token = req.token;
+
+        if (!token) {
+            errors.push('no token found');
+            return res.status(500).json({ errors });
+        }
+
+        // Insert a new the invitation for the logged-in user.
+        const invitationCode = uuid.v4();
+        const createdAt = Math.floor((new Date().getTime()) / 1000);
+
+        // An invitation will expire after 30 days
+        const expiresAt = createdAt + (86_400 * 30);
+
+        const params = [invitationCode, token.userId, createdAt, expiresAt];
+
+        try {
+            const databaseManager = database.dbManager;
+            await databaseManager.execute(sqlStatements.insertInvitation, params);
+
+            return res.send({
+                "success": true,
+                "code": invitationCode,
+            });
+        } catch (err) {
+            errors.push('Failed to create a new invitation for the logged in user: ' + err.toString());
+            return res.status(500).json({errors});
+        }
+    }
+}
+
+/**
+ * Gets the details of the user who sent an invitation.
+ * @returns {(function(*, *): Promise<*|undefined>)|*}
+ */
+module.exports.getUserWhoSentInvite = () => {
+    return async (req, res) => {
+        let errors = [];
+        const token = req.token;
+
+        if (!token) {
+            errors.push('no token found');
+            return res.status(500).json({ errors });
+        }
+
+        // The inviteCode must be provided in the URL, and it MUST not be empty.
+        const inviteCode = req.params.code;
+
+        errors = validationModule.allStringsInArrayAreNotEmpty([
+            {
+                "name": "code",
+                "value": inviteCode,
+            },
+        ]);
+
+        if (errors.length !== 0) {
+            res.status(400).json({ errors });
+            return;
+        }
+
+        try {
+            const databaseManager = database.dbManager;
+
+            // Load the details of the invitation.
+            const invite = await databaseManager.getRow(sqlStatements.getInviteByCode, [inviteCode]);
+
+            if (!invite) {
+                errors.push('Failed to find invitation.  Invitation code may be incorrect, or the invitation may have expired.');
+                return res.status(400).json({errors});
+            }
+
+            // Load the user associated with the invitation
+            const user = await databaseManager.getRow(sqlStatements.getUserById, [invite.userId]);
+
+            if (!user) {
+                errors.push('Failed to user associated with invitation.  This should not happen.');
+                return res.status(500).json({errors});
+            }
+
+            return res.send(user);
+        } catch (err) {
+            errors.push('Failed to load the user who created the invitation: ' + err.toString());
+            return res.status(500).json({errors});
+        }
+    }
+}
+
 /***
- *
+ * Finds a user with a matching email address and returns it.
  * @param databaseManager
  * @param email
  * @param exceptionIfNotExisting
- * @returns {Promise<unknown>}
+ * @returns {Promise<null|object>}
  */
 const getUserByEmail = async (databaseManager, email, exceptionIfNotExisting = true) => {
     const user = await databaseManager.getRow(sqlStatements.getUserByEmail, [email]);
@@ -199,11 +294,46 @@ const getUserByEmail = async (databaseManager, email, exceptionIfNotExisting = t
     return user;
 }
 
+/***
+ * Finds a user with a matching email address and returns it.
+ * @param databaseManager
+ * @param {int} userId
+ * @param exceptionIfNotExisting
+ * @returns {Promise<null|object>}
+ */
+const getUserById = async (databaseManager, userId, exceptionIfNotExisting = true) => {
+    const user = await databaseManager.getRow(sqlStatements.getUserById, [userId]);
+
+    // If no matching user was found, return a login failure message.
+    if (!user) {
+        if (exceptionIfNotExisting) {
+            throw new Error(`could not find user with id ${userId}`);
+        }
+    }
+
+    return user;
+}
+
 const sqlStatements = {
+    getInviteByCode: `
+    SELECT userId, createdAt, expiresAt
+    FROM invitations
+    WHERE code = ?
+    AND expiresAt > strftime('%s', 'now')
+    `,
     getUserByEmail: `
     SELECT id, firstName, lastName, displayName, imageURL, email, password
     FROM users
     WHERE email = ?
+    `,
+    getUserById: `
+    SELECT id, firstName, lastName, displayName, imageURL
+    FROM users
+    WHERE id = ?
+    `,
+    insertInvitation: `
+    INSERT INTO invitations(code, userId, createdAt, expiresAt)
+    VALUES(?, ?, ?, ?);
     `,
     insertUser: `
     INSERT INTO users(firstName, lastName, displayName, email, uid, password)
