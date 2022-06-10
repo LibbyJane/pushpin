@@ -94,7 +94,7 @@ app.patch('/note/update_reaction/:noteId', tokens.checkTokenMiddleware({ "debug"
 app.post('/invite', tokens.checkTokenMiddleware({ "debug": config.debugMode }), userModule.createInvitation());
 
 // Get the details of the user who sent an invite
-app.get('/user/invite/:code', tokens.checkTokenMiddleware({ "debug": config.debugMode }), userModule.getUserWhoSentInvite());
+app.get('/user/invite/:code', userModule.getUserWhoSentInvite());
 
 // User Login
 app.post('/login', userModule.login());

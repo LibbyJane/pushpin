@@ -116,7 +116,7 @@ module.exports.uploadProfilePhoto = (config) => {
         // Make sure a file with the correct name was uploaded
         if (!req.files || (req.files.length === 0)) {
             errors.push('No files were found');
-            return res.status(400).json({errors});
+            return res.status(400).json({ errors });
         }
 
         // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
@@ -174,7 +174,7 @@ module.exports.uploadProfilePhoto = (config) => {
                 });
             } catch (err) {
                 errors.push('Failed to upload user photo: ' + err.toString());
-                return res.status(500).json({errors});
+                return res.status(500).json({ errors });
             }
         });
     }
@@ -213,7 +213,7 @@ module.exports.createInvitation = () => {
             });
         } catch (err) {
             errors.push('Failed to create a new invitation for the logged in user: ' + err.toString());
-            return res.status(500).json({errors});
+            return res.status(500).json({ errors });
         }
     }
 }
@@ -225,12 +225,6 @@ module.exports.createInvitation = () => {
 module.exports.getUserWhoSentInvite = () => {
     return async (req, res) => {
         let errors = [];
-        const token = req.token;
-
-        if (!token) {
-            errors.push('no token found');
-            return res.status(500).json({ errors });
-        }
 
         // The inviteCode must be provided in the URL, and it MUST not be empty.
         const inviteCode = req.params.code;
@@ -255,7 +249,7 @@ module.exports.getUserWhoSentInvite = () => {
 
             if (!invite) {
                 errors.push('Failed to find invitation.  Invitation code may be incorrect, or the invitation may have expired.');
-                return res.status(400).json({errors});
+                return res.status(400).json({ errors });
             }
 
             // Load the user associated with the invitation
@@ -263,13 +257,13 @@ module.exports.getUserWhoSentInvite = () => {
 
             if (!user) {
                 errors.push('Failed to user associated with invitation.  This should not happen.');
-                return res.status(500).json({errors});
+                return res.status(500).json({ errors });
             }
 
             return res.send(user);
         } catch (err) {
             errors.push('Failed to load the user who created the invitation: ' + err.toString());
-            return res.status(500).json({errors});
+            return res.status(500).json({ errors });
         }
     }
 }
