@@ -24,9 +24,10 @@
 </template>
 
 <script setup>
-    import { toRefs } from 'vue';
+    import { reactive, toRefs } from 'vue';
     import { storeToRefs } from 'pinia';
     import { useUserStore } from '@/stores/user';
+    import { useAPI } from '@/api/useAPI';
 
     import DefaultAvatarImage from '@/assets/icons/person.svg';
 
@@ -40,18 +41,23 @@
         showName: {
             type: String,
         },
+        userData: {
+            type: Object,
+        },
     });
 
-    let data = null;
-
-    const { userID, showName } = toRefs(props);
+    const { userID, showName, userData } = toRefs(props);
 
     function matchId(u) {
         return u.id === userID.value;
     }
 
-    if (!userID.value) {
-        // default is logged in user
+    let data = null;
+
+    if (userData.value) {
+        data = userData.value;
+    } else if (!userID.value) {
+        // assume the logged in user if no ID supplied
         data = userStoreRef.getInfo;
     } else if (userStore.getAuth) {
         const friends = userStoreRef.getFriends.value;
@@ -59,6 +65,5 @@
             const match = friends.filter(matchId);
             data = match[0];
         }
-    } else {
     }
 </script>

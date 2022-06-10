@@ -1,30 +1,50 @@
 <template>
     <main class="pg-invite">
         <div class="cols">
-            <div class="card col">
-                <h1>invite</h1>
-                <Toast
-                    v-if="showToastMessage"
-                    message="Copied to clipboard"
-                    icon="check"
-                    test="test"
-                />
-
-                <button type="button" v-on:click="inviteFriend">get invitationURL</button>
-                <Error v-if="error" :message="error" />
-                <button type="button" v-if="invitationURL" v-on:click="copyToClipboard">
-                    {{ invitationURL }}
-                </button>
-                <ShareLink v-if="invitationURL" :url="invitationURL" />
+            <div
+                class="note is-invitation"
+                :style="`background-image: url(${InvitationBg})`"
+            >
+                <header class="note-header">
+                    <PinImage />
+                </header>
+                <div class="note-message">
+                    <Toast
+                        v-if="showToastMessage"
+                        message="Copied to clipboard"
+                        icon="check"
+                        test="test"
+                    />
+                    <button type="button" v-on:click="copyToClipboard">
+                        <h4 class="invitation-heading">
+                            Here&rsquo;s your
+                            <strong>invitation</strong>
+                        </h4>
+                        <hr />
+                        <p v-on:click="copyToClipboard">
+                            Click to copy this link to share with a friend.
+                        </p>
+                        <p>You&rsquo;ll automatically connect when they register.</p>
+                        <p>
+                            <small>{{ invitationURL }}</small>
+                        </p>
+                    </button>
+                    <ShareLink :url="invitationURL" />
+                </div>
             </div>
         </div>
     </main>
 </template>
 
 <script setup>
-    import { ref, nextTick } from 'vue';
     import { usePageTitle } from '@/use/usePageTitle';
     usePageTitle('Invite a friend');
+
+    import InvitationBg from '@/assets/images/palm396.jpg';
+    import Paper from '@/assets/images/Paper.jpg';
+    import PinImage from '@/components/images/Pin.vue';
+
+    import { ref, nextTick } from 'vue';
 
     import Toast from '@/components/Toast.vue';
     import Error from '@/components/Error.vue';
@@ -34,25 +54,27 @@
 
     const userStore = useUserStore();
 
-    let invitationURL = ref(null);
+    const invitation = await userStore.generateInvitationCode();
+    const invitationURL = ref(`${window.location.origin}/invitation/${invitation.code}`);
+
     let error = ref(null);
+
     let showToastMessage = ref(false);
 
-    const inviteFriend = async () => {
-        const response = await userStore.generateInvitationCode();
+    // const generateInvitationCode = async () => {
+    //     if (invitationURL.value === null) {
+    //         const response = await userStore.generateInvitationCode();
 
-        if (response.success) {
-            console.log(`${window.location.origin}/signup/${response.code}`);
-            invitationURL.value = `${window.location.origin}/signup/${response.code}`;
-        } else {
-            error = response.error;
-        }
-    };
+    //         if (response.success) {
+    //             invitationURL.value = `${window.location.origin}/signup/${response.code}`;
+    //         } else {
+    //             error = response.error;
+    //         }
+    //     }
+    // };
 
     const copyToClipboard = async () => {
         showToastMessage.value = false;
-
-        console.log('clickety');
         navigator.clipboard.writeText(invitationURL.value);
         await nextTick();
         showToastMessage.value = true;

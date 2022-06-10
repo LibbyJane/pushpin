@@ -1,7 +1,7 @@
 <template>
     <aside v-if="message && visible" class="toast">
-        <p>icon? {{ icon }} {{ test }} {{ message }}</p>
         <img v-if="icon" :src="getImageUrl(icon)" class="icon" :alt="`${icon} icon`" />
+        <p>{{ message }}</p>
     </aside>
 </template>
 
@@ -30,6 +30,6 @@
     const setVisibility = () => {
         setTimeout(() => {
             visible.value = false;
-        }, 333000);
+        }, 3000);
     };
 </script>

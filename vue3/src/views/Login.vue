@@ -29,7 +29,7 @@
         </form>
 
         <aside class="sidebar">
-            <div class="card is-reversed align-top width-small" to="/login">
+            <div class="card is-alt align-top width-small" to="/login">
                 <h4>Don't have an account yet?</h4>
                 <p><RouterLink to="/signup">Sign up here</RouterLink></p>
             </div>

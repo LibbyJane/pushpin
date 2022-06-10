@@ -5,18 +5,9 @@ export const useSiteStore = defineStore({
     state: () => ({
         pageTitle: "Welcome"
     }),
-    // getters: {
-    //     getPageTitle(state) {
-    //         console.log('what dis', state.pageTitle, typeof state.pageTitle);
-    //         return state.pageTitle
-    //     }
-    // },
-    // actions: {
-    //     async setPageTitle(string) {
-    //         state.pageTitle = string;
-
-    //         await nextTick();
-    //         state.pageTitle = string;
-    //     },
-    // }
+    getters: {
+        getPageTitle(state) {
+            return state.pageTitle
+        }
+    }
 })

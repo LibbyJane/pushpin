@@ -44,7 +44,7 @@
 <script setup>
     import { storeToRefs } from 'pinia';
     import { useUserStore } from '@/stores/user';
-    import Invitation from '@/components/InvitationNote.vue';
+    import Invitation from '@/components/Invitation.vue';
     import Avatar from '@/components/Avatar.vue';
     import Welcome from '@/assets/images/welcome.svg';
     import DefaultAvatarImage from '@/assets/icons/person.svg';

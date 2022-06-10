@@ -18,9 +18,8 @@
         ,"layout/site-header"
         ;
 
-
-
 @import
+        "components/alert",
         "components/avatar"
         ,"components/buttons/base"
         ,"components/card"
@@ -29,6 +28,7 @@
         ,"components/forms/checkable"
         ,"components/forms/fields"
         ,"components/forms/multiselect"
+        ,"components/icons"
         ,"components/note-list"
         ,"components/note/layout"
         ,"components/note/base"
@@ -41,5 +41,6 @@
         ,"components/note/custom"
         ,"components/reactions"
         ,"components/heart-toggle"
-        ,"components/swatch"
+        ,"components/swatch",
+        "components/toast"
         ;

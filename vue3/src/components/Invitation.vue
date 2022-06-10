@@ -1,6 +1,7 @@
 <template>
     <RouterLink
-        to="/invite"
+        to="invite"
+        type="button"
         class="note is-invitation"
         :style="`background-image: url(${Invitation})`"
     >

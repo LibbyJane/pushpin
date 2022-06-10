@@ -62,16 +62,22 @@ const endpoints = {
     invite: {
         uri: `invite`,
         method: 'POST'
+    },
+
+    invitationIssuer: {
+        uri: `user/invite/`,
+        method: 'GET'
     }
 }
 
 export async function useAPI(endpoint, data, endpointID) {
-    console.log('endpoint, data, endpointID', endpoint, data, endpointID)
+    console.log('endpoint uri, method, data, endpointID', endpoint, data, endpointID)
     const userStore = useUserStore();
     const token = userStore && userStore.getAuth ? userStore.getAuth : null;
     // console.log('token', token)
 
     if (endpoint && endpoints[endpoint]) {
+        console.log('a', endpoints[endpoint]);
         let config = {
             headers: {},
             baseURL: apiBaseURL,
@@ -110,7 +116,8 @@ export async function useAPI(endpoint, data, endpointID) {
 
                 userStore.performLogout;
             }
-            return error.response.data.errors[0]
+
+            // return error.response.data.errors[0]
         }
 
         // return () => {

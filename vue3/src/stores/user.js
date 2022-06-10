@@ -109,11 +109,19 @@ export const useUserStore = defineStore({
 
         async generateInvitationCode() {
             const response = await useAPI(`invite`);
+            return response;
+        },
+
+        async getInvitationSender(id) {
+            console.log('invitation id', id);
+            const response = await useAPI(`invitationIssuer`, null, id);
 
             console.log('response', response);
 
             return response;
         },
+
+
     },
     persist: {
         enabled: true

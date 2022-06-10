@@ -21,7 +21,7 @@
     import { usePageTitle } from '@/use/usePageTitle';
     usePageTitle('My account');
 
-    import Invitation from '@/components/InvitationNote.vue';
+    import Invitation from '@/components/Invitation.vue';
     import UploadFile from '@/components/forms/UploadFile.vue';
 
     import { storeToRefs } from 'pinia';
