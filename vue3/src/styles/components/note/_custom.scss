@@ -21,8 +21,14 @@
 
     background-size: cover;
     border-radius: 0;
+    margin: 0 auto;
+    min-width: 100%;
     padding: 0 20%;
     text-align: center;
+
+    @include breakpoint(small) {
+        min-width: 25rem;
+    }
 
     .note-header {
         min-height: 0;
@@ -38,6 +44,7 @@
         text-transform: lowercase;
 
         strong {
+            display: block;
             font-size: var(--h4);
             font-weight: 700;
             text-transform: uppercase;

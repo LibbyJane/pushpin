@@ -88,7 +88,38 @@
 </template>
 
 <script setup>
-    import { reactive, ref, toRefs, computed } from 'vue';
+    import axios from 'axios';
+    let API_KEY = 'dc6zaTOxFJmzC';
+    let link = `https://api.giphy.com/v1/gifs/search?api_key=l0HlIwPWyBBUDAUgM&limit=25&offset=0&rating=g&lang=en&q=`;
+    let apiLink = link + 'killingeve';
+
+    axios
+        .get(apiLink)
+        .then((response) => {
+            console.log(response);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+
+    // // Require with the public beta key
+    // import giphy from 'giphy-api';
+    // const useGiphy = giphy('l0HlIwPWyBBUDAUgM');
+    // console.log('giphy?', giphy);
+    // useGiphy.search(
+    //     {
+    //         q: 'pokemon',
+    //         rating: 'g',
+    //     },
+    //     function (err, res) {
+    //         console.log('res', res);
+    //     }
+    // );
+
+    import { usePageTitle } from '@/use/usePageTitle';
+    usePageTitle('Send a note');
+
+    import { reactive, computed } from 'vue';
 
     import { useNotesStore } from '@/stores/notes';
     import { useUserStore } from '@/stores/user';

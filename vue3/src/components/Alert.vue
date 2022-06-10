@@ -1,6 +1,18 @@
-<script setup>
-    import { ref } from 'vue';
+<template>
+    <aside v-if="visible" :class="`alert ${variant ? 'is-' + variant : ''} `">
+        <header class="alert-header">
+            <h4 v-if="title" class="alert-title">{{ title }}</h4>
+            }
+            <button type="button" class="text" v-on:click="visible = false">
+                x
+                <span class="visually-hidden">Close notification</span>
+            </button>
+        </header>
+        <slot></slot>
+    </aside>
+</template>
 
+<script setup>
     const props = defineProps({
         variant: {
             type: String,
@@ -12,22 +24,4 @@
             type: Boolean,
         },
     });
-
-    // function handleCloseAlert() {
-    //     notesStore.setStatus(noteID, 'deleted');
-    // }
 </script>
-
-<template>
-    <aside v-if="visible" :className="`alert ${variant ? 'is-' + variant : ''} `">
-        <header className="alert-header">
-            <h4 v-if="title" className="alert-title">{{ title }}</h4>
-            }
-            <button type="button" class="text" v-on:click="visible = false">
-                x
-                <span className="visually-hidden">Close notification</span>
-            </button>
-        </header>
-        <slot></slot>
-    </aside>
-</template>

@@ -57,6 +57,11 @@ const endpoints = {
     profilePhoto: {
         uri: `upload/profile_photo`,
         method: 'POST'
+    },
+
+    invite: {
+        uri: `invite`,
+        method: 'POST'
     }
 }
 
@@ -98,13 +103,14 @@ export async function useAPI(endpoint, data, endpointID) {
             return response.data
 
         } catch (error) {
+            console.log('error', error)
             // console.log("There was a problem.", error)
             if (error.response.status === 403) {
                 console.log('bad token, logout')
 
                 userStore.performLogout;
             }
-
+            return error.response.data.errors[0]
         }
 
         // return () => {

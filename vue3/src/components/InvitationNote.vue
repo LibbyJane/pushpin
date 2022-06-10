@@ -10,7 +10,7 @@
         <div class="note-message">
             <h4 class="invitation-heading"><strong>Invite</strong> a&nbsp;friend</h4>
             <hr />
-            <p>Make someone&rsquo;s day and send them a note!</p>
+            <p>Make someone&rsquo;s day!</p>
         </div>
     </RouterLink>
 </template>

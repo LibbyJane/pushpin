@@ -1,7 +1,7 @@
 <script setup>
     import { reactive, ref, toRefs } from 'vue';
-    import HeartOutlineIcon from '@/assets/icons/heart-outline.svg';
-    import HeartIcon from '@/assets/icons/heart.svg';
+    import HeartOutlineIcon from '@/assets/icons/star-outline.svg';
+    import HeartIcon from '@/assets/icons/star.svg';
     import { useNotesStore } from '@/stores/notes';
 
     const notesStore = useNotesStore();

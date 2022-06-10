@@ -1,5 +1,5 @@
 <template>
-    <RouterLink v-if="friends.length" to="/create" class="note is-welcome">
+    <RouterLink v-if="friends && friends.length" to="/create" class="note is-welcome">
         <header class="note-header">
             <PinImage />
         </header>
@@ -25,7 +25,7 @@
     <Invitation />
 
     <RouterLink
-        v-if="userInfo.imageURL === null"
+        v-if="userInfo && userInfo.imageURL === null"
         to="/account"
         class="note is-update-profile"
     >

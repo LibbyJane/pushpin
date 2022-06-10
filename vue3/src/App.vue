@@ -4,12 +4,10 @@
     <RouterView v-slot="{ Component }">
         <template v-if="Component">
             <Transition mode="out-in">
-                <KeepAlive>
-                    <Suspense>
-                        <component :is="Component"></component>
-                        <template #fallback> Loading... </template>
-                    </Suspense>
-                </KeepAlive>
+                <Suspense>
+                    <component :is="Component"></component>
+                    <template #fallback> Loading... </template>
+                </Suspense>
             </Transition>
         </template>
     </RouterView>

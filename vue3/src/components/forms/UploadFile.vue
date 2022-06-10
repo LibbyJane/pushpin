@@ -28,7 +28,6 @@
 
     async function setImage(e) {
         let selected = e.target.files[0];
-        console.log('selected', selected);
 
         if (!selected) {
             noteErrors.image = 'Please select a file';
@@ -45,12 +44,5 @@
         }
 
         props.onChangeHandler(selected);
-        // fileUploadInput.value = null;
-        // fileUploadInput.type = 'text';
-        // console.log('?', fileUploadInput.type);
-        // fileUploadInput.type = 'file';
-        // console.log('?', fileUploadInput.type);
-
-        // await nextTick();
     }
 </script>

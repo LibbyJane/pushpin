@@ -1,0 +1,28 @@
+.error {
+    color: var(--danger);
+    display: flex;
+        align-items: center;
+    font-family: var(--font);
+    font-size: var(--sm);
+    position: relative;
+    padding: 0 0 var(--space-sm);
+
+    &::before {
+        --text-size: 16px;
+        --size: calc(var(--text-size) + 4px);
+
+        border-radius: 50%;
+        border: var(--border) var(--danger);
+        content: "!";
+        display: inline-block;
+        height: var(--size);
+        width: var(--size);
+            font-family: var(--font-hand);
+        font-size: var(--text-size);
+        line-height: var(--size);
+        margin-right: var(--space-xs);
+        text-indent: -3px;
+        text-align: center;
+        font-weight: 700;
+    }
+}

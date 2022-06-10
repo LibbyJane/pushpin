@@ -14,22 +14,36 @@
                 id="displayName"
                 type="displayName"
                 v-model="fields.displayName"
+                autocomplete="username"
                 required
             />
 
             <label for="email">email:</label>
-            <input id="email" type="email" v-model="fields.email" required />
+            <input
+                id="email"
+                type="email"
+                v-model="fields.email"
+                autocomplete="email"
+                required
+            />
 
             <!-- <Error  /> -->
 
-            <label for="password"> password: </label>
-            <input id="password" type="password" v-model="fields.password" required />
+            <label for="password">password:</label>
+            <input
+                id="password"
+                type="password"
+                v-model="fields.password"
+                autocomplete="new-password"
+                required
+            />
 
             <label for="confirmPassword">confirm password: </label>
             <input
                 id="confirmPassword"
                 type="password"
                 v-model="fields.confirmPassword"
+                autocomplete="new-password"
                 required
             />
             <!-- <Error name="password" class="error-feedback" /> -->
@@ -37,17 +51,35 @@
             <button class="btn" type="submit">create account</button>
         </form>
 
-        <div class="col card is-reversed align-top width-small">
-            <h4>Already have an account?</h4>
-            <p><RouterLink to="/login">Log in here</RouterLink></p>
-        </div>
+        <aside class="sidebar">
+            <div
+                v-if="!invitationSender"
+                class="card is-reversed align-top width-small"
+                to="/login"
+            >
+                <h4>Already have an account?</h4>
+                <p><RouterLink to="/login">Log in here </RouterLink></p>
+            </div>
+
+            <div v-else>
+                <Avatar :userID="invitationSender" showName="true" />
+            </div>
+        </aside>
     </main>
 </template>
 
 <script setup>
-    import { ref, reactive, provide, computed } from 'vue';
-    import { useUserStore } from '@/stores/user';
+    import { useRoute, useRouter } from 'vue-router';
+    import Avatar from '@/components/Avatar.vue';
+    const route = useRoute();
+    const router = useRouter();
+    const invitationSender = parseInt(route.params.id);
 
+    import { usePageTitle } from '@/use/usePageTitle';
+    usePageTitle('Welcome to Pushpin');
+
+    import { reactive } from 'vue';
+    import { useUserStore } from '@/stores/user';
     const userStore = useUserStore();
 
     const fields = reactive({
@@ -68,16 +100,6 @@
         confirmPassword: null,
     };
 
-    // watch(
-    //     fields.password.value: () => {
-    //         comparePasswords()
-    //     },
-
-    //     fields.confirmPassword.value: () => {
-    //         comparePasswords()
-    //     }
-    // );
-
     const comparePasswords = () => {
         if (
             fields.password &&
@@ -96,8 +118,8 @@
         const response = await userStore.performRegister(fields);
 
         if (response.data) {
-            userStore.updateAuth(data.tokenInfo);
-            userStore.updateInfo(data.user);
+            userStore.auth = data.tokenInfo;
+            userStore.info = data.user;
             console.log(userStore.getAuth.token, userStore.getInfo);
         } else if (response.error) {
             console.log(response.error);

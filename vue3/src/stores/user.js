@@ -35,6 +35,7 @@ export const useUserStore = defineStore({
 
         async performLogin(data) {
             const response = await useAPI(`login`, data);
+            console.log('response', response);
 
             if (response.tokenInfo) {
                 this.updateAuth(response.tokenInfo);
@@ -42,6 +43,8 @@ export const useUserStore = defineStore({
                 this.performSetFriends()
 
                 router.replace('/');
+            } else {
+                return response
             }
         },
 
@@ -104,9 +107,13 @@ export const useUserStore = defineStore({
             }
         },
 
-        updateInfo(data) {
-            this.info = data
-        }
+        async generateInvitationCode() {
+            const response = await useAPI(`invite`);
+
+            console.log('response', response);
+
+            return response;
+        },
     },
     persist: {
         enabled: true

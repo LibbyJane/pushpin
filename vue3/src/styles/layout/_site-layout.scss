@@ -293,6 +293,13 @@ button:disabled {
     flex: 0 0 auto;
 }
 
+
+.sidebar {
+    flex: 0 0 auto;
+    max-width: 25rem;
+    margin-left: auto;
+}
+
 .margin-left {
     margin-left: var(--space-md);
 }

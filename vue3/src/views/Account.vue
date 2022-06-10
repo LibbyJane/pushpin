@@ -1,7 +1,7 @@
 <template>
     <main class="pg-account">
-        <div className="cols">
-            <div className="card col">
+        <div class="cols">
+            <div class="card col">
                 <h1>hello {{ user.displayName }}</h1>
                 <UploadFile
                     fieldID="profilePhoto"
@@ -10,18 +10,22 @@
                 />
             </div>
 
-            <div className="card col">
-                <h1>hello {{ user.displayName }}</h1>
-            </div>
+            <aside class="sidebar">
+                <Invitation />
+            </aside>
         </div>
     </main>
 </template>
 
 <script setup>
-    import { ref, reactive } from 'vue';
+    import { usePageTitle } from '@/use/usePageTitle';
+    usePageTitle('My account');
+
+    import Invitation from '@/components/InvitationNote.vue';
+    import UploadFile from '@/components/forms/UploadFile.vue';
+
     import { storeToRefs } from 'pinia';
     import { useUserStore } from '@/stores/user';
-    import UploadFile from '@/components/forms/UploadFile.vue';
 
     const userStore = useUserStore();
     const storeRef = storeToRefs(userStore);

@@ -5,8 +5,9 @@
                 <img :src="Logo" alt="logo" />
             </RouterLink>
 
-            <!--  <h1 class="page-title">{headerTitle}</h1> -->
-            <h1 class="page-title">Welcome</h1>
+            <h1 class="page-title">
+                {{ siteStore.pageTitle }}
+            </h1>
         </div>
 
         <nav v-if="authenticated" class="user-nav">
@@ -52,15 +53,18 @@
 </template>
 
 <script setup>
-    import { ref, reactive } from 'vue';
     import { storeToRefs } from 'pinia';
     import Avatar from '@/components/Avatar.vue';
     import Logo from '@/assets/images/stamp-uk.svg';
-    import CreateIcon from '@/assets/icons/envelope.svg';
+    import CreateIcon from '@/assets/icons/note.svg';
     import LogoutIcon from '@/assets/icons/log-out.svg';
-    import { useUserStore } from '@/stores/user';
 
+    import { useUserStore } from '@/stores/user';
     const userStore = useUserStore();
     const storeRef = storeToRefs(userStore);
     const authenticated = storeRef.getAuth;
+
+    import { useSiteStore } from '@/stores/site';
+    const siteStore = useSiteStore();
+    const siteStoreRef = storeToRefs(siteStore);
 </script>

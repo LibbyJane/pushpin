@@ -1,41 +1,3 @@
-<script setup>
-    import { toRefs } from 'vue';
-    import { storeToRefs } from 'pinia';
-    import { useUserStore } from '@/stores/user';
-
-    import DefaultAvatarImage from '@/assets/icons/person.svg';
-
-    const userStore = useUserStore();
-    const storeRef = storeToRefs(userStore);
-
-    const props = defineProps({
-        userID: {
-            type: Number,
-        },
-        showName: {
-            type: String,
-        },
-    });
-
-    let data = null;
-
-    const { userID, showName } = toRefs(props);
-
-    function matchId(u) {
-        return u.id === userID.value;
-    }
-
-    if (userID.value) {
-        const friends = storeRef.getFriends.value;
-        if (friends) {
-            const match = friends.filter(matchId);
-            data = match[0];
-        }
-    } else {
-        data = storeRef.getInfo;
-    }
-</script>
-
 <template>
     <div v-if="data" class="avatar">
         <div
@@ -60,3 +22,43 @@
         <span v-if="showName" class="avatar-name">{{ data.displayName }}</span>
     </div>
 </template>
+
+<script setup>
+    import { toRefs } from 'vue';
+    import { storeToRefs } from 'pinia';
+    import { useUserStore } from '@/stores/user';
+
+    import DefaultAvatarImage from '@/assets/icons/person.svg';
+
+    const userStore = useUserStore();
+    const userStoreRef = storeToRefs(userStore);
+
+    const props = defineProps({
+        userID: {
+            type: Number,
+        },
+        showName: {
+            type: String,
+        },
+    });
+
+    let data = null;
+
+    const { userID, showName } = toRefs(props);
+
+    function matchId(u) {
+        return u.id === userID.value;
+    }
+
+    if (!userID.value) {
+        // default is logged in user
+        data = userStoreRef.getInfo;
+    } else if (userStore.getAuth) {
+        const friends = userStoreRef.getFriends.value;
+        if (friends) {
+            const match = friends.filter(matchId);
+            data = match[0];
+        }
+    } else {
+    }
+</script>
