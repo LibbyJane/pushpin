@@ -220,7 +220,6 @@ module.exports.createInvitation = () => {
 
 /**
  * Gets the details of the user who sent an invitation.
- * @returns {(function(*, *): Promise<*|undefined>)|*}
  */
 module.exports.getUserWhoSentInvite = () => {
     return async (req, res) => {
@@ -268,6 +267,135 @@ module.exports.getUserWhoSentInvite = () => {
     }
 }
 
+/**
+ * Accepts an invitation and adds the user who sent the invitation as a friend.
+ * Note, the invitation code must be sent in the URL.
+ */
+module.exports.acceptInvitation = () => {
+    return async (req, res) => {
+        let errors = [];
+
+        // The user MUST be logged in.
+        const token = req.token;
+
+        if (!token) {
+            errors.push('no token found');
+            return res.status(500).json({ errors });
+        }
+
+        // The inviteCode must be provided in the URL, and it MUST not be empty.
+        const inviteCode = req.params.code;
+
+        errors = validationModule.allStringsInArrayAreNotEmpty([
+            {
+                "name": "code",
+                "value": inviteCode,
+            },
+        ]);
+
+        if (errors.length !== 0) {
+            res.status(400).json({ errors });
+            return;
+        }
+
+        try {
+            const databaseManager = database.dbManager;
+
+            // Load the details of the invitation.
+            const invite = await databaseManager.getRow(sqlStatements.getInviteByCode, [inviteCode]);
+
+            if (!invite) {
+                errors.push('Failed to find invitation.  Invitation code may be incorrect, or the invitation may have expired.');
+                return res.status(400).json({ errors });
+            }
+
+            // Load the user associated with the invitation
+            const user = await databaseManager.getRow(sqlStatements.getUserById, [invite.userId]);
+
+            if (!user) {
+                errors.push('Failed to user associated with invitation.  This should not happen.');
+                return res.status(500).json({ errors });
+            }
+
+            const userId1 = getLowerUserId(token.userId, user.id);
+            const userId2 = getHigherUserId(token.userId, user.id);
+
+            // Make sure the friendship doesn't already exist.
+            const friendship = await databaseManager.getRow(sqlStatements.getExistingFriendship, [userId1, userId2]);
+
+            if (friendship) {
+                errors.push('A friendship already exists between these users.');
+                return res.status(500).json({ errors });
+            }
+
+            // Insert the friendship
+            const createdAt = Math.floor((new Date().getTime()) / 1000);
+            await databaseManager.getRow(sqlStatements.insertFriendship, [userId1, userId2, createdAt]);
+
+            // All done.
+            return res.send({
+                "success": true,
+            });
+        } catch (err) {
+            errors.push('Failed to load the user who created the invitation: ' + err.toString());
+            return res.status(500).json({ errors });
+        }
+    }
+}
+
+module.exports.getFriendsForLoggedInUser = () => {
+    return async (req, res) => {
+        const errors = [];
+
+        const token = req.token;
+        if (!token) {
+            errors.push('no token found');
+            return res.status(500).json({ errors });
+        }
+
+        try {
+            const databaseManager = database.dbManager;
+
+            // Get the friends for the logged in user.
+            const friends = await databaseManager.getAll(sqlStatements.getFriends, [token.userId, token.userId]);
+
+            // All done.
+            return res.send(friends);
+        } catch (err) {
+            errors.push('Failed to load friends: ' + err.toString());
+            return res.status(500).json({ errors });
+        }
+    }
+};
+
+/**
+ * Gets the lower of the two userIds
+ * @param {number} userId1
+ * @param {number} userId2
+ * @returns {*}
+ */
+const getLowerUserId = (userId1, userId2) => {
+    if (userId1 < userId2) {
+        return userId1;
+    }
+
+    return userId2;
+}
+
+/**
+ * Gets the highest of the two userIds
+ * @param {number} userId1
+ * @param {number} userId2
+ * @returns {*}
+ */
+const getHigherUserId = (userId1, userId2) => {
+    if (userId1 > userId2) {
+        return userId1;
+    }
+
+    return userId2;
+}
+
 /***
  * Finds a user with a matching email address and returns it.
  * @param databaseManager
@@ -309,6 +437,27 @@ const getUserById = async (databaseManager, userId, exceptionIfNotExisting = tru
 }
 
 const sqlStatements = {
+    getExistingFriendship: `
+    SELECT userId1, userId2, createdAt
+    FROM friends
+    WHERE userId1 = ?
+    AND userId2 = ?
+    `,
+    getFriends: `
+    SELECT id, firstName, lastName, displayName, imageURL
+    FROM users
+    WHERE id IN (
+        SELECT userId2
+        FROM friends
+        WHERE userId1 = ?
+        
+        UNION
+        
+        SELECT userId1
+        FROM friends
+        WHERE userId2 = ?        
+    )
+    `,
     getInviteByCode: `
     SELECT userId, createdAt, expiresAt
     FROM invitations
@@ -324,6 +473,10 @@ const sqlStatements = {
     SELECT id, firstName, lastName, displayName, imageURL
     FROM users
     WHERE id = ?
+    `,
+    insertFriendship: `
+    INSERT INTO friends(userId1, userId2, createdAt)
+    VALUES(?, ?, ?);
     `,
     insertInvitation: `
     INSERT INTO invitations(code, userId, createdAt, expiresAt)

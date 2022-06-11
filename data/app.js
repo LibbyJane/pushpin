@@ -90,11 +90,17 @@ app.patch('/note/update_status/:noteId', tokens.checkTokenMiddleware({ "debug": 
 // This is a PATCH request.  Pass the noteId in the url, and send { "reaction": "loved" } in the JSON Payload.
 app.patch('/note/update_reaction/:noteId', tokens.checkTokenMiddleware({ "debug": config.debugMode }), notesModule.updateNoteReaction(db));
 
-// Create a new invitation for the logged in user.
+// Create a new invitation for the logged-in user.
 app.post('/invite', tokens.checkTokenMiddleware({ "debug": config.debugMode }), userModule.createInvitation());
+
+// Accept an invitation for a logged-in user
+app.post('/invite/accept/:code', tokens.checkTokenMiddleware({ "debug": config.debugMode }), userModule.acceptInvitation());
 
 // Get the details of the user who sent an invite
 app.get('/user/invite/:code', userModule.getUserWhoSentInvite());
+
+// Get the friends of the logged-in user
+app.get('/friends', tokens.checkTokenMiddleware({ "debug": config.debugMode }), userModule.getFriendsForLoggedInUser());
 
 // User Login
 app.post('/login', userModule.login());
