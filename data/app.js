@@ -102,6 +102,9 @@ app.get('/user/invite/:code', userModule.getUserWhoSentInvite());
 // Get the friends of the logged-in user
 app.get('/friends', tokens.checkTokenMiddleware({ "debug": config.debugMode }), userModule.getFriendsForLoggedInUser());
 
+// Performs a user search, pass in a query string like ?query=Libby
+app.get('/user/search', tokens.checkTokenMiddleware({ "debug": config.debugMode }), userModule.userSearch());
+
 // User Login
 app.post('/login', userModule.login());
 

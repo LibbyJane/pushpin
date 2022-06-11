@@ -5,6 +5,8 @@ const mediaModule = require('./mediaModule');
 const database = require('./database');
 const userRegistrationService = require('./modules/users/services/userRegistrationService');
 const uuid = require('uuid');
+const url = require('url');
+const querystring = require('querystring');
 
 module.exports.login = () => {
     return async (req, res) => {
@@ -182,7 +184,6 @@ module.exports.uploadProfilePhoto = (config) => {
 
 /**
  * Creates a new invitation for the logged in user
- * @returns {(function(*, *): Promise<*|undefined>)|*}
  */
 module.exports.createInvitation = () => {
     return async (req, res) => {
@@ -343,6 +344,9 @@ module.exports.acceptInvitation = () => {
     }
 }
 
+/**
+ * Returns the basic user information about the logged-in user.
+ */
 module.exports.getFriendsForLoggedInUser = () => {
     return async (req, res) => {
         const errors = [];
@@ -358,6 +362,104 @@ module.exports.getFriendsForLoggedInUser = () => {
 
             // Get the friends for the logged in user.
             const friends = await databaseManager.getAll(sqlStatements.getFriends, [token.userId, token.userId]);
+
+            // All done.
+            return res.send(friends);
+        } catch (err) {
+            errors.push('Failed to load friends: ' + err.toString());
+            return res.status(500).json({ errors });
+        }
+    }
+};
+
+/**
+ * Searches the user database for users with matching search terms in firstName, lastName, displayName or emailAddress.
+ */
+module.exports.userSearch = () => {
+    return async (req, res) => {
+        const errors = [];
+
+        const token = req.token;
+        if (!token) {
+            errors.push('no token found');
+            return res.status(500).json({ errors });
+        }
+
+        const requestUrl = new URL(req.url, `https://${req.headers.host}/`);
+        const query = new URLSearchParams(requestUrl.search);
+        const entries = query.entries();
+
+        if (entries.length === 0) {
+            errors.push('No query string found.  Please provide a query term using a ?query= in the url');
+            return res.status(400).json({ errors });
+        }
+
+        const firstEntry = entries.next();
+
+        if ((!firstEntry) || (!firstEntry.value)) {
+            errors.push('No query string found.  Please provide a query term using a ?query= in the url');
+            return res.status(400).json({ errors });
+        }
+
+        const queryKey = firstEntry.value[0].toLowerCase();
+        const queryValue = firstEntry.value[1].toLowerCase().trim();
+
+        if ((queryKey !== 'query') || (queryValue.length === 0)) {
+            errors.push('No valid query string found.  Please provide a query term using a ?query= in the url');
+            return res.status(400).json({ errors });
+        }
+
+        // Split the query value into separate words
+        const searchTerms = queryValue.split(' ');
+
+        try {
+            const databaseManager = database.dbManager;
+
+            let sql = `
+            SELECT u.id, u.firstName, u.lastName, u.displayName, u.imageURL
+            FROM users u
+            `;
+
+            const params = [];
+
+            if (searchTerms.length > 2) {
+                errors.push('For now you may only provide a maximum of two search keywords');
+                return res.status(400).json({ errors });
+            }
+
+            if (searchTerms.length === 1) {
+                const searchTerm = searchTerms[0];
+                sql += `
+                WHERE firstName LIKE ?
+                 OR lastName like ?
+                 OR displayName like ?
+                 OR email like ?
+                `
+
+                params.push('%' + searchTerm + '%');
+                params.push('%' + searchTerm + '%');
+                params.push('%' + searchTerm + '%');
+                params.push('%' + searchTerm + '%');
+            } else {
+                const searchTerm1 = searchTerms[0];
+                const searchTerm2 = searchTerms[1];
+
+                sql += `
+                  WHERE (
+                    ((firstName LIKE ?) AND (lastName LIKE ?))
+                    OR
+                    ((firstName LIKE ?) AND (lastName LIKE ?))
+                  )
+                `;
+
+                params.push('%' + searchTerm1 + '%');
+                params.push('%' + searchTerm2 + '%');
+                params.push('%' + searchTerm2 + '%');
+                params.push('%' + searchTerm1 + '%');
+            }
+
+            // Get the friends for the logged in user.
+            const friends = await databaseManager.getAll(sql, params);
 
             // All done.
             return res.send(friends);
