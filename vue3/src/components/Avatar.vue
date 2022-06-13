@@ -54,13 +54,12 @@
 
     let data = null;
 
-    if (userData.value) {
+    if (!userID.value || userID.value === userStore.info.id) {
+        data = userStoreRef.info.value;
+    } else if (userData.value) {
         data = userData.value;
-    } else if (!userID.value) {
-        // assume the logged in user if no ID supplied
-        data = userStoreRef.getInfo;
     } else if (userStore.getAuth) {
-        const friends = userStoreRef.getFriends.value;
+        const friends = userStoreRef.friends.value;
         if (friends) {
             const match = friends.filter(matchId);
             data = match[0];

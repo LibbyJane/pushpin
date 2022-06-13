@@ -1,10 +1,5 @@
 <template>
-    <RouterLink
-        to="invite"
-        type="button"
-        class="note is-invitation"
-        :style="`background-image: url(${Invitation})`"
-    >
+    <RouterLink to="invite" type="button" class="note is-invitation">
         <header class="note-header">
             <PinImage />
         </header>
@@ -17,7 +12,5 @@
 </template>
 
 <script setup>
-    import Invitation from '@/assets/images/palm396.jpg';
-    import Paper from '@/assets/images/Paper.jpg';
     import PinImage from '@/components/images/Pin.vue';
 </script>

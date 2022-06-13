@@ -1,24 +1,3 @@
-<script setup>
-    import Reactions from '@/components/Reactions.vue';
-    import HeartToggle from '@/components/HeartToggle.vue';
-    import Avatar from '@/components/Avatar.vue';
-    import PinImage from '@/components/images/Pin.vue';
-    import StampFrameImage from '@/components/images/StampFrame.vue';
-    import { useNotesStore } from '@/stores/notes';
-    const notesStore = useNotesStore();
-
-    defineProps({
-        data: {
-            type: Object,
-            required: true,
-        },
-    });
-
-    function handleDelete(noteID) {
-        notesStore.setStatus(noteID, 'deleted');
-    }
-</script>
-
 <template>
     <div
         v-if="data.status !== 'deleted'"
@@ -68,3 +47,24 @@
         </footer>
     </div>
 </template>
+
+<script setup>
+    import Reactions from '@/components/Reactions.vue';
+    import HeartToggle from '@/components/HeartToggle.vue';
+    import Avatar from '@/components/Avatar.vue';
+    import PinImage from '@/components/images/Pin.vue';
+    import StampFrameImage from '@/components/images/StampFrame.vue';
+    import { useNotesStore } from '@/stores/notes';
+    const notesStore = useNotesStore();
+
+    defineProps({
+        data: {
+            type: Object,
+            required: true,
+        },
+    });
+
+    function handleDelete(noteID) {
+        notesStore.setStatus(noteID, 'deleted');
+    }
+</script>

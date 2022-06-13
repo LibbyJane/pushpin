@@ -19,7 +19,14 @@
         grid-area:  span 1 / span 4;
     }
 
-    background-size: cover;
+    background: {
+        blend-mode: normal;
+        color: #365d6e;
+        image: url("@/assets/images/palm396.jpg");
+        position: top left;
+        size: cover;
+    }
+
     border-radius: 0;
     margin: 0 auto;
     min-width: 100%;
@@ -65,11 +72,15 @@
     }
 
     .note-message {
+
         padding: var(--space-md);
         position: relative;
 
         &::before {
-            background: url("@/assets/images/paper.jpg") ;
+            background: {
+                color: white;
+                image: url("@/assets/images/paper.jpg");
+            }
             border: 3px solid var(--heading);
             border-width: 0 3px;
             content: '';
@@ -92,7 +103,7 @@
         grid-area:  span 1 / span 3;
     }
 
-    background: url("@/assets/images/paper.jpg") ;
+    background: url("@/assets/images/paper.jpg");
     border-radius: 0;
     text-align: center;
 }

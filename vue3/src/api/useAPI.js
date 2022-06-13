@@ -64,8 +64,18 @@ const endpoints = {
         method: 'POST'
     },
 
+    acceptInvitation: {
+        uri: `invite/accept/`,
+        method: 'POST'
+    },
+
     invitationIssuer: {
         uri: `user/invite/`,
+        method: 'GET'
+    },
+
+    friends: {
+        uri: `friends`,
         method: 'GET'
     }
 }
@@ -77,7 +87,6 @@ export async function useAPI(endpoint, data, endpointID) {
     // console.log('token', token)
 
     if (endpoint && endpoints[endpoint]) {
-        console.log('a', endpoints[endpoint]);
         let config = {
             headers: {},
             baseURL: apiBaseURL,

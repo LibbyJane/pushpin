@@ -17,7 +17,7 @@
     import { toRefs } from 'vue';
     import { useUserStore } from '@/stores/user';
     const userStore = useUserStore();
-    const user = userStore.getInfo;
+    const user = userStore.info;
 
     const props = defineProps({
         url: {

@@ -1,5 +1,5 @@
 <template>
-    <RouterLink v-if="friends && friends.length" to="/create" class="note is-welcome">
+    <RouterLink v-if="friends" to="/create" class="note is-welcome">
         <header class="note-header">
             <PinImage />
         </header>
@@ -22,8 +22,6 @@
         </div>
     </div>
 
-    <Invitation />
-
     <RouterLink
         v-if="userInfo && userInfo.imageURL === null"
         to="/account"
@@ -39,6 +37,8 @@
             <p>It helps your friends see which notes you've sent them.</p>
         </div>
     </RouterLink>
+
+    <Invitation />
 </template>
 
 <script setup>
@@ -53,7 +53,9 @@
     import Tape from '@/assets/images/Tape.svg';
 
     const userStore = useUserStore();
-    const storeRef = storeToRefs(userStore);
-    const userInfo = storeRef.getInfo;
-    const friends = storeRef.getFriends;
+    const userStoreRef = storeToRefs(userStore);
+    const userInfo = userStoreRef.info;
+    const friends = userStoreRef.friends;
+    console.log('userInfo?', userInfo.value);
+    console.log('friends?', friends.value);
 </script>

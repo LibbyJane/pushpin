@@ -1,3 +1,27 @@
+<template>
+    <ul class="list-reactions">
+        <li v-for="reaction in reactions">
+            <label class="checkable is-reaction">
+                <input
+                    type="radio"
+                    :name="`reaction-${noteID}`"
+                    :value="reaction.id"
+                    :id="reaction.id"
+                    v-model="checked"
+                    v-on:change="handleChange()"
+                />
+                <img
+                    :src="getImageUrl(reaction.id)"
+                    class="icon"
+                    :alt="`reaction-${reaction.name}`"
+                />
+
+                <span class="visually-hidden">{{ reaction.name }}</span>
+            </label>
+        </li>
+    </ul>
+</template>
+
 <script setup>
     import { reactive, ref, toRefs } from 'vue';
     import { useNotesStore } from '@/stores/notes';
@@ -50,27 +74,3 @@
         notesStore.setReaction(noteID.value, checked.value);
     }
 </script>
-
-<template>
-    <ul class="list-reactions">
-        <li v-for="reaction in reactions">
-            <label class="checkable is-reaction">
-                <input
-                    type="radio"
-                    :name="`reaction-${noteID}`"
-                    :value="reaction.id"
-                    :id="reaction.id"
-                    v-model="checked"
-                    v-on:change="handleChange()"
-                />
-                <img
-                    :src="getImageUrl(reaction.id)"
-                    class="icon"
-                    :alt="`reaction-${reaction.name}`"
-                />
-
-                <span class="visually-hidden">{{ reaction.name }}</span>
-            </label>
-        </li>
-    </ul>
-</template>

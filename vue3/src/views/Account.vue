@@ -29,7 +29,7 @@
 
     const userStore = useUserStore();
     const storeRef = storeToRefs(userStore);
-    const user = storeRef.getInfo;
+    const user = storeRef.info;
 
     const setProfilePhoto = async (selected) => {
         await userStore.updatePhoto(selected);

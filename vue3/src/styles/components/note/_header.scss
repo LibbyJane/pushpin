@@ -20,6 +20,7 @@
     right: 0;
     left: 0;
     filter: sepia(1) hue-rotate(160deg) saturate(3);
+    transform-origin: center;
     z-index: 15;
 
     // .is-stickynote & {

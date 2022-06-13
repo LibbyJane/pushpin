@@ -58,7 +58,7 @@ router.beforeEach(async (to, from, next) => {
     if (!userStore.getAuth && to.meta.requiresAuth) {
         next('/login')
     } else if (userStore.getAuth && !to.meta.requiresAuth) {
-        console.log('hide login page from authenticated users')
+        // console.log('hide login page from authenticated users')
         next('/')
     } else {
         next();

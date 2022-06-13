@@ -88,19 +88,19 @@
 </template>
 
 <script setup>
-    import axios from 'axios';
-    let API_KEY = 'dc6zaTOxFJmzC';
-    let link = `https://api.giphy.com/v1/gifs/search?api_key=l0HlIwPWyBBUDAUgM&limit=25&offset=0&rating=g&lang=en&q=`;
-    let apiLink = link + 'killingeve';
+    // import axios from 'axios';
+    // let API_KEY = 'dc6zaTOxFJmzC';
+    // let link = `https://api.giphy.com/v1/gifs/search?api_key=l0HlIwPWyBBUDAUgM&limit=25&offset=0&rating=g&lang=en&q=`;
+    // let apiLink = link + 'killingeve';
 
-    axios
-        .get(apiLink)
-        .then((response) => {
-            console.log(response);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+    // axios
+    //     .get(apiLink)
+    //     .then((response) => {
+    //         console.log(response);
+    //     })
+    //     .catch((error) => {
+    //         console.log(error);
+    //     });
 
     // // Require with the public beta key
     // import giphy from 'giphy-api';
@@ -119,7 +119,7 @@
     import { usePageTitle } from '@/use/usePageTitle';
     usePageTitle('Send a note');
 
-    import { reactive, computed } from 'vue';
+    import { reactive, computed, watch } from 'vue';
 
     import { useNotesStore } from '@/stores/notes';
     import { useUserStore } from '@/stores/user';
@@ -133,7 +133,9 @@
 
     const notesStore = useNotesStore();
     const userStore = useUserStore();
-    const user = userStore.getInfo;
+    const user = userStore.info;
+
+    console.log('user', user.id);
 
     const styles = [
         { value: 'stickynote', label: 'Sticky Note' },
@@ -163,6 +165,8 @@
     };
 
     let noteData = reactive(Object.create(noteDataInitial));
+    noteData.createdByID = user.id;
+    console.log('note data', noteData);
 
     const noteErrors = reactive({
         style: null,
@@ -175,7 +179,7 @@
 
     let notePhoto = null;
 
-    let friendsList = userStore.getFriends.map(formatFriendData);
+    let friendsList = userStore.friends.map(formatFriendData);
 
     const alert = reactive({
         variant: 'success',
@@ -207,9 +211,16 @@
         noteData.color = color;
     }
 
+    watch(noteData, async (newNoteData, oldNoteData) => {
+        if (alert.visible) {
+            alert.visible = false;
+        }
+    });
+
     async function handleSubmit(e) {
         e.preventDefault();
         let outcome = null;
+        console.log('note data', noteData);
 
         if (noteHasImage) {
             outcome = await notesStore.sendNote(noteData, notePhoto);

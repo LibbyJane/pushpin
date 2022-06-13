@@ -108,14 +108,14 @@
     const router = useRouter();
 
     let invitedBy = reactive(null);
+    let invitationCode = route.params.id;
 
-    if (route.params.id) {
-        invitedBy = await userStore.getInvitationSender(route.params.id);
-        console.log('invited by', invitedBy);
+    if (invitationCode) {
+        invitedBy = await userStore.invitationSender(invitationCode);
     }
 
-    console.log('invitation id', route.params.id);
-    // const invitedBy = route.params.id ? userStore.getInvitationSender(parseInt(route.params.id)) : null;
+    console.log('invitation id', invitationCode);
+    // const invitedBy = route.params.id ? userStore.invitationSender(parseInt(route.params.id)) : null;
     console.log('invited by', invitedBy);
 
     const fields = reactive({
@@ -151,18 +151,10 @@
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const response = await userStore.performRegister(fields);
+        const outcome = await userStore.performSignUp(fields, invitationCode);
 
-        if (response.data) {
-            userStore.auth = data.tokenInfo;
-            userStore.info = data.user;
-
-            if (invitedBy) {
-                // add to friends list
-            }
-            console.log(userStore.getAuth.token, userStore.getInfo);
-        } else if (response.error) {
-            console.log(response.error);
+        if (outcome) {
+            console.log(outcome);
         }
     };
 </script>
