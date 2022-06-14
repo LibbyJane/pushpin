@@ -28,8 +28,8 @@
         class="note is-update-profile"
     >
         <header class="note-header">
-            <img class="tape" :src="Tape" alt="Tape" />
-            <img class="tape" :src="Tape" alt="Tape" />
+            <Tape cssClass="tape" />
+            <Tape cssClass="tape" />
         </header>
         <Avatar />
         <div class="note-message">
@@ -50,7 +50,7 @@
     import DefaultAvatarImage from '@/assets/icons/person.svg';
     import Paper from '@/assets/images/Paper.jpg';
     import PinImage from '@/components/images/Pin.vue';
-    import Tape from '@/assets/images/Tape.svg';
+    import Tape from '@/components/images/Tape.vue';
 
     const userStore = useUserStore();
     const userStoreRef = storeToRefs(userStore);

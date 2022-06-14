@@ -59,18 +59,6 @@
         }
     }
 
-    hr {
-        background: {
-            // image: @/assets/images/Swoosh.svg ;
-            image: url("@/assets/images/Swoosh.svg") ;
-            size: contain;
-            position: center;
-            repeat: no-repeat;
-        }
-        border: 0;
-        height: var(--space-xs);
-    }
-
     .note-message {
 
         padding: var(--space-md);
@@ -120,3 +108,15 @@
         }
     }
 }
+
+hr {
+        background: {
+            // image: @/assets/images/Swoosh.svg ;
+            image: url("@/assets/images/Swoosh.svg") ;
+            size: contain;
+            position: center;
+            repeat: no-repeat;
+        }
+        border: 0;
+        height: var(--space-xs);
+    }

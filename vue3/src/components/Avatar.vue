@@ -1,5 +1,5 @@
 <template>
-    <div v-if="data" class="avatar">
+    <div v-if="data" class="avatar" :data-size="size">
         <div
             v-if="data.imageURL"
             class="avatar-image"
@@ -43,6 +43,9 @@
         },
         userData: {
             type: Object,
+        },
+        size: {
+            type: String,
         },
     });
 

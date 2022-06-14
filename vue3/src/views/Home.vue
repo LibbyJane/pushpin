@@ -1,6 +1,7 @@
 <template>
-    <main class="pg-home">
+    <main class="pg-home cols">
         <NotesList />
+        <FriendsList />
     </main>
 </template>
 
@@ -9,4 +10,5 @@
     usePageTitle('Welcome');
 
     import NotesList from '@/components/NotesList.vue';
+    import FriendsList from '@/components/FriendsList.vue';
 </script>

@@ -12,7 +12,6 @@
     import NoNotes from '@/components/NoNotes.vue';
 
     const notesStore = useNotesStore();
-    const notesStoreRef = storeToRefs(notesStore);
+    const { notes } = storeToRefs(notesStore);
     await notesStore.setNotes();
-    const notes = notesStoreRef.getNotes;
 </script>

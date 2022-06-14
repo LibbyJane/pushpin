@@ -6,14 +6,19 @@
 }
 
 .avatar-image {
+
     background-position: center;
     background-size: cover;
     border-radius: 50%;
     display: inline-flex;
-        height: 3rem;
-        width: 3rem;
+        height: var(--avatar-image-size);
+        width: var(--avatar-image-size);
     overflow: hidden;
     position: relative;
+
+    [data-size="sm"] & {
+        --avatar-image-size: 2rem;
+    }
 
     img {
         opacity: 0;

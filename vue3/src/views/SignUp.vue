@@ -99,24 +99,19 @@
     import PinImage from '@/components/images/Pin.vue';
 
     import { ref, reactive } from 'vue';
-    import { useRoute, useRouter } from 'vue-router';
     import { useUserStore } from '@/stores/user';
     import Avatar from '@/components/Avatar.vue';
 
     const userStore = useUserStore();
-    const route = useRoute();
-    const router = useRouter();
 
-    let invitedBy = reactive(null);
+    import { useRoute } from 'vue-router';
+    const route = useRoute();
     let invitationCode = route.params.id;
+    let invitedBy = reactive(null);
 
     if (invitationCode) {
         invitedBy = await userStore.invitationSender(invitationCode);
     }
-
-    console.log('invitation id', invitationCode);
-    // const invitedBy = route.params.id ? userStore.invitationSender(parseInt(route.params.id)) : null;
-    console.log('invited by', invitedBy);
 
     const fields = reactive({
         firstName: null,

@@ -47,19 +47,17 @@
 }
 
 .page-title {
+    background: url("@/assets/images/paper-lined.jpg") top left repeat;
     box-shadow: var(--box-shadow);
+    color: var(--text);
     display: block;
     // font-size: 1.5rem;
-    font-weight: 500;
-    padding: var(--space);
-    background: url("@/assets/images/paper-lined.jpg") top left repeat;
-    color: var(--text);
     font-family: var(--font-hand);
-
+    font-weight: 500;
     margin: 0 auto auto 0;
-    transform: translateY(-0.15rem) ;
+    padding: var(--space);
+    transform: translateY(-0.15rem);
 }
-
 
 .user-nav {
     font-family: var(--font-hand);

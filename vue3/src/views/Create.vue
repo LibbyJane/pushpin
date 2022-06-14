@@ -88,34 +88,6 @@
 </template>
 
 <script setup>
-    // import axios from 'axios';
-    // let API_KEY = 'dc6zaTOxFJmzC';
-    // let link = `https://api.giphy.com/v1/gifs/search?api_key=l0HlIwPWyBBUDAUgM&limit=25&offset=0&rating=g&lang=en&q=`;
-    // let apiLink = link + 'killingeve';
-
-    // axios
-    //     .get(apiLink)
-    //     .then((response) => {
-    //         console.log(response);
-    //     })
-    //     .catch((error) => {
-    //         console.log(error);
-    //     });
-
-    // // Require with the public beta key
-    // import giphy from 'giphy-api';
-    // const useGiphy = giphy('l0HlIwPWyBBUDAUgM');
-    // console.log('giphy?', giphy);
-    // useGiphy.search(
-    //     {
-    //         q: 'pokemon',
-    //         rating: 'g',
-    //     },
-    //     function (err, res) {
-    //         console.log('res', res);
-    //     }
-    // );
-
     import { usePageTitle } from '@/use/usePageTitle';
     usePageTitle('Send a note');
 
@@ -135,8 +107,6 @@
     const userStore = useUserStore();
     const user = userStore.info;
 
-    console.log('user', user.id);
-
     const styles = [
         { value: 'stickynote', label: 'Sticky Note' },
         { value: 'polaroid', label: 'Polaroid' },
@@ -155,18 +125,19 @@
         { value: 'var(--note-green)', label: 'Green' },
     ];
 
+    import { useRoute } from 'vue-router';
+    let recipientID = useRoute().params.id;
+
     const noteDataInitial = {
-        style: 'polaroid',
+        style: 'stickynote',
         message: null,
         color: null,
         imageURL: null,
         createdByID: user.id,
-        recipientsList: [],
+        recipientsList: recipientID ? [recipientID] : [],
     };
 
-    let noteData = reactive(Object.create(noteDataInitial));
-    noteData.createdByID = user.id;
-    console.log('note data', noteData);
+    let noteData = reactive(noteDataInitial);
 
     const noteErrors = reactive({
         style: null,

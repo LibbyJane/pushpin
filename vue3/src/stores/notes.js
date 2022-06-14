@@ -4,17 +4,13 @@ import { useAPI } from '@/api/useAPI'
 export const useNotesStore = defineStore({
     id: 'notes',
     state: () => ({
-        data: null
+        notes: null
     }),
-    getters: {
-        getNotes(state) {
-            return state.data
-        }
-    },
+
     actions: {
         async setNotes() {
             const response = await useAPI(`notes`);
-            this.data = response
+            this.notes = response
         },
 
         async sendNote(noteData, imageData) {
@@ -31,16 +27,20 @@ export const useNotesStore = defineStore({
         async setReaction(noteID, reactionID) {
             const response = await useAPI(`noteReaction`, { "reaction": `${reactionID}` }, noteID)
             // if (response.success) {
-            //     this.data[noteID].reaction = reactionID;(response, status)
+            //     this.notes[noteID].reaction = reactionID;(response, status)
             // }
         },
         async setStatus(noteID, status) {
             const response = await useAPI(`noteStatus`, { "status": `${status}` }, noteID)
             console.log(response, status)
-            // if (response.success) {
-            //     this.data[noteID].status = status;
-            // }
-        },
+            if (response.success) {
+                if (status = 'deleted') {
+                    console.log('initial data', this.notes);
+                    this.notes = this.notes.filter(note => { return note.id !== noteID })
+                    console.log('filtered data', this.notes);
+                }
+            }
+        }
     },
     persist: {
         enabled: true

@@ -21,6 +21,10 @@
     transition: all 0.3s ease;
     position: relative;
 
+    &.is-lined {
+        background: url("@/assets/images/paper-lined.jpg") top left repeat;
+    }
+
     &.is-alt {
         background: {
             image: url('@/assets/images/paper-green.jpg'),
