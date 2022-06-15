@@ -69,9 +69,20 @@
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        formError.value = await userStore.performLogin({
+        const outcome = await userStore.performLogin({
             email: fields.email.value,
             password: fields.password.value,
         });
+
+        console.log('outcome', outcome);
+
+        if (outcome.error) {
+            formError.value = outcome.error;
+        } else if (outcome.errors) {
+            for (let error of outcome.errors) {
+                console.log('error', error);
+                formError.value += `${error}`;
+            }
+        }
     };
 </script>

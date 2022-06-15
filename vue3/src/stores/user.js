@@ -54,7 +54,7 @@ export const useUserStore = defineStore({
                 this.initUserData(response);
                 router.replace('/');
             } else {
-                console.log('reg response: ', response);
+                return response;
             }
         },
 

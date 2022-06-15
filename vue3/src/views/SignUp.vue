@@ -34,6 +34,7 @@
                 id="password"
                 type="password"
                 v-model="fields.password"
+                v-on:blur="comparePasswords"
                 autocomplete="new-password"
                 required
             />
@@ -43,12 +44,15 @@
                 id="confirmPassword"
                 type="password"
                 v-model="fields.confirmPassword"
+                v-on:blur="comparePasswords"
                 autocomplete="new-password"
                 required
             />
-            <!-- <Error name="password" class="error-feedback" /> -->
-
-            <button class="btn" type="submit">create account</button>
+            <Error v-if="errors.confirmPassword" :message="errors.confirmPassword" />
+            <Error v-if="formError" :message="formError" />
+            <button class="btn" type="submit" :disabled="submitDisabled">
+                create account
+            </button>
         </form>
         <aside class="sidebar">
             <div
@@ -97,6 +101,7 @@
     import WelcomeBg from '@/assets/images/stickynote-red.svg';
     import TapeImage from '@/components/images/Tape.vue';
     import PinImage from '@/components/images/Pin.vue';
+    import Error from '@/components/Error.vue';
 
     import { ref, reactive } from 'vue';
     import { useUserStore } from '@/stores/user';
@@ -107,49 +112,83 @@
     import { useRoute } from 'vue-router';
     const route = useRoute();
     let invitationCode = route.params.id;
-    let invitedBy = reactive(null);
+    let invitedBy = invitationCode
+        ? reactive(await userStore.invitationSender(invitationCode))
+        : null;
 
-    if (invitationCode) {
-        invitedBy = await userStore.invitationSender(invitationCode);
-    }
+    // const fields = reactive({
+    //     firstName: '',
+    //     lastName: '',
+    //     displayName: '',
+    //     email: '',
+    //     password: '',
+    //     confirmPassword: '',
+    // });
 
     const fields = reactive({
-        firstName: null,
-        lastName: null,
-        displayName: null,
-        email: null,
-        password: null,
-        confirmPassword: null,
+        firstName: 'test5',
+        lastName: 'test',
+        displayName: 'test5',
+        email: 'test5@test.com',
+        password: 'testtest',
+        confirmPassword: '',
     });
 
-    const errors = {
-        firstName: null,
-        lastName: null,
-        displayName: null,
-        email: null,
-        password: null,
-        confirmPassword: null,
-    };
+    const errors = reactive({
+        firstName: '',
+        lastName: '',
+        displayName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+    });
+
+    let formError = ref('');
+    let submitDisabled = ref(false);
 
     const comparePasswords = () => {
-        if (
-            fields.password &&
-            fields.confirmPassword &&
+        console.log(
+            'comparing',
+            fields.password.length,
+            fields.confirmPassword.length,
             fields.password === fields.confirmPassword
+        );
+        if (
+            fields.password.length &&
+            fields.confirmPassword.length &&
+            fields.password !== fields.confirmPassword
         ) {
-            errors.confirmPassword = null;
-        } else {
             errors.confirmPassword = 'Passwords must match';
+        } else {
+            errors.confirmPassword = '';
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        let formHasErrors = false;
 
-        const outcome = await userStore.performSignUp(fields, invitationCode);
+        submitDisabled.value = true;
 
-        if (outcome) {
-            console.log(outcome);
+        for (const [key, value] of Object.entries(errors)) {
+            if (value.length) {
+                formHasErrors = true;
+                break;
+            }
         }
+
+        if (!formHasErrors) {
+            const outcome = await userStore.performSignUp(fields, invitationCode);
+
+            if (outcome.error) {
+                formError.value = outcome.error;
+            } else if (outcome.errors) {
+                for (let error of outcome.errors) {
+                    formError.value += `${error}`;
+                }
+            }
+        }
+
+        submitDisabled.value = false;
     };
 </script>

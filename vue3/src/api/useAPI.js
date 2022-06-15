@@ -74,6 +74,11 @@ const endpoints = {
         method: 'GET'
     },
 
+    user: {
+        uri: `user`,
+        method: 'GET'
+    },
+
     friends: {
         uri: `friends`,
         method: 'GET'
@@ -125,8 +130,9 @@ export async function useAPI(endpoint, data, endpointID) {
 
                 userStore.performLogout;
             }
-
-            // return error.response.data.errors[0]
+            else if (error.response && error.response.data) {
+                return error.response.data
+            }
         }
 
         // return () => {

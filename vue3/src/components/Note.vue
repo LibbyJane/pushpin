@@ -59,7 +59,7 @@
                         :src="CheckIcon"
                         alt="Confirm Delete"
                         class="icon is-check"
-                        data-size="small"
+                        data-size="sm"
                     />
                     Yes
                 </button>
@@ -72,7 +72,7 @@
                         :src="CancelIcon"
                         alt="Cancel"
                         class="icon is-cancel"
-                        data-size="small"
+                        data-size="sm"
                     />Cancel
                 </button>
             </div>

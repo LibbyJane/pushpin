@@ -5,7 +5,8 @@ export const useSiteStore = defineStore({
     id: 'site',
     state: () => ({
         pageTitle: "Welcome",
-        siteUsers: null
+        siteUsers: null,
+        matchedUsers: null,
     }),
     getters: {
         getPageTitle(state) {

@@ -1,5 +1,5 @@
 <template>
-    <div class="card is-lined">
+    <div v-if="friends" class="card is-lined">
         <header class="card-header">
             <img class="icon is-contacts" alt="contacts" :src="ContactsIcon" />
             <h6>Contacts</h6>

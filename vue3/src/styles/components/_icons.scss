@@ -2,7 +2,7 @@
     @include size(1.5rem);
     display: inline-block;
 
-    &[data-size="small"] {
+    &[data-size="sm"] {
         @include size(1rem);
     }
 

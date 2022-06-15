@@ -21,6 +21,23 @@
     transition: all 0.3s ease;
     position: relative;
 
+    &.is-torn {
+        background: {
+            image: url('@/assets/images/paper-torn-bottom.svg'),
+                linear-gradient(
+                    0deg,
+
+                    rgba(18, 18, 18, 0) 25%,
+                    rgba(18, 18, 18, 0.1) 80%,
+                    rgba(18, 18, 18, 0.2) 95%
+                );
+            position: bottom center;
+            repeat: no-repeat;
+            size: cover;
+        }
+        box-shadow: none;
+    }
+
     &.is-lined {
         background: url("@/assets/images/paper-lined.jpg") top left repeat;
     }

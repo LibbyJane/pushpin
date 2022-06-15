@@ -17,14 +17,14 @@
                     />
                     <button type="button" v-on:click="copyToClipboard">
                         <h4 class="invitation-heading">
-                            Here&rsquo;s your
-                            <strong>invitation</strong>
+                            Here&rsquo;s your personal
+                            <strong>invitation link</strong>
                         </h4>
                         <hr />
                         <p v-on:click="copyToClipboard">
-                            Click to copy this link to share with a friend.
+                            Click to copy this link to share with a friend &ndash;
+                            you&rsquo;ll automatically connect when they register.
                         </p>
-                        <p>You&rsquo;ll automatically connect when they register.</p>
                         <p>
                             <small>{{ invitationURL }}</small>
                         </p>
@@ -32,6 +32,7 @@
                     <ShareLink :url="invitationURL" />
                 </div>
             </div>
+            <FindFriend />
         </div>
     </main>
 </template>
@@ -39,6 +40,8 @@
 <script setup>
     import { usePageTitle } from '@/use/usePageTitle';
     usePageTitle('Invite a friend');
+
+    import FindFriend from '@/components/FindFriend.vue';
 
     import InvitationBg from '@/assets/images/palm396.jpg';
     import Paper from '@/assets/images/Paper.jpg';
