@@ -64,6 +64,11 @@ const endpoints = {
         method: 'POST'
     },
 
+    invitationsReceived: {
+        uri: `user/invitationsReceived`,
+        method: 'GET'
+    },
+
     acceptInvitation: {
         uri: `invite/accept/`,
         method: 'POST'
@@ -87,6 +92,7 @@ const endpoints = {
 
 export async function useAPI(endpoint, data, endpointID) {
     console.log('endpoint uri, method, data, endpointID', endpoint, data, endpointID)
+    console.log('apiBaseURL', apiBaseURL);
     const userStore = useUserStore();
     const token = userStore && userStore.getAuth ? userStore.getAuth : null;
     // console.log('token', token)

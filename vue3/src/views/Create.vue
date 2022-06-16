@@ -42,10 +42,12 @@
                 <UploadFile
                     v-if="noteHasImage"
                     fieldID="notePhoto"
-                    label="Note Image"
+                    label="Upload an Image"
                     :required="true"
                     :onChangeHandler="setNoteImage"
                 />
+
+                <Giphy :visible="noteHasImage" :callback="setNoteGiphyImage" />
 
                 <label>Color:</label>
                 <ul class="checkable-list">
@@ -99,6 +101,7 @@
     import Note from '@/components/Note.vue';
     import Multiselect from '@/components/forms/Multiselect.vue';
     import UploadFile from '@/components/forms/UploadFile.vue';
+    import Giphy from '@/components/Giphy.vue';
     import Alert from '@/components/Alert.vue';
     import Avatar from '@/components/Avatar.vue';
     import CheckIcon from '@/assets/icons/check.svg';
@@ -129,7 +132,7 @@
     let recipientID = useRoute().params.id;
 
     const noteDataInitial = {
-        style: 'stickynote',
+        style: 'polaroid',
         message: null,
         color: null,
         imageURL: null,
@@ -162,6 +165,7 @@
         noteData.message = null;
         noteData.color = null;
         noteData.imageURL = null;
+        noteData.giphyMetadata = null;
         noteData.recipientsList = [];
     }
 
@@ -175,7 +179,18 @@
 
     function setNoteImage(selected) {
         noteData.imageURL = URL.createObjectURL(selected);
+        noteData.giphyMetadata = null;
         notePhoto = selected;
+    }
+
+    function setNoteGiphyImage(image) {
+        noteData.giphyMetadata = {
+            imageURL: image.images.fixed_height.url,
+            staticImageURL: image.images.fixed_height_still.url,
+            giphyID: image.id,
+        };
+        noteData.imageURL = null;
+        notePhoto = null;
     }
 
     function setNoteColor(color) {
@@ -193,7 +208,7 @@
         let outcome = null;
         console.log('note data', noteData);
 
-        if (noteHasImage) {
+        if (noteHasImage && notePhoto) {
             outcome = await notesStore.sendNote(noteData, notePhoto);
         } else {
             outcome = await notesStore.sendNote(noteData);

@@ -25,14 +25,13 @@
 
 <script setup>
     import { reactive, toRefs } from 'vue';
+
     import { storeToRefs } from 'pinia';
     import { useUserStore } from '@/stores/user';
-    import { useAPI } from '@/api/useAPI';
-
-    import DefaultAvatarImage from '@/assets/icons/person.svg';
-
     const userStore = useUserStore();
     const userStoreRef = storeToRefs(userStore);
+
+    import DefaultAvatarImage from '@/assets/icons/person.svg';
 
     const props = defineProps({
         userID: {
@@ -57,8 +56,10 @@
 
     let data = null;
 
+    console.log('userData?', userData, userData.value);
+
     if (userData.value) {
-        // console.log('use passed in userData', userData.value);
+        console.log('use passed in userData', userData.value);
         data = userData.value;
     } else if (!userID.value || userID.value === userStore.info.id) {
         // console.log('use logged in users data');

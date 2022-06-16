@@ -104,6 +104,11 @@ export const useUserStore = defineStore({
             return response;
         },
 
+        async inviteUser(userID) {
+            const response = await useAPI(`invite`, { recipientId: userID });
+            return response;
+        },
+
         async acceptInvitation(invitationCode) {
             console.log('accept invitiation, ', invitationCode);
             const response = await useAPI(`acceptInvitation`, null, invitationCode);
@@ -116,6 +121,15 @@ export const useUserStore = defineStore({
         async invitationSender(id) {
             const response = await useAPI(`invitationIssuer`, null, id);
             console.log('invitationSender response', response);
+
+            return response;
+        },
+
+        async getInvitations() {
+            console.log('get invitations');
+            const response = await useAPI(`invitationsReceived`);
+
+            console.log('invitationsReceived', response);
 
             return response;
         },

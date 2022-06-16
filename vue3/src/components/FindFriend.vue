@@ -5,14 +5,20 @@
         </h5>
         <form v-on:submit="performSearch">
             <fieldset>
-                <input v-model="searchTerm" type="text" minLen="2" />
+                <input
+                    v-on:keyup="performSearch"
+                    v-model="searchTerm"
+                    type="text"
+                    minLen="2"
+                />
             </fieldset>
             <button class="btn">Search</button>
         </form>
 
+        <Toast v-if="showToastMessage" message="Friend request sent" icon="check" />
         <ul v-if="results" class="friends-list">
             <li v-for="result in results.value">
-                <button class="btn-add" v-on:click="sendFriendRequest">
+                <button class="btn-add" v-on:click="sendFriendRequest(result.id)">
                     <p>
                         <Avatar :userData="result" size="sm" />
                         <span class="result-name">
@@ -60,6 +66,24 @@
                 null,
                 `/search?query=${searchTerm.value}`
             );
+        }
+    };
+
+    import Toast from '@/components/Toast.vue';
+    import { useUserStore } from '@/stores/user';
+    const userStore = useUserStore();
+
+    let showToastMessage = ref(false);
+
+    const sendFriendRequest = async (userID) => {
+        showToastMessage.value = false;
+
+        const response = await userStore.inviteUser(userID);
+        console.log('sfr response', response);
+        console.log('show toast1?', showToastMessage.value);
+        if (response.success) {
+            showToastMessage.value = true;
+            console.log('show toast2?', showToastMessage.value);
         }
     };
 </script>

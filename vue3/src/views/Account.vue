@@ -28,8 +28,8 @@
     import { useUserStore } from '@/stores/user';
 
     const userStore = useUserStore();
-    const storeRef = storeToRefs(userStore);
-    const user = storeRef.info;
+    const userStoreRef = storeToRefs(userStore);
+    const user = userStoreRef.info;
 
     const setProfilePhoto = async (selected) => {
         await userStore.updatePhoto(selected);

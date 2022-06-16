@@ -25,13 +25,20 @@
             <Reactions v-if="data.id" :noteID="data.id" :activeReaction="data.reaction" />
         </header>
 
-        <div
-            v-if="data.style !== 'stickynote' && data.imageURL"
-            class="note-image"
-            :style="`background-image: url(${data.imageURL})`"
-        >
-            <img :src="data.imageURL" alt="note image" />
-        </div>
+        <template v-if="data.style !== 'stickynote'">
+            <div
+                v-if="data.imageURL"
+                class="note-image"
+                :style="`background-image: url(${data.imageURL})`"
+            >
+                <img :src="data.imageURL" alt="note image" />
+            </div>
+
+            <div v-else-if="data.giphyMetadata" class="note-image is-giphy">
+                <img :src="data.giphyMetadata.imageURL" alt="note image" />
+                <img :src="data.giphyMetadata.staticImageURL" alt="note image" />
+            </div>
+        </template>
 
         <div v-if="data.style === 'postcard'" class="stamp-postmark">
             <StampFrameImage />
