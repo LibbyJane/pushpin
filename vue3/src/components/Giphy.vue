@@ -1,9 +1,10 @@
 <template>
-    <input type="text" v-if="visible" v-on:change="searchGiphy" />
+    <label v-if="label" :for="id">{{ label }}</label>
+    <input :id="id" type="text" v-if="visible" v-on:change="searchGiphy" />
 
     <button v-for="image in images.value" v-on:click="selectImage(image)">
-        <img :src="image.images.fixed_height_still.url" />
-        <img :src="image.images.fixed_height.url" />
+        <!-- <img class="note-image-still" :src="image.images.fixed_height_still.url" /> -->
+        <img class="note-image-animated" :src="image.images.fixed_height.url" />
     </button>
 </template>
 
@@ -12,6 +13,8 @@
 
     const props = defineProps({
         visible: Boolean,
+        label: String,
+        id: String,
         callback: Function,
     });
 

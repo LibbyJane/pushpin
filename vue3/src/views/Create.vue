@@ -24,51 +24,28 @@
                     :handler="updateSelectedFriends"
                 />
 
-                <label>Style:</label>
-                <ul class="checkable-list">
-                    <li v-for="style in styles">
-                        <label>
-                            <input
-                                type="radio"
-                                name="noteStyle"
-                                :value="style.value"
-                                v-model="noteData.style"
-                            />
-                            {{ style.label }}
-                        </label>
-                    </li>
-                </ul>
+                <NoteStylePicker label="Style:" :callback="setNoteStyle" />
 
                 <UploadFile
                     v-if="noteHasImage"
                     fieldID="notePhoto"
                     label="Upload an Image"
-                    :required="true"
                     :onChangeHandler="setNoteImage"
                 />
 
-                <Giphy :visible="noteHasImage" :callback="setNoteGiphyImage" />
+                <Giphy
+                    v-if="noteData.style === 'polaroid'"
+                    label="or search Giphy: "
+                    :id="noteGiphy"
+                    :visible="noteHasImage"
+                    :callback="setNoteGiphyImage"
+                />
 
-                <label>Color:</label>
-                <ul class="checkable-list">
-                    <li v-for="color in colors">
-                        <label class="checkable has-swatch" :data-swatch="color.value">
-                            <input
-                                type="radio"
-                                name="noteColor"
-                                :value="color.value"
-                                v-model="noteData.color"
-                            />
-                            <span
-                                class="swatch"
-                                :style="`background-color: ${color.value}; color: ${color.value}`"
-                            >
-                                <img class="icon" :src="CheckIcon" alt="selected icon" />
-                            </span>
-                            <span class="checkable-text">{{ color.label }}</span>
-                        </label>
-                    </li>
-                </ul>
+                <ColourPicker
+                    label="Colour: "
+                    name="noteColor"
+                    :callback="setNoteColor"
+                />
 
                 <label>Write your message:</label>
                 <textarea required v-model="noteData.message"></textarea>
@@ -101,32 +78,20 @@
     import Note from '@/components/Note.vue';
     import Multiselect from '@/components/forms/Multiselect.vue';
     import UploadFile from '@/components/forms/UploadFile.vue';
+    import NoteStylePicker from '@/components/forms/NoteStylePicker.vue';
+    import ColourPicker from '@/components/forms/ColourPicker.vue';
+
     import Giphy from '@/components/Giphy.vue';
     import Alert from '@/components/Alert.vue';
     import Avatar from '@/components/Avatar.vue';
-    import CheckIcon from '@/assets/icons/check.svg';
 
     const notesStore = useNotesStore();
     const userStore = useUserStore();
     const user = userStore.info;
 
-    const styles = [
-        { value: 'stickynote', label: 'Sticky Note' },
-        { value: 'polaroid', label: 'Polaroid' },
-        { value: 'postcard', label: 'Post Card' },
-    ];
-
     const noteHasImage = computed(() => {
         return noteData.style !== 'stickynote' ? true : false;
     });
-
-    const colors = [
-        { value: 'var(--white)', label: 'White' },
-        { value: 'var(--note-yellow)', label: 'Yellow' },
-        { value: 'var(--note-pink)', label: 'Pink' },
-        { value: 'var(--note-blue)', label: 'Blue' },
-        { value: 'var(--note-green)', label: 'Green' },
-    ];
 
     import { useRoute } from 'vue-router';
     let recipientID = useRoute().params.id;
@@ -134,8 +99,13 @@
     const noteDataInitial = {
         style: 'polaroid',
         message: null,
-        color: null,
+        color: 'var(--white)',
         imageURL: null,
+        giphyMetadata: {
+            imageURL: null,
+            staticImageURL: null,
+            giphyID: null,
+        },
         createdByID: user.id,
         recipientsList: recipientID ? [recipientID] : [],
     };
@@ -153,21 +123,25 @@
 
     let notePhoto = null;
 
+    function initForm() {
+        notePhoto = null;
+        noteData.message = null;
+        noteData.color = null;
+        noteData.imageURL = null;
+        noteData.giphyMetadata = {
+            imageURL: null,
+            staticImageURL: null,
+            giphyID: null,
+        };
+        noteData.recipientsList = [];
+    }
+
     let friendsList = userStore.friends.map(formatFriendData);
 
     const alert = reactive({
         variant: 'success',
         visible: false,
     });
-
-    function initForm() {
-        notePhoto = null;
-        noteData.message = null;
-        noteData.color = null;
-        noteData.imageURL = null;
-        noteData.giphyMetadata = null;
-        noteData.recipientsList = [];
-    }
 
     function formatFriendData(friend) {
         return { value: friend.id, label: friend.displayName };
@@ -179,22 +153,33 @@
 
     function setNoteImage(selected) {
         noteData.imageURL = URL.createObjectURL(selected);
-        noteData.giphyMetadata = null;
         notePhoto = selected;
     }
 
     function setNoteGiphyImage(image) {
-        noteData.giphyMetadata = {
-            imageURL: image.images.fixed_height.url,
-            staticImageURL: image.images.fixed_height_still.url,
-            giphyID: image.id,
-        };
+        console.log('original note data', noteData);
+        noteData.giphyMetadata.imageURL = image.images.fixed_height.url;
+        noteData.giphyMetadata.staticImageURL = image.images.fixed_height_still.url;
+        noteData.giphyMetadata.giphyID = image.id;
+
+        // const newNoteData = { noteData, ...giphyMetadata };
+
+        //Object.assign(noteData, newNoteData); // equivalent to reassign
+
+        // noteData.giphyMetadata.value = giphyMetadata;
         noteData.imageURL = null;
         notePhoto = null;
+
+        console.log('updated note data', noteData, noteData.giphyMetadata.giphyID);
     }
 
     function setNoteColor(color) {
         noteData.color = color;
+    }
+
+    function setNoteStyle(style) {
+        console.log('note style', style);
+        noteData.style = style;
     }
 
     watch(noteData, async (newNoteData, oldNoteData) => {

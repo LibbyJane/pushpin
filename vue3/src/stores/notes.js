@@ -10,10 +10,18 @@ export const useNotesStore = defineStore({
     actions: {
         async setNotes() {
             const response = await useAPI(`notes`);
-            this.notes = response
+            for (let i = 0; i < response.length; i++) {
+                response[i].giphyMetadata = JSON.parse(response[i].giphyMetadata);
+            }
+            this.notes = response;
         },
 
         async sendNote(noteData, imageData) {
+            console.log('kill me now, ', noteData);
+            noteData.giphyMetadata = JSON.stringify(noteData.giphyMetadata);
+            //noteData.color = 'var(--white)';
+            console.log('kill me now stringy, ', noteData);
+
             const response = await useAPI(`note`, noteData);
 
             if (response.success && imageData) {
