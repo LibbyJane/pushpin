@@ -59,6 +59,7 @@
         },
     });
 
+    console.log('rly?', '0' == []);
     let formError = ref('');
 
     const clearError = () => {
@@ -76,9 +77,9 @@
 
         console.log('outcome', outcome);
 
-        if (outcome.error) {
+        if (outcome && outcome.error) {
             formError.value = outcome.error;
-        } else if (outcome.errors) {
+        } else if (outcome && outcome.errors) {
             for (let error of outcome.errors) {
                 console.log('error', error);
                 formError.value += `${error}`;

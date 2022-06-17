@@ -118,6 +118,15 @@ export const useUserStore = defineStore({
             return response;
         },
 
+        async rejectInvitation(invitationCode) {
+            console.log('reject invitiation, ', invitationCode);
+            const response = await useAPI(`rejectInvitation`, null, invitationCode);
+
+            console.log('rejectInvitation response', response);
+
+            return response;
+        },
+
         async invitationSender(id) {
             const response = await useAPI(`invitationIssuer`, null, id);
             console.log('invitationSender response', response);

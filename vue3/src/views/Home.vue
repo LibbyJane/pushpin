@@ -1,8 +1,11 @@
 <template>
     <main class="pg-home cols">
         <NotesList />
-        <FriendsList />
-        <PendingInvitations />
+
+        <aside class="sidebar">
+            <PendingInvitations />
+            <FriendsList />
+        </aside>
     </main>
 </template>
 

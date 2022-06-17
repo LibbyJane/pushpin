@@ -1,6 +1,7 @@
 .icon {
     @include size(1.5rem);
     display: inline-block;
+    transition: all var(--transition);
 
     &[data-size="sm"] {
         @include size(1rem);

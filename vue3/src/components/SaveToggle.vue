@@ -1,7 +1,7 @@
 <script setup>
     import { reactive, ref, toRefs } from 'vue';
-    import HeartOutlineIcon from '@/assets/icons/star-outline.svg';
-    import HeartIcon from '@/assets/icons/star.svg';
+    import KeepOutlineIcon from '@/assets/icons/star-outline.svg';
+    import KeepIcon from '@/assets/icons/star.svg';
     import { useNotesStore } from '@/stores/notes';
 
     const notesStore = useNotesStore();
@@ -38,12 +38,12 @@
             v-model="checked"
             v-on:change="handleChange(checked)"
         />
-        <img class="icon-checked" v-if="checked" :src="HeartIcon" alt="Heart Icon" />
         <img
-            class="icon-unchecked"
-            v-else
-            :src="HeartOutlineIcon"
-            alt="Heart Outline Icon"
+            class="icon-checked"
+            v-if="checked"
+            :src="KeepIcon"
+            alt="This note is saved"
         />
+        <img class="icon-unchecked" v-else :src="KeepOutlineIcon" alt="Save this note" />
     </label>
 </template>

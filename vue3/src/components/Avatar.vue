@@ -56,16 +56,16 @@
 
     let data = null;
 
-    console.log('userData?', userData, userData.value);
+    // console.log('userData?', userData, userData.value);
 
     if (userData.value) {
-        console.log('use passed in userData', userData.value);
+        // console.log('use passed in userData', userData.value);
         data = userData.value;
     } else if (!userID.value || userID.value === userStore.info.id) {
         // console.log('use logged in users data');
         data = userStoreRef.info.value;
     } else if (userStore.getAuth) {
-        console.log('use friend data');
+        // console.log('use friend data');
         const friends = userStoreRef.friends.value;
         if (friends) {
             const match = friends.filter(matchId);
