@@ -1,5 +1,6 @@
 <template>
     <label v-if="label">{{ label }}</label>
+
     <ul class="checkable-list">
         <li v-for="color in colors">
             <label class="checkable has-swatch" :data-swatch="color.value">
@@ -8,6 +9,7 @@
                     :name="name"
                     :value="color.value"
                     v-on:change="handleChange"
+                    :checked="color.value === initialValue"
                 />
                 <span
                     class="swatch"
@@ -36,6 +38,7 @@
     const props = defineProps({
         label: String,
         name: String,
+        initialValue: String,
         callback: Function,
     });
 

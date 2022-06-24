@@ -35,9 +35,13 @@
             </div>
 
             <div
-                v-else-if="data.style === 'polaroid' && data.giphyMetadata"
+                v-else-if="
+                    data.style === 'polaroid' &&
+                    data.giphyMetadata &&
+                    data.giphyMetadata.imageURL
+                "
                 class="note-image is-giphy"
-                :style="`background-image: url(${data.imageURL})`"
+                :style="`background-image: url(${data.giphyMetadata.imageURL})`"
             >
                 <img
                     class="note-image-animated"

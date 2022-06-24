@@ -1,5 +1,6 @@
 <template>
     <label v-if="label">{{ label }}</label>
+
     <ul class="checkable-list">
         <li v-for="style in styles">
             <label>
@@ -8,6 +9,7 @@
                     name="noteStyle"
                     :value="style.value"
                     v-on:change="handleChange"
+                    :checked="style.value === initalValue"
                 />
                 {{ style.label }}
             </label>
@@ -28,6 +30,7 @@
     const props = defineProps({
         label: String,
         callback: Function,
+        initalValue: String,
     });
 
     const { callback } = toRefs(props);

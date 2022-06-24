@@ -1,34 +1,31 @@
 import axios from "axios"
+let controller = null;
 
-export async function useGiphy(query) {
-    let config = {
-        headers: {},
-        url: `https://api.giphy.com/v1/gifs/search?api_key=f2TYSE6XdOoHuRC780SHtqPEMNcE9C4Q&q=${query}&limit=50&offset=0&rating=g&lang=en`
-    }
-
+export async function useGiphy(query, pageSize, offset) {
     try {
+        if (controller) {
+            controller.abort()
+        }
+        controller = new AbortController();
+        const URL = `https://api.giphy.com/v1/gifs/search?api_key=f2TYSE6XdOoHuRC780SHtqPEMNcE9C4Q&q=${query}&limit=${pageSize ? pageSize : 50}&offset=${offset ? offset : 0}&rating=g&lang=en`;
+        let config = {
+            headers: {},
+            url: URL,
+            signal: controller.signal
+        }
         const response = await axios(config)
-        console.log('axios response', response)
+        // console.log('axios response', response)
+
+
         return response.data
 
     } catch (error) {
         console.log('error', error)
         // console.log("There was a problem.", error)
-        if (error.response.status === 403) {
-            console.log('bad token, logout')
 
-            userStore.performLogout;
-        }
-        else if (error.response && error.response.data) {
-            return error.response.data
-        }
+    } finally {
+        controller = null;
     }
-
-    // return () => {
-    //     ourRequest.cancel()
-    // }
-
-
 }
 
 export default useGiphy

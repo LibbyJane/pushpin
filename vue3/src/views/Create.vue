@@ -24,7 +24,11 @@
                     :handler="updateSelectedFriends"
                 />
 
-                <NoteStylePicker label="Style:" :callback="setNoteStyle" />
+                <NoteStylePicker
+                    label="Style:"
+                    :initalValue="noteData.style"
+                    :callback="setNoteStyle"
+                />
 
                 <UploadFile
                     v-if="noteHasImage"
@@ -35,7 +39,7 @@
 
                 <Giphy
                     v-if="noteData.style === 'polaroid'"
-                    label="or search Giphy: "
+                    label="Or search Giphy: "
                     :id="noteGiphy"
                     :visible="noteHasImage"
                     :callback="setNoteGiphyImage"
@@ -44,6 +48,7 @@
                 <ColourPicker
                     label="Colour: "
                     name="noteColor"
+                    :initialValue="noteData.color"
                     :callback="setNoteColor"
                 />
 
@@ -192,6 +197,7 @@
         e.preventDefault();
         let outcome = null;
         console.log('note data', noteData);
+        console.log('updated note data', noteData, noteData.giphyMetadata.giphyID);
 
         if (noteHasImage && notePhoto) {
             outcome = await notesStore.sendNote(noteData, notePhoto);

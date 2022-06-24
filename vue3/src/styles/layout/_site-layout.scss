@@ -212,10 +212,19 @@ button:disabled {
     grid-auto-flow: column;
 }
 
+.justify-start {
+    justify-content: flex-start;
+}
+
 .col {
     flex: 0 0 auto;
 }
 
+// .content-bottom {
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: flex-end;
+// }
 
 .sidebar {
     flex: 0 0 auto;
@@ -235,8 +244,6 @@ button:disabled {
 .wrap {
     flex-wrap: wrap;
 }
-
-
 
 html,
 body,
