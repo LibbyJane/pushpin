@@ -1,18 +1,22 @@
 .note-image {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    margin: 0 0 var(--space);
+    background: {
+        size: cover;
+        position: center;
+        repeat: no-repeat;
+    }
+
+    margin: var(--space);
     position: relative;
     overflow: hidden;
-    z-index: 10;
+    z-index: var(--zi-base);
     //max-height: 50vh;
 
-    &:hover,
-    &:focus {
-        .note-image-animated {
-            display: block;
-        }
+    img {
+        display: block;
+        min-width: 100%;
+        max-width: 100%;
+        margin: auto;
+
     }
 
     .is-postcard & {
@@ -21,7 +25,8 @@
         grid-column: 1/-1;
         grid-row: 1/-1;
 
-        margin: 0 var(--m) var(--m);
+        border: 0;
+        margin: 0;
         transition: opacity var(--transition);
         transition-delay: var(--transition-speed);
         height: 0;
@@ -42,22 +47,29 @@
         }
     }
 
-    img {
-        display: block;
-        min-width: 100%;
-        max-width: 100%;
-        margin: auto;
+    .is-instant-photo & {
+        background-color: var(--black);
+    }
 
-        .is-postcard & {
-            position: absolute;
-            opacity: 0;
-            max-height: 100%;
-        }
+    .note-image-still {
+        animation: develop 10s;
     }
 
     .note-image-animated {
-        display: none;
+        opacity: 0;
         position: absolute;
-        z-index: 1;
+        z-index: calc(var(--zi-base) + 1);
+        transition: all var(--transition);
+        transition-delay: var(--transition-speed);
+    }
+}
+
+@keyframes develop {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
     }
 }

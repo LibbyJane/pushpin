@@ -1,8 +1,10 @@
 .note {
-    --postcard-footer-width: 14rem;
+    --postcard-footer-width: 16rem;
     /* order: 1; */
+    align-items: start;
     display: grid;
-    grid-template-areas: "note-header" "note-confirm" "note-image" "note-message" "note-footer";
+    grid-template-areas: "note-header" "note-image" "note-message" "note-footer";
+    grid-template-rows: max-content;
 
     &.is-postcard {
         grid-template-areas:
@@ -10,15 +12,26 @@
         "note-message note-footer"
         ;
     }
-
 }
 
 .note-confirm {
-    grid-area: note-confirm;
+    grid-area: note-header;
+}
+
+.note-pin {
+    grid-area: note-header;
+
+    .is-instant-photo & {
+        grid-area: note-image;
+    }
 }
 
 .note-header {
     grid-area: note-header;
+
+    .is-instant-photo & {
+        grid-area: note-image;
+    }
 }
 
 .note-image {

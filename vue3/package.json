@@ -12,6 +12,7 @@
     "axios": "^0.27.2",
     "giphy": "^0.0.4",
     "install": "^0.13.0",
+    "javascript-time-ago": "^2.5.5",
     "npm": "^8.12.1",
     "pinia": "^2.0.13",
     "pinia-plugin-persist": "^1.0.0",

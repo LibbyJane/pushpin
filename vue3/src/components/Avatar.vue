@@ -69,7 +69,11 @@
         const friends = userStoreRef.friends.value;
         if (friends) {
             const match = friends.filter(matchId);
-            data = match[0];
+            if (match.length) {
+                data = match[0];
+                console.log('match:::', match[0]);
+                console.log('data:::', data);
+            }
         }
     }
 </script>

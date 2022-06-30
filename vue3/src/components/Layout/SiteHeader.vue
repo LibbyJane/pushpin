@@ -55,7 +55,7 @@
 <script setup>
     import { storeToRefs } from 'pinia';
     import Avatar from '@/components/Avatar.vue';
-    import Logo from '@/assets/images/stamp-uk.svg';
+    import Logo from '@/assets/images/stamp-home.svg';
     import CreateIcon from '@/assets/icons/note.svg';
     import LogoutIcon from '@/assets/icons/log-out.svg';
 

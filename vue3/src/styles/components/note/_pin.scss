@@ -1,0 +1,24 @@
+.note-pin {
+    display: block;
+    height: 2rem;
+    margin: 0 auto;
+    // position: absolute;
+    // top: -0.4rem;
+    // right: 0;
+    // left: 0;
+    filter: sepia(1) hue-rotate(160deg) saturate(3);
+    // transform: translateY(0.1rem);
+    transform-origin: center;
+    z-index: calc(var(--zi-note-header) + 10);
+
+
+    // .is-stickynote & {
+    //     left: auto;
+    //     right: -1.5rem;
+    // }
+}
+
+.note-delete {
+    position: absolute;
+    top: -0.75rem;
+}

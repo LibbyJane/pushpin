@@ -9,7 +9,7 @@
         --avatar-image-size: 3rem;
     background-position: center;
     background-size: cover;
-    border-radius: 50%;
+    // border-radius: 50%;
     display: inline-flex;
         height: var(--avatar-image-size);
         width: var(--avatar-image-size);
@@ -19,6 +19,11 @@
     [data-size="sm"] & {
         --avatar-image-size: 2rem;
     }
+
+    [data-size="xs"] & {
+        --avatar-image-size: 1.5rem;
+    }
+
 
     img {
         opacity: 0;

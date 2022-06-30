@@ -1,4 +1,6 @@
 .note-preview {
+    margin-left: auto;
+
     .note {
         margin-bottom: var(--space);
 
@@ -9,6 +11,9 @@
     }
 
     .is-postcard {
+        width: 50rem;
+        max-width: 100%;
+
         .note-image {
             pointer-events: none;
         }

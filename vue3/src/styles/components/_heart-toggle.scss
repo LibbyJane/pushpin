@@ -1,31 +1,35 @@
 .checkable {
     &.is-save {
         margin: 0;
-        padding: var(--space-sm);
-            padding-left: 0;
+        padding: 0;
+        //padding: calc(var(--space-xs) / 2);
+
 
         &:hover,
         &:focus {
             img {
-                opacity: 1;
+                opacity: 0.75;
             }
         }
 
         &:checked {
-            ~ img {
+            ~ .icon {
                 opacity: 1;
             }
         }
-
-        img {
-            height: var(--icon-size);
-            width: var(--icon-size);
-        }
-
-        .icon-unchecked {
-            opacity: 0.5;
-        }
     }
+
+    // icon
+
+
+    .is-default {
+        height: var(--icon-size);
+        width: var(--icon-size);
+            opacity: 0.5;
+        transform: rotate(-45deg);
+    }
+
+
 }
 
 

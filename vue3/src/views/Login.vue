@@ -59,7 +59,6 @@
         },
     });
 
-    console.log('rly?', '0' == []);
     let formError = ref('');
 
     const clearError = () => {

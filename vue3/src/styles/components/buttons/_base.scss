@@ -27,6 +27,7 @@
         bottom: 0;
         left: 0;
         margin: auto 0;
+        transition: all;
         transform: scaleY(0.6) scaleX(1.2) translateY(0.3rem);
     }
 
@@ -50,9 +51,26 @@
     &.is-text {
         padding-inline: 0;
 
+        &:hover,
+        &:focus {
+            &::after {
+                transform: scaleX(1) translateY(var(--space-neg));
+            };
+        }
+
+        .is-success & {
+            color: var(--green);
+        }
+
         &::before,
         &::after {
-            display: none;
+            background: transparent;
+        }
+
+        &::after {
+            border-bottom: thin solid;
+            transition: all var(--transition);
+            transform: scaleX(0) translateY(var(--space-neg));
         }
     }
 

@@ -1,9 +1,12 @@
 <template>
     <main class="pg-create">
-        <Alert :visible="alert.visible" :variant="alert.variant">
+        <Alert v-if="alert.visible.value" :variant="alert.variant">
             <p>
                 Your note has been sent! Would you like to
-                <button v-on:click="alert.visible = false">send another</button> or
+                <button v-on:click="alert.visible = false" class="btn is-text">
+                    send another
+                </button>
+                or
                 <RouterLink to="/" class="is-highlighted"
                     >go back to your board</RouterLink
                 >?
@@ -30,6 +33,13 @@
                     :callback="setNoteStyle"
                 />
 
+                <ColourPicker
+                    label="Colour: "
+                    name="noteColor"
+                    :initialValue="noteData.color"
+                    :callback="setNoteColor"
+                />
+
                 <UploadFile
                     v-if="noteHasImage"
                     fieldID="notePhoto"
@@ -38,22 +48,15 @@
                 />
 
                 <Giphy
-                    v-if="noteData.style === 'polaroid'"
+                    v-if="noteData.style === 'instant-photo'"
                     label="Or search Giphy: "
                     :id="noteGiphy"
                     :visible="noteHasImage"
                     :callback="setNoteGiphyImage"
                 />
 
-                <ColourPicker
-                    label="Colour: "
-                    name="noteColor"
-                    :initialValue="noteData.color"
-                    :callback="setNoteColor"
-                />
-
                 <label>Write your message:</label>
-                <textarea required v-model="noteData.message"></textarea>
+                <textarea required v-model="noteData.message" maxlength="500"></textarea>
 
                 <fieldset class="form-actions">
                     <button type="submit" class="btn">Send note</button>
@@ -75,7 +78,7 @@
     import { usePageTitle } from '@/use/usePageTitle';
     usePageTitle('Send a note');
 
-    import { reactive, computed, watch } from 'vue';
+    import { reactive, ref, computed, watch } from 'vue';
 
     import { useNotesStore } from '@/stores/notes';
     import { useUserStore } from '@/stores/user';
@@ -102,7 +105,7 @@
     let recipientID = useRoute().params.id;
 
     const noteDataInitial = {
-        style: 'polaroid',
+        style: 'instant-photo',
         message: null,
         color: 'var(--white)',
         imageURL: null,
@@ -143,10 +146,10 @@
 
     let friendsList = userStore.friends.map(formatFriendData);
 
-    const alert = reactive({
+    let alert = {
         variant: 'success',
-        visible: false,
-    });
+        visible: ref(false),
+    };
 
     function formatFriendData(friend) {
         return { value: friend.id, label: friend.displayName };
@@ -187,11 +190,12 @@
         noteData.style = style;
     }
 
-    watch(noteData, async (newNoteData, oldNoteData) => {
-        if (alert.visible) {
-            alert.visible = false;
-        }
-    });
+    // watch(noteData, async (newNoteData, oldNoteData) => {
+    //     console.log('?', alert.visible);
+    //     if (alert.visible) {
+    //         alert.visible = false;
+    //     }
+    // });
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -205,8 +209,11 @@
             outcome = await notesStore.sendNote(noteData);
         }
 
+        console.log('outcome', outcome);
+
         if (outcome.success) {
             alert.visible = true;
+            console.log('success', alert.visible);
             initForm();
         }
     }

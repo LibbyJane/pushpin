@@ -39,6 +39,7 @@
 
     .note-header {
         min-height: 0;
+        max-height: 0;
     }
 
     .invitation-heading {
@@ -48,6 +49,7 @@
         font-weight: 500;
         letter-spacing: 0.05rem;
         line-height: 1.1;
+        padding-top: var(--space-sm);
         text-shadow:  -1px -1px 2px var(--white);
         text-transform: lowercase;
 

@@ -9,6 +9,11 @@
         color: var(--green-dark);
     }
 
+        &.is-danger {
+        background: url("@/assets/images/paper-pink.jpg") top left repeat;
+        color: var(--red);
+    }
+
     .is-highlighted {
         &::before,
         &::after {
@@ -31,8 +36,10 @@
 }
 
 .alert-title {
-    color: currentColor;
-    font-family: var(--font-hand);
-    font-weight: bold;
-    text-shadow: 0 0 1px var(--white);
+    &.alert-title {
+        color: currentColor;
+        font-family: var(--font-hand);
+        font-weight: bold;
+        text-shadow: 0 0 1px var(--white);
+    }
 }

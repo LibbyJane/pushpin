@@ -1,11 +1,13 @@
 // z-index
 :root {
     --zi-base: 10;
-    --zi-header: 30;
-    --zi-header-nav: calc(30 + 1);
-    --zi-hamburger: calc(30 + 10);
-    --zi-popup: calc(30 + 20);
-    --zi-blocker: calc(30 + 50)
+    --zi-header: 40;
+    --zi-header-nav: 41;
+    --zi-hamburger: 22;
+    --zi-popup: 100;
+    --zi-blocker: 100;
+
+    --zi-note-header: 30;
 }
 
 // Shorthand

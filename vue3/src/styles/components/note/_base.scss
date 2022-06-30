@@ -1,27 +1,23 @@
 .note {
-    background-color: var(--white);
-    background-image: linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0) 0%,
-        rgba(0, 0, 0, 0.05) 95%
-    );
-    background-blend-mode: multiply;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--box-shadow);
+    background: {
+        color: var(--white);
+        image: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 95%);
+        blend-mode: multiply;
+    }
+
+    box-shadow: var(--box-shadow-close), var(--box-shadow);
     color: var(--text);
     margin: 0 auto 0 0;
 
-    padding: 0 var(--space) var(--space);
+    padding: 0;
     position: relative;
     // overflow: hidden; pin gets cut off
     text-decoration: none;
     transform-origin: top center;
     transition: all 0.3s ease;
-        // height: -webkit-fill-available;
+    // height: -webkit-fill-available;
     width: -webkit-fill-available;
-    z-index: 1;
-
-
+    // z-index: var(--zi-base);
 
     // @include breakpoint(medium) {
     //     // min-width: 18rem;
@@ -34,34 +30,52 @@
         &:hover,
         &:focus {
             text-decoration: none;
-            transform: rotate(1deg);
+            transform: rotate(1.25deg);
 
-            .note-pin{
-                    transform-origin: center;
-                            transform: rotate(-1deg);
+            .note-image-animated {
+                display: block;
+                opacity: 1;
             }
         }
     }
-
 
     &.is-stickynote {
         background-image: linear-gradient(
             0deg,
             rgba(18, 18, 18, 0) 0%,
-            rgba(18, 18, 18, 0.1) 90%,
+            // rgba(18, 18, 18, 0.1) 90%,
             rgba(18, 18, 18, 0.05) 91%,
             rgba(18, 18, 18, 0.15) 98%
         );
     }
 
+    &.is-instant-photo {
+        background: {
+            image: url('../assets/images/instant-photo-texture.png');
+        }
+        //border-radius: var(--radius);
+        height: 100%;
+    }
+
     &.is-postcard {
         background: {
-            image: url("../assets/images/postcard-bk3.svg");
+            image:url('../assets/images/paper.jpg');
             position: top var(--space-lg) right var(--space-lg);
-            repeat: no-repeat;
+            repeat: repeat;
             size: calc(var(--postcard-footer-width) + var(--space-lg));
         }
-        border-radius: 0;
+        min-height: 30rem;
+
+        &::after {
+            content: '';
+            border-left: 2px solid var(--grey-7);
+            display: block;
+            position: absolute;
+                top: var(--space-lg);
+                right: calc(var(--postcard-footer-width) + var(--space-lg));
+                bottom: var(--space-lg);
+
+        }
     }
 
     &[data-background] {
@@ -82,19 +96,18 @@
         font-family: var(--font-hand);
         font-weight: 400;
     }
-
 }
 
 .note-recipients {
     display: flex;
-        color: var(--white);
-        align-items: baseline;
+    color: var(--white);
+    align-items: baseline;
 
     h6 {
-            line-height: 1;
-            margin: auto 0 var(--space);
-            padding: 0;
-        }
+        line-height: 1;
+        margin: auto 0 var(--space);
+        padding: 0;
+    }
     .avatar {
         margin: auto var(--space-sm) var(--space);
     }

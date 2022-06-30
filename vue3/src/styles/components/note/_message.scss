@@ -1,4 +1,15 @@
 .note-message {
+    padding: 0 var(--space);
+
+    .is-postcard & {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        padding: var(--space-lg);
+    }
+
     h4 {
         color: var(--font-heading);
         font-family: var(--font-hand);
@@ -15,6 +26,4 @@
     a {
         font-weight: 700;
     }
-
-
 }

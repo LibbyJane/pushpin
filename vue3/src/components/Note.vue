@@ -5,13 +5,7 @@
         :style="`background-color: ${data.color ? data.color : ''}`"
         :data-status="`${data.status ? data.status : null}`"
     >
-        <header class="note-header">
-            <SaveToggle
-                v-if="data.id"
-                :noteID="data.id"
-                :activeStatus="`data.status ? ${data.status} : null`"
-            />
-
+        <div class="note-pin">
             <button
                 v-if="data.id"
                 v-on:click="showConfirm = true"
@@ -21,27 +15,61 @@
                 <PinImage />
             </button>
             <PinImage v-else />
+        </div>
+        <Alert
+            variant="danger"
+            v-if="showConfirm"
+            ref="showConfirmRef"
+            class="note-confirm"
+            title="Delete this note?"
+        >
+            <!-- <teleport to="body"> -->
+
+            <button
+                class="btn margin-right"
+                type="button"
+                v-on:click="handleDelete(data.id)"
+            >
+                <img
+                    :src="CheckIcon"
+                    alt="Confirm Delete"
+                    class="icon is-check"
+                    data-size="sm"
+                />
+                Yes
+            </button>
+            <button
+                type="button"
+                class="btn is-text is-small margin-left"
+                v-on:click="showConfirm = false"
+            >
+                <img
+                    :src="CancelIcon"
+                    alt="Cancel"
+                    class="icon is-cancel"
+                    data-size="sm"
+                />Cancel
+            </button>
+
+            <!-- </teleport> -->
+        </Alert>
+
+        <header class="note-header">
+            <SaveToggle v-if="data.id" :noteID="data.id" :activeStatus="data.status" />
+            <!--
+            <Avatar :userID="data.createdByID" /> -->
 
             <Reactions v-if="data.id" :noteID="data.id" :activeReaction="data.reaction" />
         </header>
 
-        <template v-if="data.style === 'polaroid' || 'postcard'">
-            <div
-                v-if="data.imageURL"
-                class="note-image"
-                :style="`background-image: url(${data.imageURL})`"
-            >
-                <img :src="data.imageURL" alt="note image" />
+        <template v-if="data.style === 'instant-photo'">
+            <div v-if="data.imageURL" class="note-image">
+                <img :src="data.imageURL" alt="note image" class="note-image-still" />
             </div>
 
             <div
-                v-else-if="
-                    data.style === 'polaroid' &&
-                    data.giphyMetadata &&
-                    data.giphyMetadata.imageURL
-                "
+                v-else-if="data.giphyMetadata && data.giphyMetadata.imageURL"
                 class="note-image is-giphy"
-                :style="`background-image: url(${data.giphyMetadata.imageURL})`"
             >
                 <img
                     class="note-image-animated"
@@ -56,51 +84,28 @@
             </div>
         </template>
 
-        <div v-if="data.style === 'postcard'" class="stamp-postmark">
-            <StampFrameImage />
-            <Avatar :userID="data.createdByID" />
-        </div>
+        <!-- :style="`background-image: url(${data.imageURL})`" -->
+        <template v-if="data.style === 'postcard'">
+            <div
+                v-if="data.imageURL"
+                class="note-image"
+                :style="`background-image: url(${data.imageURL})`"
+            >
+                <img :src="data.imageURL" alt="Note image" />
+            </div>
 
+            <div class="stamp-postmark">
+                <StampFrameImage />
+                <Avatar :userID="data.createdByID" />
+            </div>
+        </template>
         <div v-if="data.message" class="note-message">
             <p>{{ data.message }}</p>
         </div>
 
         <footer class="note-footer">
-            <Avatar :userID="data.createdByID" showName="true" />
+            <Avatar :userID="data.createdByID" showName="true" size="xs" />
         </footer>
-
-        <!-- <teleport to="body"> -->
-        <div v-if="showConfirm" ref="showConfirmRef" class="note-confirm">
-            <div class="inner">
-                <h6>Delete this note?</h6>
-                <button
-                    class="btn margin-right"
-                    type="button"
-                    v-on:click="handleDelete(data.id)"
-                >
-                    <img
-                        :src="CheckIcon"
-                        alt="Confirm Delete"
-                        class="icon is-check"
-                        data-size="sm"
-                    />
-                    Yes
-                </button>
-                <button
-                    type="button"
-                    class="btn is-text is-small margin-left"
-                    v-on:click="showConfirm = false"
-                >
-                    <img
-                        :src="CancelIcon"
-                        alt="Cancel"
-                        class="icon is-cancel"
-                        data-size="sm"
-                    />Cancel
-                </button>
-            </div>
-        </div>
-        <!-- </teleport> -->
     </div>
 </template>
 
@@ -108,6 +113,7 @@
     import Reactions from '@/components/Reactions.vue';
     import SaveToggle from '@/components/SaveToggle.vue';
     import Avatar from '@/components/Avatar.vue';
+    import Alert from '@/components/Alert.vue';
     import PinImage from '@/components/images/Pin.vue';
     import CheckIcon from '@/assets/icons/check.svg';
     import CancelIcon from '@/assets/icons/cross.svg';

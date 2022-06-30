@@ -13,8 +13,9 @@
         }
     }
     .icon {
-        height: var(--space);
-        width: var(--space);
+        --size: 0.8rem;
+        height: var(--size);
+        width: var(--size);
         display: block;
         margin: auto var(--space-xs);
         opacity: 0;

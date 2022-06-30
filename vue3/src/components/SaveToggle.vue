@@ -1,7 +1,9 @@
 <script setup>
-    import { reactive, ref, toRefs } from 'vue';
+    import { reactive, ref, toRefs, computed } from 'vue';
     import KeepOutlineIcon from '@/assets/icons/star-outline.svg';
-    import KeepIcon from '@/assets/icons/star.svg';
+    //import KeepIcon from '@/assets/icons/star-solid.svg';
+
+    import KeepIcon from '@/assets/images/star-gold.png';
     import { useNotesStore } from '@/stores/notes';
 
     const notesStore = useNotesStore();
@@ -24,8 +26,13 @@
         checked.value = true;
     }
 
+    const checkedState = computed(() => {
+        return activeStatus.value === 'saved' ? true : false;
+    });
+
     function handleChange() {
         const status = checked.value ? 'saved' : 'null';
+        console.log('toggle clicked', status);
         notesStore.setStatus(noteID.value, status);
     }
 </script>
@@ -35,15 +42,16 @@
         <input
             type="checkbox"
             :value="activeStatus"
+            :checked="checkedState"
             v-model="checked"
             v-on:change="handleChange(checked)"
         />
         <img
-            class="icon-checked"
+            class="icon is-saved"
             v-if="checked"
             :src="KeepIcon"
             alt="This note is saved"
         />
-        <img class="icon-unchecked" v-else :src="KeepOutlineIcon" alt="Save this note" />
+        <img class="icon is-default" v-else :src="KeepOutlineIcon" alt="Save this note" />
     </label>
 </template>

@@ -12,15 +12,16 @@ export const useNotesStore = defineStore({
             const response = await useAPI(`notes`);
             for (let i = 0; i < response.length; i++) {
                 response[i].giphyMetadata = JSON.parse(response[i].giphyMetadata);
+                if (response[i].style === 'polaroid') {
+                    response[i].style === 'instant-photo'
+                }
             }
             this.notes = response;
         },
 
         async sendNote(noteData, imageData) {
-            console.log('kill me now, ', noteData);
             noteData.giphyMetadata = JSON.stringify(noteData.giphyMetadata);
             //noteData.color = 'var(--white)';
-            console.log('kill me now stringy, ', noteData);
 
             const response = await useAPI(`note`, noteData);
 
@@ -38,14 +39,14 @@ export const useNotesStore = defineStore({
             //     this.notes[noteID].reaction = reactionID;(response, status)
             // }
         },
+
         async setStatus(noteID, status) {
             const response = await useAPI(`noteStatus`, { "status": `${status}` }, noteID)
-            console.log(response, status)
+
             if (response.success) {
-                if (status = 'deleted') {
-                    console.log('initial data', this.notes);
+
+                if (status === 'deleted') {
                     this.notes = this.notes.filter(note => { return note.id !== noteID })
-                    console.log('filtered data', this.notes);
                 }
             }
         }

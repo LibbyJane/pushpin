@@ -6,18 +6,11 @@
                 :id="id"
                 type="text"
                 v-if="visible"
-                v-on:keyup="searchGiphy"
                 v-model="searchTerm"
+                v-on:change="searchGiphy"
             />
         </div>
-        <button
-            type="button"
-            v-on:click="
-                () => {
-                    images.value = null;
-                }
-            "
-        >
+        <button type="button" v-on:click="searchGiphy">
             <img :src="SearchIcon" class="icon is-search" alt="search" />
             <span class="visually-hidden">Search Giphy</span>
         </button>
@@ -72,15 +65,14 @@
     import { useGiphy } from '@/api/useGiphy';
 
     function searchGiphy(e) {
+        resetSearch();
         if (searchTerm.value.length >= 2) {
             useDebounceFn(async () => {
                 loading.value = true;
                 const response = await useGiphy(searchTerm.value, pageSize, offset);
 
                 if (response.data && response.data.length) {
-                    images.value
-                        ? (images.value = [...images.value, ...response.data])
-                        : (images.value = response.data);
+                    images.value = response.data;
                 }
                 offset += pageSize;
                 loading.value = false;
@@ -89,8 +81,20 @@
                     endOfResults.value = true;
                 }
             }, 300)();
-        } else {
-            resetSearch();
+        }
+    }
+
+    async function loadMore() {
+        const response = await useGiphy(searchTerm.value, pageSize, offset);
+
+        if (response.data && response.data.length) {
+            images.value = [...images.value, ...response.data];
+        }
+        offset += pageSize;
+        loading.value = false;
+
+        if (response.pagination.total_count < pageSize * offset) {
+            endOfResults.value = true;
         }
     }
 

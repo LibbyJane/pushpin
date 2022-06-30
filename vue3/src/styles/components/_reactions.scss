@@ -4,8 +4,8 @@
     list-style: none;
     margin-left: auto;
     position: absolute;
-        top: var(--space-sm);
-        right: 0;
+        top: var(--space-xs);
+        right: var(--space-xs);
 
         &:hover,
         &:focus {
@@ -27,6 +27,16 @@
         transition: all var(--transition);
     }
 
+    .reaction-default {
+        max-height: 10rem;
+
+        img {
+            filter: grayscale(1);
+            opacity: 0.8;
+            transform: scale(1);
+        }
+    }
+
     [data-active=true] {
         order: 0;
         max-height: 10rem;
@@ -39,7 +49,7 @@
     }
 
     .is-reaction {
-        margin: 0 0 var(--space-sm);
+        margin: 0;
         padding: 0;
         text-align: right;
 

@@ -1,5 +1,13 @@
 <template>
-    <ul class="list-reactions">
+    <ul
+        :class="`list-reactions ${expanded ? 'is-expanded' : ''}`"
+        :data-selected="selectedReaction"
+        v-on:mouseover="expanded = true"
+        v-on:mouseleave="expanded = false"
+    >
+        <li v-if="!selectedReaction" class="reaction-default">
+            <img :src="PlaceholderIcon" class="icon" alt="Add a reaction" />
+        </li>
         <li v-for="reaction in reactions">
             <label class="checkable is-reaction">
                 <input
@@ -7,8 +15,9 @@
                     :name="`reaction-${noteID}`"
                     :value="reaction.id"
                     :id="reaction.id"
-                    v-model="checked"
+                    v-model="selectedReaction"
                     v-on:change="handleChange()"
+                    :disabled="!expanded"
                 />
                 <img
                     :src="getImageUrl(reaction.id)"
@@ -25,6 +34,8 @@
 <script setup>
     import { reactive, ref, toRefs } from 'vue';
     import { useNotesStore } from '@/stores/notes';
+    import PlaceholderIcon from '@/assets/images/reaction-placeholder.svg';
+
     const notesStore = useNotesStore();
     // props: ['noteID', 'activeReaction'];
 
@@ -59,10 +70,11 @@
 
     const { activeReaction, noteID } = toRefs(props);
 
-    let checked = ref();
+    let selectedReaction = ref();
+    let expanded = ref(false);
 
     if (activeReaction.value) {
-        checked.value = activeReaction.value;
+        selectedReaction.value = activeReaction.value;
     }
 
     function getImageUrl(id) {
@@ -71,6 +83,12 @@
     }
 
     function handleChange() {
-        notesStore.setReaction(noteID.value, checked.value);
+        notesStore.setReaction(noteID.value, selectedReaction.value);
+        expanded.value = false;
+    }
+
+    function toggleExpanded() {
+        console.log('toggle expanded');
+        expanded.value = !expanded.value;
     }
 </script>

@@ -23,7 +23,7 @@
 
     const styles = [
         { value: 'stickynote', label: 'Sticky Note' },
-        { value: 'polaroid', label: 'Polaroid' },
+        { value: 'instant-photo', label: 'Instant Photo' },
         { value: 'postcard', label: 'Post Card' },
     ];
 

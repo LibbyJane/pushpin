@@ -143,6 +143,14 @@ export const useUserStore = defineStore({
             return response;
         },
 
+        async getReactions(numDays = 30) {
+            const response = await useAPI(`reactions`, null, numDays);
+            return response;
+            // if (response.success) {
+            //     this.notes[noteID].reaction = reactionID;(response, status)
+            // }
+        },
+
         reset() {
             this.$reset();
             localStorage.removeItem('ppTkn');

@@ -2,8 +2,10 @@
 .checkable-list label {
     cursor: pointer;
     color: var(--text);
-    font-size: var(--p);
+    font-family: var(--font-mono);
+    font-size: var(--p-small);
     font-weight: 400;
+    line-height: 1.2;
     position: relative;
 }
 
