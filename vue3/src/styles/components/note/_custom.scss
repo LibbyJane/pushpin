@@ -1,8 +1,8 @@
 .is-welcome {
-    grid-area:  span 2 / span 2;
+    grid-area: span 2 / span 2;
 
     @include breakpoint(xl) {
-        grid-area:  span 2 / span 5;
+        grid-area: span 2 / span 5;
     }
 
     .note-image {
@@ -13,10 +13,10 @@
 }
 
 .is-invitation {
-    grid-area:  span 1 / span 2;
+    grid-area: span 1 / span 2;
 
     @include breakpoint(xl) {
-        grid-area:  span 1 / span 4;
+        grid-area: span 1 / span 4;
     }
 
     background: {
@@ -50,7 +50,7 @@
         letter-spacing: 0.05rem;
         line-height: 1.1;
         padding-top: var(--space-sm);
-        text-shadow:  -1px -1px 2px var(--white);
+        text-shadow: -1px -1px 2px var(--white);
         text-transform: lowercase;
 
         strong {
@@ -66,31 +66,38 @@
         padding: var(--space-md);
         position: relative;
 
+        h4,
+        hr,
+        p {
+            position: relative;
+        }
+
         &::before {
             background: {
                 color: white;
                 image: url("@/assets/images/paper.jpg");
             }
+
             border: 3px solid var(--heading);
             border-width: 0 3px;
             content: '';
             margin: 0 auto;
             position: absolute;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
-            z-index: -1;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            // z-index: -1;
         }
     }
 }
 
 
 .is-update-profile {
-    grid-area:  span 1 / span 2;
+    grid-area: span 1 / span 2;
 
     @include breakpoint(xl) {
-        grid-area:  span 1 / span 3;
+        grid-area: span 1 / span 3;
     }
 
     background: url("@/assets/images/paper.jpg");
@@ -101,8 +108,9 @@
 .note {
     .tape {
         position: absolute;
-            top: var(--space-neg);
-            left: var(--space-lg-neg);
+        top: var(--space-neg);
+        left: var(--space-lg-neg);
+
         +.tape {
             left: auto;
             right: var(--space-md-neg);
@@ -112,13 +120,14 @@
 }
 
 hr {
-        background: {
-            // image: @/assets/images/Swoosh.svg ;
-            image: url("@/assets/images/Swoosh.svg") ;
-            size: contain;
-            position: center;
-            repeat: no-repeat;
-        }
-        border: 0;
-        height: var(--space-xs);
+    background: {
+        // image: @/assets/images/Swoosh.svg ;
+        image: url("@/assets/images/Swoosh.svg");
+        size: contain;
+        position: center;
+        repeat: no-repeat;
     }
+
+    border: 0;
+    height: var(--space-xs);
+}

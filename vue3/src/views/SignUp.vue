@@ -1,6 +1,11 @@
 <template>
     <main class="pg-signup cols">
         <form @submit="handleSubmit" class="form-signup card col">
+            <img
+                src="@/assets/images/pin-round-peach.png"
+                class="card-pin"
+                alt="Push Pin"
+            />
             <header class="card-header">Sign up</header>
 
             <label for="firstName">first name:</label>
@@ -74,9 +79,14 @@
                 </div>
             </div>
             <div
-                class="card"
-                :style="`background-image: url(${WelcomeBg}); background-size: cover;`"
+                class="card white-inner"
+                :style="`background-image: url(${WelcomeBg}); `"
             >
+                <img
+                    src="@/assets/images/pin-round-teal.png"
+                    class="card-pin"
+                    alt="Push Pin"
+                />
                 <p class="p-lg">
                     Want to send a note or an image to a friend without endless adverts,
                     videos, or being spied on? This is the place! We hope you like it.
@@ -85,7 +95,7 @@
         </aside>
         <aside class="sidebar">
             <div class="card is-alt align-top width-small" to="/login">
-                <PinImage />
+                <img src="@/assets/images/tape.svg" class="card-tape" alt="Push Pin" />
                 <h4>Already have an account?</h4>
                 <p><RouterLink to="/login">Log in here </RouterLink></p>
             </div>
@@ -94,22 +104,21 @@
 </template>
 
 <script setup>
-    import { usePageTitle } from '@/use/usePageTitle';
-    usePageTitle('Welcome to Pushpin');
-
     import InvitationBg from '@/assets/images/palm300.jpg';
-    import WelcomeBg from '@/assets/images/stickynote-red.svg';
+    import WelcomeBg from '@/assets/images/pattern300.jpg';
     import TapeImage from '@/components/images/Tape.vue';
-    import PinImage from '@/components/images/Pin.vue';
-    import Error from '@/components/Error.vue';
 
+    import Error from '@/components/Error.vue';
+    import { useRoute } from 'vue-router';
     import { ref, reactive } from 'vue';
     import { useUserStore } from '@/stores/user';
     import Avatar from '@/components/Avatar.vue';
 
+    import { usePageTitle } from '@/use/usePageTitle';
+    usePageTitle('Welcome to Pushpin');
+
     const userStore = useUserStore();
 
-    import { useRoute } from 'vue-router';
     const route = useRoute();
     let invitationCode = route.params.id;
     let invitedBy = invitationCode

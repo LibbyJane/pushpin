@@ -1,6 +1,16 @@
 <template>
     <main class="pg-login cols">
         <form @submit="handleSubmit" class="form-login card col">
+            <img
+                src="@/assets/images/pin-round-yellow.png"
+                class="card-pin align-left"
+                alt="Push Pin"
+            />
+            <img
+                src="@/assets/images/pin-round-teal.png"
+                class="card-pin align-right"
+                alt="Push Pin"
+            />
             <header class="card-header">Log In</header>
 
             <label for="email">email:</label>
@@ -30,6 +40,7 @@
 
         <aside class="sidebar">
             <div class="card is-alt align-top width-small" to="/login">
+                <img src="@/assets/images/tape.svg" class="card-tape" alt="Push Pin" />
                 <h4>Don't have an account yet?</h4>
                 <p><RouterLink to="/signup">Sign up here</RouterLink></p>
             </div>

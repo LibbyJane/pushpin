@@ -1,5 +1,6 @@
 <template>
     <div v-if="reactions.length" class="card is-reactions">
+        <img src="@/assets/images/pin-round-teal.png" class="card-pin" alt="Push Pin" />
         <h5>Reactions Received</h5>
 
         <ul class="reactions-list">
@@ -53,8 +54,6 @@
 <style lang="scss" scoped>
     .card.is-reactions {
         transform: translateX(var(--space-lg)) rotate(1deg);
-        max-height: 40vh;
-        overflow: auto;
         padding-right: var(--space-lg);
     }
 

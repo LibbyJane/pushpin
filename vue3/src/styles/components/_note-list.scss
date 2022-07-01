@@ -1,12 +1,12 @@
 .list-notes {
     display: grid;
-        // /* grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); */
-        grid-template-columns: repeat(2, 1fr);
-        /* grid-template-columns: repeat(auto-fill, minmax(180px, 260px)); */
-        grid-auto-flow: dense;
-        grid-gap: var(--space);
-        justify-content: start;
-        align-items: start;
+    // /* grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); */
+    grid-template-columns: repeat(2, 1fr);
+    /* grid-template-columns: repeat(auto-fill, minmax(180px, 260px)); */
+    grid-auto-flow: dense;
+    grid-gap: var(--space);
+    justify-content: start;
+    align-items: start;
 
     margin: 0 auto var(--space);
 
@@ -19,7 +19,7 @@
     }
 
     @include breakpoint(xl) {
-        grid-template-columns: repeat(12, 1fr);
+        grid-template-columns: repeat(14, 1fr);
     }
 
     // >li,
@@ -34,24 +34,25 @@
 
     .is-stickynote {
         @include breakpoint(xl) {
-            grid-area:  span 1 / span 2;
+            grid-area: span 1 / span 2;
         }
     }
 
     .is-instant-photo {
 
         @include breakpoint(xl) {
-            grid-area:  span 2 / span 3;
+            grid-area: span 2 / span 3;
         }
     }
 
     .is-postcard {
-    // outline: 2px solid red;
-    grid-area:  span 2 / span 2;
+        // outline: 2px solid red;
+        grid-area: span 2 / span 2;
 
-    @include breakpoint(xl) {
-            grid-area:  span 3 / span 6;
+        @include breakpoint(xl) {
+            grid-area: span 3 / span 6;
         }
+
         //
         // width: 2fr;
 
@@ -68,11 +69,12 @@
             .note-pin {
                 filter: sepia(1) hue-rotate(200deg) saturate(5);
                 transform: translateX(-0.5rem) translateY(0.1rem);
-                    /* outline: 2px solid blue; */
+                /* outline: 2px solid blue; */
             }
         }
 
         &:nth-child(2n+4) {
+
             // transform: translateY(-0.3rem);
             //outline: 2px solid pink;
             .note-pin {
@@ -97,6 +99,7 @@
 
         &:nth-child(3n+6) {
             transform: rotate(0.5deg);
+
             //  outline: 2px solid orange;
             .note-pin {
                 transform: translateY(0.25rem);
@@ -106,6 +109,7 @@
 
         &:nth-child(5n) {
             transform: rotate(-0.75deg);
+
             /* outline: 2px solid lime; */
             .note-pin {
                 filter: sepia(1) hue-rotate(230deg) saturate(3);
@@ -124,4 +128,3 @@
 /* &[data-saved="true"] {
     order: 0;
 } */
-

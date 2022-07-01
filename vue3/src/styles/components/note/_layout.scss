@@ -3,13 +3,13 @@
     /* order: 1; */
     align-items: start;
     display: grid;
-    grid-template-areas: "note-header" "note-image" "note-message" "note-footer";
+    grid-template-areas: "note-header""note-image""note-message""note-footer";
     grid-template-rows: max-content;
 
     &.is-postcard {
         grid-template-areas:
-        "note-header note-header"
-        "note-message note-footer"
+            "note-header note-header"
+            "note-message note-footer"
         ;
     }
 }
