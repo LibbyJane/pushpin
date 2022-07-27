@@ -32,3 +32,5 @@ data/config.json
 # Migrations
 .migrate
 .migrate_test
+
+data/cache
