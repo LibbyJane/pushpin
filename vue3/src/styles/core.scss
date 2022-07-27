@@ -18,13 +18,32 @@
         ,"layout/site-header"
         ;
 
-
-
-@import "components/card"
+@import
+        "components/alert",
+        "components/avatar"
+        ,"components/buttons/base"
+        ,"components/card"
+        ,"components/error"
+        ,"components/forms/base"
         ,"components/forms/checkable"
         ,"components/forms/fields"
-        ,"components/noteList"
-        ,"components/note"
+        ,"components/forms/multiselect"
+        ,"components/friends-list"
+        ,"components/icons"
+        ,"components/note-list"
+        ,"components/note/layout"
+        ,"components/note/base"
+        ,"components/note/confirm"
+                ,"components/note/pin"
+        ,"components/note/header"
+        ,"components/note/image"
+        ,"components/note/message"
+        ,"components/note/footer"
+        ,"components/note/postcard"
+        ,"components/note/preview"
+        ,"components/note/custom"
         ,"components/reactions"
         ,"components/heart-toggle"
+        ,"components/swatch",
+        "components/toast"
         ;

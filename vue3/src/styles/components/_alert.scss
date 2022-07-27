@@ -1,0 +1,45 @@
+.alert {
+    background: url("@/assets/images/paper.jpg") top left repeat;
+    box-shadow: var(--box-shadow);
+    margin: 0 auto var(--space) 0;
+    padding: var(--space);
+
+    &.is-success {
+        background: url("@/assets/images/paper-green.jpg") top left repeat;
+        color: var(--green-dark);
+    }
+
+        &.is-danger {
+        background: url("@/assets/images/paper-pink.jpg") top left repeat;
+        color: var(--red);
+    }
+
+    .is-highlighted {
+        &::before,
+        &::after {
+            background-color: var(--white);
+            opacity: 0.4;
+        }
+    }
+}
+
+.alert-header {
+    display: flex;
+        justify-content: space-between;
+
+    button {
+        font-family: var(--font-hand);
+        font-size: 1.4rem;
+        margin: auto 0 auto auto;
+        padding: 0;
+    }
+}
+
+.alert-title {
+    &.alert-title {
+        color: currentColor;
+        font-family: var(--font-hand);
+        font-weight: bold;
+        text-shadow: 0 0 1px var(--white);
+    }
+}

@@ -14,14 +14,17 @@ label {
 
 input,
 textarea,
-select  {
+select,
+.multiselect-themed.multiselect-themed   {
     appearance: none;
     -webkit-appearance: none;
     background: transparent;
     border: none;
+    border-radius: 0;
     box-sizing: border-box;
     font-family: var(--font-mono);
     font-size: 1rem;
+    margin: 0 0 var(--space);
     width: 100%;
 
     &:-webkit-autofill,
@@ -36,7 +39,8 @@ select  {
 
 input,
 textarea,
-select {
+select,
+.multiselect-themed.multiselect-themed  {
     border-bottom: 1px solid var(--biro);
     padding: var(--space-sm) ;
 
@@ -55,4 +59,20 @@ input[type="radio"] {
 
 textarea {
     min-height: 160px;
+}
+
+
+.multiselect-themed.multiselect-themed {
+    padding-inline: 0;
+
+    .multiselect-tags {
+        padding: 0;
+    }
+
+    .multiselect-tag {
+        background: var(--off-white);
+        color: var(--biro);
+        font-size: var(--xs);
+        font-weight: normal;
+    }
 }

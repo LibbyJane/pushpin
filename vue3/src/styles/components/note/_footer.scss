@@ -1,0 +1,103 @@
+.note-footer {
+    display: flex;
+    font-size: var(--p-sm);
+
+    align-items: center;
+    margin: 0 var(--space) auto;
+    padding-bottom: var(--space-sm);
+
+
+    .is-postcard & {
+
+        flex-wrap: wrap;
+        font-size: var(--p);
+        line-height: 1.8;
+        margin: auto var(--space-lg) auto auto;
+
+                width: var(--postcard-footer-width) ;
+                padding-left: var(--space-lg);
+        padding-bottom: 0;
+
+        .avatar {
+            margin: 0;
+            width: 100%;
+        border: 2px solid var(--grey-7);
+        border-width: 2px 0;
+
+        position: relative;
+
+        &::after {
+            border-top: 2px solid var(--grey-7);
+            content: '';
+            position: absolute;
+                top: 50%;
+                bottom: 50%;
+                left: 0;
+                right: 0;
+
+        }
+        }
+
+        .avatar-name {
+            width: 100%;
+        }
+    }
+
+    // h6 {
+    //     font-size: var(--p-sm);
+    //     margin: 0;
+    //     padding: 0;
+
+    //     .is-postcard & {
+    //         font-size: var(--p);
+    //         margin-bottom: var(--space);
+    //         width: 100%;
+
+    //         &:after {
+    //             content: ':';
+    //         }
+    //     }
+    // }
+
+    .avatar {
+        flex-direction: row;
+        margin: 0 var(--space-xs);
+    }
+
+    // .avatar-image {
+    //     display: none;
+    // }
+
+
+    .avatar-name {
+        &::before {
+            content: 'from ';
+
+            .is-postcard & {
+                content: 'Sender:';
+                display: block;
+            }
+        }
+    }
+
+    .avatar-image {
+        display: none;
+        // filter: grayscale(1);
+        // border: 2px solid var(--white);
+    }
+
+    // .avatar-image {
+    //     // --size: 2rem;
+    //     // height: var(--size);
+    //     // width: var(--size);
+
+    //     .is-postcard & {
+    //         display: none;
+    //     }
+    // }
+
+    p {
+        margin: 0;
+        padding: 0;
+    }
+}

@@ -1,0 +1,41 @@
+.note-header {
+    --icon-size: 1rem;
+
+    display: flex;
+    justify-content: flex-start;
+    margin: 0 0 auto;
+    padding: 0 ;
+    z-index: var(--zi-note-header);
+
+    .is-stickynote & {
+        background: {
+            image: linear-gradient(
+                270deg,
+                rgba(0, 0, 0, 0.03) 50%,
+                rgba(0, 0, 0, 0.075) 100%
+            );
+        }
+        border-bottom: thin solid rgba(255,255,255,0.15);
+    }
+
+
+    // min-height: var(--icon-size);
+
+
+
+    // .avatar {
+    //     position: absolute;
+    //         top: 0;
+    //         left: 0;
+    //         right: 0;
+    //     margin: 0 auto;
+    // }
+
+    // .avatar-image {
+    //     border: var(--border) var(--white);
+    //     box-shadow: var(--box-shadow-soft);
+    //     transform: rotate(-1deg) translateX(-6px) translateY(-2px);
+    //     transform-origin: top right;
+    // }
+}
+

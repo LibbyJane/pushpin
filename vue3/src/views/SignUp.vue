@@ -1,17 +1,46 @@
 <template>
     <main class="pg-signup cols">
         <form @submit="handleSubmit" class="form-signup card col">
+            <img
+                src="@/assets/images/pin-round-peach.png"
+                class="card-pin"
+                alt="Push Pin"
+            />
             <header class="card-header">Sign up</header>
 
+            <label for="firstName">first name:</label>
+            <input id="firstName" type="firstName" v-model="fields.firstName" required />
+
+            <label for="lastName">last name:</label>
+            <input id="lastName" type="lastName" v-model="fields.lastName" required />
+
+            <label for="displayName">display name / signature:</label>
+            <input
+                id="displayName"
+                type="displayName"
+                v-model="fields.displayName"
+                autocomplete="username"
+                required
+            />
+
             <label for="email">email:</label>
-            <input id="email" type="email" v-model="fields.email.value" required />
+            <input
+                id="email"
+                type="email"
+                v-model="fields.email"
+                autocomplete="email"
+                required
+            />
+
             <!-- <Error  /> -->
 
-            <label for="password"> password: </label>
+            <label for="password">password:</label>
             <input
                 id="password"
                 type="password"
-                v-model="fields.password.value"
+                v-model="fields.password"
+                v-on:blur="comparePasswords"
+                autocomplete="new-password"
                 required
             />
 
@@ -19,80 +48,156 @@
             <input
                 id="confirmPassword"
                 type="password"
-                v-model="fields.confirmPassword.value"
+                v-model="fields.confirmPassword"
+                v-on:blur="comparePasswords"
+                autocomplete="new-password"
                 required
             />
-            <!-- <Error name="password" class="error-feedback" /> -->
-
-            <button type="submit">create account</button>
+            <Error v-if="errors.confirmPassword" :message="errors.confirmPassword" />
+            <Error v-if="formError" :message="formError" />
+            <button class="btn" type="submit" :disabled="submitDisabled">
+                create account
+            </button>
         </form>
-
-        <div class="col card is-reversed align-top width-small">
-            <h4>Already have an account?</h4>
-            <p><RouterLink to="/login">Log in here</RouterLink></p>
-        </div>
+        <aside class="sidebar">
+            <div
+                v-if="invitedBy"
+                class="note is-invitation width-small"
+                :style="`background-image: url(${InvitationBg}); margin-bottom: var(--space);`"
+            >
+                <header class="note-header">
+                    <TapeImage />
+                </header>
+                <div class="note-message">
+                    <Avatar :userData="invitedBy" />
+                    <br />
+                    <h4 class="invitation-heading">
+                        Invited by
+                        <strong>{{ invitedBy.displayName }}</strong>
+                    </h4>
+                    <hr />
+                </div>
+            </div>
+            <div
+                class="card white-inner"
+                :style="`background-image: url(${WelcomeBg}); `"
+            >
+                <img
+                    src="@/assets/images/pin-round-teal.png"
+                    class="card-pin"
+                    alt="Push Pin"
+                />
+                <p class="p-lg">
+                    Want to send a note or an image to a friend without endless adverts,
+                    videos, or being spied on? This is the place! We hope you like it.
+                </p>
+            </div>
+        </aside>
+        <aside class="sidebar">
+            <div class="card is-alt align-top width-small" to="/login">
+                <img src="@/assets/images/tape.svg" class="card-tape" alt="Push Pin" />
+                <h4>Already have an account?</h4>
+                <p><RouterLink to="/login">Log in here </RouterLink></p>
+            </div>
+        </aside>
     </main>
 </template>
 
 <script setup>
-    import { ref, reactive, provide } from 'vue';
-    import { useAPI } from '@/api/useAPI';
+    import InvitationBg from '@/assets/images/palm300.jpg';
+    import WelcomeBg from '@/assets/images/pattern300.jpg';
+    import TapeImage from '@/components/images/Tape.vue';
+
+    import Error from '@/components/Error.vue';
+    import { useRoute } from 'vue-router';
+    import { ref, reactive } from 'vue';
     import { useUserStore } from '@/stores/user';
+    import Avatar from '@/components/Avatar.vue';
+
+    import { usePageTitle } from '@/use/usePageTitle';
+    usePageTitle('Welcome to Pushpin');
 
     const userStore = useUserStore();
 
+    const route = useRoute();
+    let invitationCode = route.params.id;
+    let invitedBy = invitationCode
+        ? reactive(await userStore.invitationSender(invitationCode))
+        : null;
+
+    // const fields = reactive({
+    //     firstName: '',
+    //     lastName: '',
+    //     displayName: '',
+    //     email: '',
+    //     password: '',
+    //     confirmPassword: '',
+    // });
+
     const fields = reactive({
-        email: {
-            value: 'cookie@monster.com',
-            error: null,
-        },
-        password: {
-            value: 'testtest',
-        },
-        confirmPassword: {
-            value: 'testtest',
-            error: null,
-        },
+        firstName: 'test5',
+        lastName: 'test',
+        displayName: 'test5',
+        email: 'test5@test.com',
+        password: 'testtest',
+        confirmPassword: '',
     });
 
-    // watch(
-    //     fields.password.value: () => {
-    //         comparePasswords()
-    //     },
+    const errors = reactive({
+        firstName: '',
+        lastName: '',
+        displayName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+    });
 
-    //     fields.confirmPassword.value: () => {
-    //         comparePasswords()
-    //     }
-    // );
+    let formError = ref('');
+    let submitDisabled = ref(false);
 
     const comparePasswords = () => {
+        console.log(
+            'comparing',
+            fields.password.length,
+            fields.confirmPassword.length,
+            fields.password === fields.confirmPassword
+        );
         if (
-            fields.password.value &&
-            fields.confirmPassword.value &&
-            fields.password.value !== fields.confirmPassword.value
+            fields.password.length &&
+            fields.confirmPassword.length &&
+            fields.password !== fields.confirmPassword
         ) {
-            fields.confirmPassword.error = 'Passwords must match';
-            console.log('error', fields.confirmPassword.error);
+            errors.confirmPassword = 'Passwords must match';
         } else {
-            fields.confirmPassword.error = null;
-            console.log('no error', fields.confirmPassword.error);
+            errors.confirmPassword = '';
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        let formHasErrors = false;
 
-        const response = await useAPI('login', {
-            email: fields.email.value,
-            password: fields.password.value,
-        });
+        submitDisabled.value = true;
 
-        if (response.data) {
-            userStore.updateAuth(data.tokenInfo);
-            userStore.updateInfo(data.user);
-            console.log(userStore.getAuth.token, userStore.getInfo);
-        } else if (response.error) {
-            console.log(response.error);
+        for (const [key, value] of Object.entries(errors)) {
+            if (value.length) {
+                formHasErrors = true;
+                break;
+            }
         }
+
+        if (!formHasErrors) {
+            const outcome = await userStore.performSignUp(fields, invitationCode);
+
+            if (outcome.error) {
+                formError.value = outcome.error;
+            } else if (outcome.errors) {
+                for (let error of outcome.errors) {
+                    formError.value += `${error}`;
+                }
+            }
+        }
+
+        submitDisabled.value = false;
     };
 </script>

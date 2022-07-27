@@ -1,8 +1,6 @@
 .site-header {
     color: var(--white);
     margin: 0 0 var(--space-md);
-    padding: 0;
-
     display: flex;
         justify-content: space-between;
     /* margin: 0 calc(var(--space-lg) * -1); */
@@ -49,19 +47,17 @@
 }
 
 .page-title {
+    background: url("@/assets/images/paper-lined.jpg") top left repeat;
     box-shadow: var(--box-shadow);
+    color: var(--text);
     display: block;
     // font-size: 1.5rem;
-    font-weight: 500;
-    padding: var(--space);
-    background: url("@/assets/images/paper-lined.jpg") top left repeat;
-    color: var(--text);
     font-family: var(--font-hand);
-
+    font-weight: 500;
     margin: 0 auto auto 0;
-    transform: translateY(-0.15rem) ;
+    padding: var(--space);
+    transform: translateY(-0.15rem);
 }
-
 
 .user-nav {
     font-family: var(--font-hand);
@@ -86,9 +82,20 @@
 
     a,
     button {
-        background: url("@/assets/images/paper-dark.jpg") top left repeat;
-        box-shadow: var(--box-shadow);
-        color: var(--white);
+        background: {
+                //color: var(--note-pink);
+            image: linear-gradient(
+            0deg,
+            rgba(94, 44, 11, 0) 0%,
+            rgba(94, 44, 11, 0.31) 90%,
+            rgba(94, 44, 11, 0.05) 94%,
+            rgba(94, 44, 11, 0.95) 97%), url("@/assets/images/paper-strip-torn-bottom-peach.svg");
+                blend-mode: multiply;
+                size: cover;
+                position: bottom center;
+                repeat: no-repeat;
+            }
+            box-shadow: none;
         display: flex;
             margin: 0;
             padding: 0;
@@ -96,7 +103,7 @@
         text-decoration: none;
         text-align: center;
         transition: all var(--transition);
-        transform: translateY(-1.5rem) rotate(2deg);
+        transform: translateY(-2rem) rotate(2deg);
         transform-origin: top center;
 
         &:hover,
@@ -127,14 +134,22 @@
 
         a {
             background: {
-                color: var(--note-pink);
-                image: url("@/assets/images/paper-red.jpg");
-                blend-mode: multiply;
-                size: 6rem;
+                //color: var(--note-pink);
+                image: linear-gradient(
+            0deg,
+            rgba(18, 58, 53, 0) 0%,
+            rgba(18, 58, 53, 0.31) 90%,
+            rgba(18, 58, 53, 0.05) 94%,
+            rgba(18, 58, 53, 0.95) 97%), url("@/assets/images/paper-strip-torn-bottom-green.svg");
+                //blend-mode: multiply;
+
             }
+
             // filter: sepia(1) hue-rotate(300deg) saturate(2);
-            padding: var(--space-md) var(--space-md) var(--space);
+            padding: 2rem 1.5rem 1.5rem;
+            position: relative;
             transform: translateY(-1rem);
+
             &:hover,
             &:focus {
                 transform: scale(1.1) translateY(-0.9rem);
@@ -146,9 +161,11 @@
         }
 
         .icon {
-            width: 2.4rem;
-            filter: invert(1);
-            margin-bottom: var(--space-sm)
+            height: auto;
+            width: 2.8rem;
+            //filter: invert(1);
+            margin-bottom: var(--space-sm);
+            transform: translateX(0.2rem);
         }
     }
 
@@ -165,14 +182,18 @@
 
     .avatar {
         filter: brightness(0.8) blur(0.2px);
+        transition: filter var(--transition);
+    }
+
+    .avatar-image {
         border-radius: 0;
         width: 4rem;
         height: 5rem;
-        transition: filter var(--transition);
     }
 
     .icon {
         display: inline-block;
+        filter: brightness(0.33) opacity(0.9);
         height: 2rem;
         width: 1.6rem;
         transition: transform var(--transition);
@@ -184,10 +205,14 @@
         }
 
         .icon {
-            filter: invert(1) brightness(0.9);
+            //filter: invert(1) brightness(0.9);
             height: 1.6rem;
         }
     }
+}
+
+main {
+    padding: 0 var(--space);
 }
 
 /* .site-nav .site-logo img {

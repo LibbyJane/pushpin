@@ -1,0 +1,47 @@
+.note {
+    --postcard-footer-width: 16rem;
+    /* order: 1; */
+    align-items: start;
+    display: grid;
+    grid-template-areas: "note-header""note-image""note-message""note-footer";
+    grid-template-rows: max-content;
+
+    &.is-postcard {
+        grid-template-areas:
+            "note-header note-header"
+            "note-message note-footer"
+        ;
+    }
+}
+
+.note-confirm {
+    grid-area: note-header;
+}
+
+.note-pin {
+    grid-area: note-header;
+
+    .is-instant-photo & {
+        grid-area: note-image;
+    }
+}
+
+.note-header {
+    grid-area: note-header;
+
+    .is-instant-photo & {
+        grid-area: note-image;
+    }
+}
+
+.note-image {
+    grid-area: note-image;
+}
+
+.note-message {
+    grid-area: note-message;
+}
+
+.note-footer {
+    grid-area: note-footer;
+}

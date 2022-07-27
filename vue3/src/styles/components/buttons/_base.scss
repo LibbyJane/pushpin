@@ -1,0 +1,81 @@
+.btn {
+
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: var(--p);
+    padding: var(--space);
+    position: relative;
+    white-space: nowrap;
+
+    &::before,
+    &::after {
+        background: {
+            image:  url("@/assets/images/drawn-circle.svg");
+            position: center;
+            repeat: no-repeat;
+            size: contain;
+        }
+        content: '';
+        height: 0;
+        padding-top: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto 0;
+        transition: all;
+        transform: scaleY(0.6) scaleX(1.2) translateY(0.3rem);
+    }
+
+            &::after {
+            background: {
+                image:  url("@/assets/images/drawn-circle-hover.svg");
+            }
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+
+
+    &:hover {
+        color: var(--heading);
+
+        &::after {
+            opacity: 1;
+        }
+    }
+
+    &.is-text {
+        padding-inline: 0;
+
+        &:hover,
+        &:focus {
+            &::after {
+                transform: scaleX(1) translateY(var(--space-neg));
+            };
+        }
+
+        .is-success & {
+            color: var(--green);
+        }
+
+        &::before,
+        &::after {
+            background: transparent;
+        }
+
+        &::after {
+            border-bottom: thin solid;
+            transition: all var(--transition);
+            transform: scaleX(0) translateY(var(--space-neg));
+        }
+    }
+
+    &.is-small {
+        font-size: var(--p-sm);
+    }
+}
+

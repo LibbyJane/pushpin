@@ -25,7 +25,7 @@ const router = createRouter({
             meta: { requiresAuth: false },
         },
         {
-            path: '/create',
+            path: '/create/:id?',
             name: 'create',
             component: () => import('../views/Create.vue'),
             meta: { requiresAuth: true },
@@ -36,11 +36,18 @@ const router = createRouter({
             component: () => import('../views/Account.vue'),
             meta: { requiresAuth: true },
         },
-        // {
-        //   path: '/postDetail/:id',
-        //   name: 'postDetail',
-        //   component: () => import('../views/PostDetailView.vue')
-        // }
+        {
+            path: '/invite',
+            name: 'invite',
+            component: () => import('../views/Invite.vue'),
+            meta: { requiresAuth: true },
+        },
+        {
+            path: '/invitation/:id',
+            name: 'invitationSignup',
+            component: () => import('../views/SignUp.vue'),
+            meta: { requiresAuth: false },
+        }
     ]
 })
 router.beforeEach(async (to, from, next) => {
@@ -49,10 +56,9 @@ router.beforeEach(async (to, from, next) => {
     // console.log('to, from, next, logged in?', to.meta, from, next, userStore.getAuth)
 
     if (!userStore.getAuth && to.meta.requiresAuth) {
-        console.log('go to login');
         next('/login')
     } else if (userStore.getAuth && !to.meta.requiresAuth) {
-        console.log('hide login page from authenticated users')
+        // console.log('hide login page from authenticated users')
         next('/')
     } else {
         next();

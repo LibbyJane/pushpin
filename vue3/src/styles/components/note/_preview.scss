@@ -1,0 +1,29 @@
+.note-preview {
+    margin-left: auto;
+    min-width: 18rem;
+
+    .note {
+        height: auto;
+        margin-bottom: var(--space);
+
+        &:hover,
+        &:focus {
+            transform: none;
+        }
+    }
+
+    .is-postcard {
+        width: 50rem;
+        max-width: 100%;
+
+        .note-image {
+            pointer-events: none;
+        }
+
+        ~.is-postcard {
+            .note-image {
+                opacity: 0;
+            }
+        }
+    }
+}

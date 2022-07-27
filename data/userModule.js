@@ -4,6 +4,9 @@ const validationModule = require("./validationModule");
 const mediaModule = require('./mediaModule');
 const database = require('./database');
 const userRegistrationService = require('./modules/users/services/userRegistrationService');
+const uuid = require('uuid');
+const url = require('url');
+const querystring = require('querystring');
 
 module.exports.login = () => {
     return async (req, res) => {
@@ -115,7 +118,7 @@ module.exports.uploadProfilePhoto = (config) => {
         // Make sure a file with the correct name was uploaded
         if (!req.files || (req.files.length === 0)) {
             errors.push('No files were found');
-            return res.status(400).json({errors});
+            return res.status(400).json({ errors });
         }
 
         // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
@@ -173,18 +176,334 @@ module.exports.uploadProfilePhoto = (config) => {
                 });
             } catch (err) {
                 errors.push('Failed to upload user photo: ' + err.toString());
-                return res.status(500).json({errors});
+                return res.status(500).json({ errors });
             }
         });
     }
 }
 
+/**
+ * Creates a new invitation for the logged in user
+ */
+module.exports.createInvitation = () => {
+    return async (req, res) => {
+        let errors = [];
+        const token = req.token;
+
+        if (!token) {
+            errors.push('no token found');
+            return res.status(500).json({ errors });
+        }
+
+        // Insert a new the invitation for the logged-in user.
+        const invitationCode = uuid.v4();
+        const createdAt = Math.floor((new Date().getTime()) / 1000);
+
+        // An invitation will expire after 30 days
+        const expiresAt = createdAt + (86_400 * 30);
+
+        const params = [invitationCode, token.userId, createdAt, expiresAt];
+
+        try {
+            const databaseManager = database.dbManager;
+            await databaseManager.execute(sqlStatements.insertInvitation, params);
+
+            return res.send({
+                "success": true,
+                "code": invitationCode,
+            });
+        } catch (err) {
+            errors.push('Failed to create a new invitation for the logged in user: ' + err.toString());
+            return res.status(500).json({ errors });
+        }
+    }
+}
+
+/**
+ * Gets the details of the user who sent an invitation.
+ */
+module.exports.getUserWhoSentInvite = () => {
+    return async (req, res) => {
+        let errors = [];
+
+        // The inviteCode must be provided in the URL, and it MUST not be empty.
+        const inviteCode = req.params.code;
+
+        errors = validationModule.allStringsInArrayAreNotEmpty([
+            {
+                "name": "code",
+                "value": inviteCode,
+            },
+        ]);
+
+        if (errors.length !== 0) {
+            res.status(400).json({ errors });
+            return;
+        }
+
+        try {
+            const databaseManager = database.dbManager;
+
+            // Load the details of the invitation.
+            const invite = await databaseManager.getRow(sqlStatements.getInviteByCode, [inviteCode]);
+
+            if (!invite) {
+                errors.push('Failed to find invitation.  Invitation code may be incorrect, or the invitation may have expired.');
+                return res.status(400).json({ errors });
+            }
+
+            // Load the user associated with the invitation
+            const user = await databaseManager.getRow(sqlStatements.getUserById, [invite.userId]);
+
+            if (!user) {
+                errors.push('Failed to user associated with invitation.  This should not happen.');
+                return res.status(500).json({ errors });
+            }
+
+            return res.send(user);
+        } catch (err) {
+            errors.push('Failed to load the user who created the invitation: ' + err.toString());
+            return res.status(500).json({ errors });
+        }
+    }
+}
+
+/**
+ * Accepts an invitation and adds the user who sent the invitation as a friend.
+ * Note, the invitation code must be sent in the URL.
+ */
+module.exports.acceptInvitation = () => {
+    return async (req, res) => {
+        let errors = [];
+
+        // The user MUST be logged in.
+        const token = req.token;
+
+        if (!token) {
+            errors.push('no token found');
+            return res.status(500).json({ errors });
+        }
+
+        // The inviteCode must be provided in the URL, and it MUST not be empty.
+        const inviteCode = req.params.code;
+
+        errors = validationModule.allStringsInArrayAreNotEmpty([
+            {
+                "name": "code",
+                "value": inviteCode,
+            },
+        ]);
+
+        if (errors.length !== 0) {
+            res.status(400).json({ errors });
+            return;
+        }
+
+        try {
+            const databaseManager = database.dbManager;
+
+            // Load the details of the invitation.
+            const invite = await databaseManager.getRow(sqlStatements.getInviteByCode, [inviteCode]);
+
+            if (!invite) {
+                errors.push('Failed to find invitation.  Invitation code may be incorrect, or the invitation may have expired.');
+                return res.status(400).json({ errors });
+            }
+
+            // Load the user associated with the invitation
+            const user = await databaseManager.getRow(sqlStatements.getUserById, [invite.userId]);
+
+            if (!user) {
+                errors.push('Failed to user associated with invitation.  This should not happen.');
+                return res.status(500).json({ errors });
+            }
+
+            const userId1 = getLowerUserId(token.userId, user.id);
+            const userId2 = getHigherUserId(token.userId, user.id);
+
+            // Make sure the friendship doesn't already exist.
+            const friendship = await databaseManager.getRow(sqlStatements.getExistingFriendship, [userId1, userId2]);
+
+            if (friendship) {
+                errors.push('A friendship already exists between these users.');
+                return res.status(500).json({ errors });
+            }
+
+            // Insert the friendship
+            const createdAt = Math.floor((new Date().getTime()) / 1000);
+            await databaseManager.getRow(sqlStatements.insertFriendship, [userId1, userId2, createdAt]);
+
+            // All done.
+            return res.send({
+                "success": true,
+            });
+        } catch (err) {
+            errors.push('Failed to load the user who created the invitation: ' + err.toString());
+            return res.status(500).json({ errors });
+        }
+    }
+}
+
+/**
+ * Returns the basic user information about the logged-in user.
+ */
+module.exports.getFriendsForLoggedInUser = () => {
+    return async (req, res) => {
+        const errors = [];
+
+        const token = req.token;
+        if (!token) {
+            errors.push('no token found');
+            return res.status(500).json({ errors });
+        }
+
+        try {
+            const databaseManager = database.dbManager;
+
+            // Get the friends for the logged in user.
+            const friends = await databaseManager.getAll(sqlStatements.getFriends, [token.userId, token.userId]);
+
+            // All done.
+            return res.send(friends);
+        } catch (err) {
+            errors.push('Failed to load friends: ' + err.toString());
+            return res.status(500).json({ errors });
+        }
+    }
+};
+
+/**
+ * Searches the user database for users with matching search terms in firstName, lastName, displayName or emailAddress.
+ */
+module.exports.userSearch = () => {
+    return async (req, res) => {
+        const errors = [];
+
+        const token = req.token;
+        if (!token) {
+            errors.push('no token found');
+            return res.status(500).json({ errors });
+        }
+
+        const requestUrl = new URL(req.url, `https://${req.headers.host}/`);
+        const query = new URLSearchParams(requestUrl.search);
+        const entries = query.entries();
+
+        if (entries.length === 0) {
+            errors.push('No query string found.  Please provide a query term using a ?query= in the url');
+            return res.status(400).json({ errors });
+        }
+
+        const firstEntry = entries.next();
+
+        if ((!firstEntry) || (!firstEntry.value)) {
+            errors.push('No query string found.  Please provide a query term using a ?query= in the url');
+            return res.status(400).json({ errors });
+        }
+
+        const queryKey = firstEntry.value[0].toLowerCase();
+        const queryValue = firstEntry.value[1].toLowerCase().trim();
+
+        if ((queryKey !== 'query') || (queryValue.length === 0)) {
+            errors.push('No valid query string found.  Please provide a query term using a ?query= in the url');
+            return res.status(400).json({ errors });
+        }
+
+        // Split the query value into separate words
+        const searchTerms = queryValue.split(' ');
+
+        try {
+            const databaseManager = database.dbManager;
+
+            let sql = `
+            SELECT u.id, u.firstName, u.lastName, u.displayName, u.imageURL
+            FROM users u
+            `;
+
+            const params = [];
+
+            if (searchTerms.length > 2) {
+                errors.push('For now you may only provide a maximum of two search keywords');
+                return res.status(400).json({ errors });
+            }
+
+            if (searchTerms.length === 1) {
+                const searchTerm = searchTerms[0];
+                sql += `
+                WHERE firstName LIKE ?
+                 OR lastName like ?
+                 OR displayName like ?
+                 OR email like ?
+                `
+
+                params.push('%' + searchTerm + '%');
+                params.push('%' + searchTerm + '%');
+                params.push('%' + searchTerm + '%');
+                params.push('%' + searchTerm + '%');
+            } else {
+                const searchTerm1 = searchTerms[0];
+                const searchTerm2 = searchTerms[1];
+
+                sql += `
+                  WHERE (
+                    ((firstName LIKE ?) AND (lastName LIKE ?))
+                    OR
+                    ((firstName LIKE ?) AND (lastName LIKE ?))
+                  )
+                `;
+
+                params.push('%' + searchTerm1 + '%');
+                params.push('%' + searchTerm2 + '%');
+                params.push('%' + searchTerm2 + '%');
+                params.push('%' + searchTerm1 + '%');
+            }
+
+            // Get the friends for the logged in user.
+            const friends = await databaseManager.getAll(sql, params);
+
+            // All done.
+            return res.send(friends);
+        } catch (err) {
+            errors.push('Failed to load friends: ' + err.toString());
+            return res.status(500).json({ errors });
+        }
+    }
+};
+
+/**
+ * Gets the lower of the two userIds
+ * @param {number} userId1
+ * @param {number} userId2
+ * @returns {*}
+ */
+const getLowerUserId = (userId1, userId2) => {
+    if (userId1 < userId2) {
+        return userId1;
+    }
+
+    return userId2;
+}
+
+/**
+ * Gets the highest of the two userIds
+ * @param {number} userId1
+ * @param {number} userId2
+ * @returns {*}
+ */
+const getHigherUserId = (userId1, userId2) => {
+    if (userId1 > userId2) {
+        return userId1;
+    }
+
+    return userId2;
+}
+
 /***
- *
+ * Finds a user with a matching email address and returns it.
  * @param databaseManager
  * @param email
  * @param exceptionIfNotExisting
- * @returns {Promise<unknown>}
+ * @returns {Promise<null|object>}
  */
 const getUserByEmail = async (databaseManager, email, exceptionIfNotExisting = true) => {
     const user = await databaseManager.getRow(sqlStatements.getUserByEmail, [email]);
@@ -199,11 +518,71 @@ const getUserByEmail = async (databaseManager, email, exceptionIfNotExisting = t
     return user;
 }
 
+/***
+ * Finds a user with a matching email address and returns it.
+ * @param databaseManager
+ * @param {int} userId
+ * @param exceptionIfNotExisting
+ * @returns {Promise<null|object>}
+ */
+const getUserById = async (databaseManager, userId, exceptionIfNotExisting = true) => {
+    const user = await databaseManager.getRow(sqlStatements.getUserById, [userId]);
+
+    // If no matching user was found, return a login failure message.
+    if (!user) {
+        if (exceptionIfNotExisting) {
+            throw new Error(`could not find user with id ${userId}`);
+        }
+    }
+
+    return user;
+}
+
 const sqlStatements = {
+    getExistingFriendship: `
+    SELECT userId1, userId2, createdAt
+    FROM friends
+    WHERE userId1 = ?
+    AND userId2 = ?
+    `,
+    getFriends: `
+    SELECT id, firstName, lastName, displayName, imageURL
+    FROM users
+    WHERE id IN (
+        SELECT userId2
+        FROM friends
+        WHERE userId1 = ?
+        
+        UNION
+        
+        SELECT userId1
+        FROM friends
+        WHERE userId2 = ?        
+    )
+    `,
+    getInviteByCode: `
+    SELECT userId, createdAt, expiresAt
+    FROM invitations
+    WHERE code = ?
+    AND expiresAt > strftime('%s', 'now')
+    `,
     getUserByEmail: `
     SELECT id, firstName, lastName, displayName, imageURL, email, password
     FROM users
     WHERE email = ?
+    `,
+    getUserById: `
+    SELECT id, firstName, lastName, displayName, imageURL
+    FROM users
+    WHERE id = ?
+    `,
+    insertFriendship: `
+    INSERT INTO friends(userId1, userId2, createdAt)
+    VALUES(?, ?, ?);
+    `,
+    insertInvitation: `
+    INSERT INTO invitations(code, userId, createdAt, expiresAt)
+    VALUES(?, ?, ?, ?);
     `,
     insertUser: `
     INSERT INTO users(firstName, lastName, displayName, email, uid, password)

@@ -1,0 +1,24 @@
+.toast {
+    background: url("@/assets/images/paper-green.jpg") top left repeat;
+    box-shadow: var(--box-shadow-soft);
+    display: flex;
+    margin: 0 auto var(--space) 0;
+    padding: var(--space);
+    position: absolute;
+        top:  var(--space-xs-neg);
+        right: var(--space-xs-neg);
+
+
+    p {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: var(--sm);
+        margin: 0;
+        padding: 0;
+    }
+
+    >.icon {
+        height: 0.8rem;
+        width: 0.8rem;
+    }
+}

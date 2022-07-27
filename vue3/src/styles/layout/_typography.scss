@@ -1,252 +1,70 @@
-// .xl {
-//     @include font-size($xl);
 
-//     &.highlighted-text {
-//         line-height: 1.1;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+address,
+li,
+input,
+select,
+textarea {
+    margin: 0 0 var(--space);
+    padding: 0;
+}
 
-//         @include breakpoint(medium) {
-//             line-height: 0.8;
-//         }
-//     }
-// }
+h1,
+.h1 {
+    font-size: var(--h1);
+}
 
-// .highlight {
-//     background: transparentize($white, 0);
-//     background-blend-mode: multiply;
-//     display: inline;
-//     box-decoration-break: clone;
-//     line-height: 1.04;
-//     padding: 0 var(--h-space);
-//     text-transform: uppercase;
-// }
+h2,
+.h2 {
+    font-size: var(--h2);
+}
+
+h3,
+.h3 {
+    font-size: var(--h3);
+}
+
+h4,
+.h4 {
+    font-size: var(--h4);
+}
+
+h5,
+.h5 {
+    font-size: var(--h5);
+}
+
+h6,
+.h6 {
+    font-size: var(--h6);
+}
 
 
-// body {
-//     // text-rendering: geometricPrecision;
-//     // -webkit-font-smoothing: antialiased;
-//     // -moz-osx-font-smoothing: grayscale;
-//     // text-rendering: optimizeLegibility;
-//     text-shadow: none;
-//     // -webkit-text-stroke: 0;
-//     // -webkit-text-size-adjust: 100%;
-//     background: $white;
-//     color: $text;
-//     font-weight: 300;
-//     line-height: 1.4;
-//     font-family: $font-main;
-// }
+p,
+address,
+li,
+input,
+select,
+textarea {
+    font-size: var(--p);
+}
 
-// // #{headings(1,6)} {
-// //     font-family: $font-heading;
-// //     font-weight: bold;
-// //     line-height: 1.2;
-// // }
+small {
+    font-size: var(--p-sm);
+}
 
-// .xl {
-//     @include font-size($xl);
-//     letter-spacing: $letter-spacing;
-// }
+a {
+    .site-main & {
+        text-decoration-skip-ink: auto;
+        #{$hover-states} {
+            text-decoration: underline;
 
-// #{headings(1,6)},
-// p {
-//     max-width: $max-text-width;
-
-//     &[style*="text-align: center"],
-//     .text-center &,
-//     &.text-center {
-//         max-width: none;
-//         margin-left: auto;
-//         margin-right: auto;
-//     }
-
-//     &[style*="text-align: right"],
-//     .text-right & {
-//         max-width: none;
-//         margin-left: auto;
-//         margin-right: 0;
-//     }
-// }
-
-// /*!
-//     /**umb_name:Heading 1*/
-// h1 {
-//     @include font-size($h1);
-//     font-family: $font-heading;
-//     font-weight: 600;
-//     line-height: 1.2;
-//     margin: 0;
-//     padding: 0 0 var(--space);
-//     text-transform: uppercase;
-// }
-
-// /*!
-//     /**umb_name:Heading 2*/
-// h2 {
-//     @include font-size($h2);
-//     font-family: $font-heading;
-//     font-weight: 600;
-//     letter-spacing: $letter-spacing;
-//     line-height: 1.2;
-//     margin: 0;
-//     padding: 0 0 var(--space);
-//     text-align: center;
-//     text-transform: uppercase;
-//     max-width: none;
-// }
-
-// /*!
-//     /**umb_name:Heading 3*/
-// h3 {
-//     @include font-size($h3);
-//     font-family: $font-heading;
-//     font-weight: 600;
-//     line-height: 1.2;
-//     margin: 0;
-//     padding: 0 0 var(--space);
-//     text-transform: uppercase;
-// }
-
-// /*!
-//     /**umb_name:Heading 4*/
-// h4 {
-//     @include font-size($h4);
-//     font-family: $font-heading;
-//     font-weight: 600;
-//     line-height: 1.2;
-//     margin: 0;
-//     padding: 0 0 var(--space);
-//     text-transform: uppercase;
-// }
-
-// /*!
-//     /**umb_name:Heading 5*/
-// h5 {
-//     @include font-size($h5);
-//     font-family: $font-heading;
-//     font-weight: 600;
-//     line-height: 1.2;
-//     margin: 0;
-//     padding: 0 0 var(--space);
-//     text-transform: uppercase;
-// }
-
-// /*!
-//     /**umb_name:Heading 6*/
-// h6 {
-//     @include font-size($h6);
-//     font-family: $font-heading;
-//     font-weight: 600;
-//     // letter-spacing: $letter-spacing;
-//     line-height: 1.2;
-//     margin: 0;
-//     padding: 0 0 var(--space);
-// }
-
-// /*!
-//     /**umb_name:Normal*/
-// p {
-//     @include font-size($p);
-//     font-weight: 300;
-//     line-height: 1.4;
-// }
-
-// /*!
-//     /**umb_name:Intro*/
-//     .intro {
-//         @include font-size($h6);
-//         font-weight: 500;
-//         line-height: 1.4;
-//     }
-
-// small,
-// .small {
-//     @include font-size($small);
-//     line-height: 1.2;
-// }
-
-// a {
-//     color: currentColor;
-//     // font-weight: 600;
-//     transition: all $ts $tt;
-//     text-decoration: none;
-//     text-decoration-skip-ink: auto;
-//     backface-visibility: hidden;
-//     transform: translateZ(0);
-//     -webkit-font-smoothing: subpixel-antialiased;
-
-//     #{$hover-states} {
-//         color: $accent-light;
-//     }
-// }
-
-// strong {
-//     font-weight: 600;
-//     font-style: normal;
-// }
-
-// .semibold {
-//     font-weight: 500;
-// }
-
-// p,
-// address,
-// th,
-// label,
-// li {
-//     @include font-size($p);
-//     font-family: $font-main;
-//     margin: 0;
-//     padding: 0 0 var(--space);
-// }
-
-// ul {
-//     list-style: none;
-//     margin: 0;
-//     padding: 0;
-// }
-
-// em {
-//     font-weight: 600;
-// }
-
-// .cms-content,
-// .mce-content-body,
-// .rte,
-// .heading-with-offset-image {
-//     em {
-//         font-weight: normal;
-//         font-style: italic;
-//     }
-
-//     strong {
-//         font-weight: 600;
-//     }
-
-//     ul {
-//         list-style: disc;
-//         margin: 0;
-//         padding: 0 0 var(--space) var(--space);
-//     }
-// }
-
-// @each $class, $color in $accent-colors {
-//     $colorName: $class;
-
-//     @if ($colorName == #fff) {
-//         $colorName: unquote("white");
-//     } @else if ($colorName == #000) {
-//         $colorName: unquote("black");
-//     } @else if ($colorName == #ff0) {
-//         $colorName: unquote("yellow");
-//     }
-//     /*!
-//     /**umb_name:text-#{$colorName} */
-
-//     .text-#{$class} {
-//         color: $color;
-//     }
-
-//     .text-gold-dark {
-//         color: $gold-dark;
-//     }
-// }
+        }
+    }
+}

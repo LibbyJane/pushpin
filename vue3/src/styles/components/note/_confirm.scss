@@ -1,0 +1,23 @@
+.note-confirm {
+    box-shadow: var(--box-shadow-close);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: calc(var(--zi-note-header));
+    transform: translateY(-5px)   rotate(1deg);
+
+    .alert-title {
+        font-size: var(--h6);
+        margin: 0;
+        padding: 0;
+    }
+
+    // .is-small {
+    //     filter: grayscale(0.5);
+
+    //     .icon {
+    //         transform: scale(0.75);
+    //     }
+    // }
+}

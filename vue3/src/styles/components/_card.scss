@@ -1,37 +1,57 @@
 .card {
     background: {
-        image: url("@/assets/images/paper.jpg"),linear-gradient(
-            0deg,
-            rgba(18, 18, 18, 0.15) 5%,
-            rgba(18, 18, 18, 0) 80%,
-            rgba(18, 18, 18, 0.1) 95%
-
-        ) ;
+        image: url('@/assets/images/paper.jpg'),
+            linear-gradient(0deg,
+                rgba(18, 18, 18, 0.15) 5%,
+                rgba(18, 18, 18, 0) 80%,
+                rgba(18, 18, 18, 0.1) 95%);
 
         position: top left;
         repeat: repeat;
         blend-mode: color-burn;
+        size: 16rem;
     }
+
     // border-radius: var(--radius);
     box-shadow: var(--box-shadow);
     color: var(--heading);
-    margin: 0;
+    margin: 0 0 var(--space);
     padding: var(--space);
     // overflow: hidden;
     transition: all 0.3s ease;
     position: relative;
 
-    &.is-reversed {
+    &.is-torn {
         background: {
-            image: url("@/assets/images/paper-dark.jpg"),linear-gradient(
-                0deg,
-                rgba(18, 18, 18, 0.15) 5%,
-                rgba(18, 18, 18, 0) 80%,
-                rgba(18, 18, 18, 0.1) 95%
+            image: url('@/assets/images/paper-torn-bottom.svg'),
+                linear-gradient(0deg,
 
-            ) ;
+                    rgba(18, 18, 18, 0) 25%,
+                    rgba(18, 18, 18, 0.1) 80%,
+                    rgba(18, 18, 18, 0.2) 95%);
+            position: bottom center;
+            repeat: no-repeat;
+            size: cover;
         }
-        color: var(--off-white);
+
+        box-shadow: none;
+    }
+
+    &.is-lined {
+        background: url("@/assets/images/paper-lined.jpg") top left repeat;
+    }
+
+    &.is-alt {
+        background: {
+            image: url('@/assets/images/paper-green.jpg'),
+                linear-gradient(0deg,
+                    rgba(18, 18, 18, 0.15) 5%,
+                    rgba(18, 18, 18, 0) 80%,
+                    rgba(18, 18, 18, 0.1) 95%);
+            size: 24rem;
+        }
+
+        //color: var(--off-white);
     }
 
     img {
@@ -57,17 +77,68 @@
 
     &::before {
         background: {
-            image:  linear-gradient( 0deg,
-                rgba(0, 0, 0, 0.05) 0%,
-                rgba(0, 0, 0, 0) 90%
-            ) ;
+            image: linear-gradient(0deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0) 90%);
             repeat: no-repeat;
         }
+
         content: '';
         height: 1.5rem;
         position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+}
+
+.card-tape {
+    position: absolute;
+    top: -1.5rem;
+    right: -1rem;
+    margin: 0 auto;
+    transform: rotate(45deg);
+}
+
+.card-pin {
+    width: 1.8rem;
+    position: absolute;
+    top: -1rem;
+    right: -1rem;
+    left: 0;
+    margin: 0 auto;
+
+    &.align-left {
+        top: -0.7rem;
+        right: auto;
+        left: 0;
+        transform: rotate(-3deg);
+    }
+
+    &.align-right {
+
+        top: -0.8rem;
+        right: 0.5rem;
+        left: auto;
+        transform: rotate(3deg);
+    }
+}
+
+.white-inner {
+    &::before {
+        background: white;
+        content: '';
+        position: absolute;
+        top: var(--space);
+        right: var(--space);
+        bottom: var(--space);
+        left: var(--space);
+        ;
+        opacity: 0.9;
+    }
+
+    p {
+        margin: 0;
+        padding: var(--space);
+        position: relative;
+        z-index: 1;
     }
 }

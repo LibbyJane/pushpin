@@ -106,6 +106,29 @@ const DbManager = {
             });
         });
     },
+    /**
+     * Returns all row using an SQL statement with the given parameters.
+     * @param {string} sql
+     * @param {array} params
+     * @returns {Promise<unknown>}
+     */
+    getAll: (sql, params = []) => {
+        return new Promise((resolve, reject) => {
+            const conn = getDb();
+
+            conn.all(sql, params, (err, rows) => {
+                if (err) {
+                    reject(err);
+                }
+
+                if (!rows) {
+                    resolve([]);
+                }
+
+                resolve(rows);
+            });
+        });
+    },
     migrate: () => {
         return new Promise((resolve, reject) => {
             migrate.load({

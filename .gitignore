@@ -34,3 +34,5 @@ data/cache/*
 # Migrations
 .migrate
 .migrate_test
+
+data/cache

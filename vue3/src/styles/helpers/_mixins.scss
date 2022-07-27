@@ -27,10 +27,6 @@
         color: $white;
     }
 
-    &.is-small {
-        @include font-size($p-small);
-        padding: var(--small-space) var(--space);
-    }
 
     .icon {
         &:first-child {

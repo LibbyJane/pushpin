@@ -57,21 +57,56 @@ const endpoints = {
     profilePhoto: {
         uri: `upload/profile_photo`,
         method: 'POST'
+    },
+
+    invite: {
+        uri: `invite`,
+        method: 'POST'
+    },
+
+    invitationsReceived: {
+        uri: `user/invitationsReceived`,
+        method: 'GET'
+    },
+
+    acceptInvitation: {
+        uri: `invite/accept/`,
+        method: 'POST'
+    },
+
+    invitationIssuer: {
+        uri: `user/invite/`,
+        method: 'GET'
+    },
+
+    user: {
+        uri: `user`,
+        method: 'GET'
+    },
+
+    friends: {
+        uri: `friends`,
+        method: 'GET'
     }
 }
 
 export async function useAPI(endpoint, data, endpointID) {
-    // console.log('endpoint, data, endpointID', endpoint, data, endpointID)
+    console.log('endpoint uri, method, data, endpointID', endpoint, data, endpointID)
+    console.log('apiBaseURL', apiBaseURL);
     const userStore = useUserStore();
     const token = userStore && userStore.getAuth ? userStore.getAuth : null;
     // console.log('token', token)
 
     if (endpoint && endpoints[endpoint]) {
-        const config = {
+        let config = {
             headers: {},
             baseURL: apiBaseURL,
             url: endpoints[endpoint].uri,
             method: endpoints[endpoint].method
+        }
+
+        if (config.url.indexOf('upload') > -1) {
+            config.headers['content-type'] = 'multipart/form-data';
         }
 
         if (data) {
@@ -86,10 +121,7 @@ export async function useAPI(endpoint, data, endpointID) {
             config.headers.authorization = `Bearer ${token}`
         }
 
-        // console.log('axios config', config)
-
-        // const ourRequest = axios.CancelToken.source()
-        // config.cancelToken = ourRequest.token;
+        console.log('final config', config);
 
         try {
             const response = await axios(config)
@@ -97,13 +129,16 @@ export async function useAPI(endpoint, data, endpointID) {
             return response.data
 
         } catch (error) {
+            console.log('error', error)
             // console.log("There was a problem.", error)
             if (error.response.status === 403) {
                 console.log('bad token, logout')
 
                 userStore.performLogout;
             }
-
+            else if (error.response && error.response.data) {
+                return error.response.data
+            }
         }
 
         // return () => {

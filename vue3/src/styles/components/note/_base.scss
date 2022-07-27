@@ -1,0 +1,118 @@
+.note {
+    background: {
+        color: var(--white);
+        image: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 95%);
+        blend-mode: multiply;
+    }
+
+    box-shadow: var(--box-shadow-close),
+    var(--box-shadow);
+    color: var(--text);
+    margin: 0 auto 0 0;
+
+    padding: 0;
+    position: relative;
+    // overflow: hidden; pin gets cut off
+    text-decoration: none;
+    transform-origin: top center;
+    transition: all 0.3s ease;
+    // height: -webkit-fill-available;
+    width: -webkit-fill-available;
+    // z-index: var(--zi-base);
+
+    // @include breakpoint(medium) {
+    //     // min-width: 18rem;
+    //     // min-height: 19rem;
+    //     // max-width: 50vw;
+    //     // max-height: 50vh;
+    // }
+
+    &.note {
+
+        &:hover,
+        &:focus {
+            text-decoration: none;
+            transform: rotate(1.25deg);
+
+            .note-image-animated {
+                display: block;
+                opacity: 1;
+            }
+        }
+    }
+
+    &.is-stickynote {
+        background-image: linear-gradient(0deg,
+                rgba(18, 18, 18, 0) 0%,
+                // rgba(18, 18, 18, 0.1) 90%,
+                rgba(18, 18, 18, 0.05) 91%,
+                rgba(18, 18, 18, 0.15) 98%);
+        height: 100%;
+    }
+
+    &.is-instant-photo {
+        background: {
+            image: url('../assets/images/instant-photo-texture.png');
+        }
+
+        //border-radius: var(--radius);
+        height: 100%;
+    }
+
+    &.is-postcard {
+        background: {
+            image: url('../assets/images/paper.jpg');
+            position: top var(--space-lg) right var(--space-lg);
+            repeat: repeat;
+            size: calc(var(--postcard-footer-width) + var(--space-lg));
+        }
+
+        min-height: 18rem;
+
+        &::after {
+            content: '';
+            border-left: 2px solid var(--grey-7);
+            display: block;
+            position: absolute;
+            top: var(--space-lg);
+            right: calc(var(--postcard-footer-width) + var(--space-lg));
+            bottom: var(--space-lg);
+
+        }
+    }
+
+    &[data-background] {
+        background-color: attr(data-background);
+    }
+
+    a {
+        color: currentColor;
+        text-decoration: none;
+    }
+
+    h4 {
+        color: var(--theme-primary);
+    }
+
+    p {
+        color: var(--text);
+        font-family: var(--font-hand);
+        font-weight: 400;
+    }
+}
+
+.note-recipients {
+    display: flex;
+    color: var(--white);
+    align-items: baseline;
+
+    h6 {
+        line-height: 1;
+        margin: auto 0 var(--space);
+        padding: 0;
+    }
+
+    .avatar {
+        margin: auto var(--space-sm) var(--space);
+    }
+}

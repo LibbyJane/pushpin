@@ -1,6 +1,7 @@
-/* forms */
 form {
-    max-width: var(--max-form-width-md);
+    &.has-max-width {
+        max-width: var(--max-form-width);
+    }
 }
 
 .width-small {

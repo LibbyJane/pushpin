@@ -1,0 +1,130 @@
+.list-notes {
+    display: grid;
+    // /* grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); */
+    grid-template-columns: repeat(2, 1fr);
+    /* grid-template-columns: repeat(auto-fill, minmax(180px, 260px)); */
+    grid-auto-flow: dense;
+    grid-gap: var(--space);
+    justify-content: start;
+    align-items: start;
+
+    margin: 0 auto var(--space);
+
+    @include breakpoint(medium) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    @include breakpoint(large) {
+        grid-gap: var(--space-md);
+    }
+
+    @include breakpoint(xl) {
+        grid-template-columns: repeat(14, 1fr);
+    }
+
+    // >li,
+    // >div,
+    // >a {
+    //     grid-area: span 1;
+    // }
+
+    >a {
+        text-decoration: none;
+    }
+
+    .is-stickynote {
+        @include breakpoint(xl) {
+            grid-area: span 1 / span 2;
+        }
+    }
+
+    .is-instant-photo {
+
+        @include breakpoint(xl) {
+            grid-area: span 2 / span 3;
+        }
+    }
+
+    .is-postcard {
+        // outline: 2px solid red;
+        grid-area: span 2 / span 2;
+
+        @include breakpoint(xl) {
+            grid-area: span 3 / span 6;
+        }
+
+        //
+        // width: 2fr;
+
+        // @include breakpoint(large) {
+        //     grid-area: span 2 / span 3;
+        // }
+    }
+
+
+    .note {
+        &:nth-child(2n) {
+            transform: rotate(-0.5deg);
+
+            .note-pin {
+                filter: sepia(1) hue-rotate(200deg) saturate(5);
+                transform: translateX(-0.5rem) translateY(0.1rem);
+                /* outline: 2px solid blue; */
+            }
+        }
+
+        &:nth-child(2n+4) {
+
+            // transform: translateY(-0.3rem);
+            //outline: 2px solid pink;
+            .note-pin {
+                filter: sepia(1) hue-rotate(90deg) saturate(3);
+
+                transform: translateX(-0.5rem);
+                /* outline: 2px solid aqua; */
+            }
+
+        }
+
+
+        &:nth-child(3n) {
+            transform: rotate(0.75deg);
+            /* outline: 2px solid red; */
+
+            .note-pin {
+                transform: translateX(-0.5rem);
+                /* outline: 2px solid red; */
+            }
+        }
+
+        &:nth-child(3n+6) {
+            transform: rotate(0.5deg);
+
+            //  outline: 2px solid orange;
+            .note-pin {
+                transform: translateY(0.25rem);
+
+            }
+        }
+
+        &:nth-child(5n) {
+            transform: rotate(-0.75deg);
+
+            /* outline: 2px solid lime; */
+            .note-pin {
+                filter: sepia(1) hue-rotate(230deg) saturate(3);
+                transform: rotate(-1.5deg);
+                /* outline: 2px solid lime; */
+            }
+        }
+    }
+}
+
+
+
+
+
+
+/* &[data-saved="true"] {
+    order: 0;
+} */

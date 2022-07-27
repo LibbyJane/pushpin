@@ -1,0 +1,79 @@
+.note-image {
+    background: {
+        size: cover;
+        position: center;
+        repeat: no-repeat;
+    }
+
+    margin: var(--space);
+    position: relative;
+    overflow: hidden;
+    z-index: var(--zi-base);
+    //max-height: 50vh;
+
+    img {
+        display: block;
+        min-width: 100%;
+        max-width: 100%;
+        margin: auto;
+
+    }
+
+    .is-postcard & {
+        --m: calc(var(--space) * -1);
+        --w: calc(var(--space) * 2 + 100%);
+        grid-column: 1/-1;
+        grid-row: 1/-1;
+
+        background: {
+            size: cover;
+        }
+
+        border: 0;
+        margin: 0;
+        transition: opacity var(--transition);
+        transition-delay: var(--transition-speed);
+        height: 0;
+        padding-top: 60%;
+        // // min-width: var(--w);
+        // min-width: 0;
+        // max-width: var(--w);
+        // max-height: 100%;
+        // height: auto;
+        // width: auto;
+        position: relative;
+        min-height: 19rem;
+        max-height: 50vh;
+
+        &:hover,
+        &:focus {
+            opacity: 0;
+        }
+    }
+
+    .is-instant-photo & {
+        background-color: var(--black);
+    }
+
+    .note-image-still {
+        animation: develop 10s;
+    }
+
+    .note-image-animated {
+        opacity: 0;
+        position: absolute;
+        z-index: calc(var(--zi-base) + 1);
+        transition: all var(--transition);
+        transition-delay: var(--transition-speed);
+    }
+}
+
+@keyframes develop {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

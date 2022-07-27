@@ -38,6 +38,29 @@ const isPositiveInteger = (value) => {
     return true;
 }
 
+const allNumbersArePositiveIntegers = (...items) => {
+    if (!Array.isArray(items)) {
+        return false;
+    }
+
+    const numItems = items.length;
+    if (numItems === 0) {
+        return [];
+    }
+
+    const errors = [];
+
+    for (let itemNo = 0; itemNo < numItems; itemNo++) {
+        const item = items[itemNo];
+
+        if (!isPositiveInteger(item)) {
+            errors.push(`Item ${item} at index ${itemNo} is not a positive integer`);
+        }
+    }
+
+    return errors;
+}
+
 const allStringsInArrayAreNotEmpty = (itemArray, noSpaces = true) => {
     if (!Array.isArray(itemArray)) {
         return false;
@@ -95,3 +118,4 @@ module.exports.isNonEmptyArray = isNonEmptyArray;
 module.exports.isNonEmptyString = isNonEmptyString;
 module.exports.allStringsInArrayAreNotEmpty = allStringsInArrayAreNotEmpty;
 module.exports.isEmailAddress = isEmailAddress;
+module.exports.allNumbersArePositiveIntegers = allNumbersArePositiveIntegers;

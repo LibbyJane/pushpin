@@ -1,0 +1,33 @@
+
+.stamp-postmark {
+    --stamp-height: calc(var(--postcard-footer-width) / 2);
+    position: absolute;
+        top: var(--space-lg);
+        right: var(--space-lg);
+    width: var(--postcard-footer-width);
+    height: var(--stamp-height);
+
+    .avatar {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        transform: translateY(0.2rem) translateX(-0.14rem);
+    }
+
+    .avatar-image {
+        margin: auto 0;
+        border-radius: 0;
+        height: calc(var(--stamp-height) * 0.9);
+        width: calc(var(--stamp-height) * 0.56);
+    }
+
+    .stamp-frame {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width:calc(var(--stamp-height) * 1.7);
+        height:var(--stamp-height);
+        z-index: 1;
+    }
+}

@@ -1,10 +1,27 @@
 <template>
     <main class="pg-login cols">
         <form @submit="handleSubmit" class="form-login card col">
+            <img
+                src="@/assets/images/pin-round-yellow.png"
+                class="card-pin align-left"
+                alt="Push Pin"
+            />
+            <img
+                src="@/assets/images/pin-round-teal.png"
+                class="card-pin align-right"
+                alt="Push Pin"
+            />
             <header class="card-header">Log In</header>
 
             <label for="email">email:</label>
-            <input id="email" type="email" v-model="fields.email.value" required />
+            <input
+                id="email"
+                type="email"
+                v-model="fields.email.value"
+                v-on:keyup="clearError"
+                autocomplete="email"
+                required
+            />
             <!-- <Error  /> -->
 
             <label for="password"> password: </label>
@@ -12,78 +29,71 @@
                 id="password"
                 type="password"
                 v-model="fields.password.value"
+                v-on:keyup="clearError"
+                autocomplete="current-password"
                 required
             />
+            <Error v-if="formError" :message="formError" />
 
-            <label for="confirmPassword">confirm password: </label>
-            <input
-                id="confirmPassword"
-                type="password"
-                v-model="fields.confirmPassword.value"
-                required
-            />
-            <!-- <Error name="password" class="error-feedback" /> -->
-
-            <button type="submit">log in</button>
+            <button class="btn" type="submit">log in</button>
         </form>
 
-        <div class="col card is-reversed align-top width-small">
-            <h4>Don't have an account yet?</h4>
-            <p><RouterLink to="/signup">Sign up here</RouterLink></p>
-        </div>
+        <aside class="sidebar">
+            <div class="card is-alt align-top width-small" to="/login">
+                <img src="@/assets/images/tape.svg" class="card-tape" alt="Push Pin" />
+                <h4>Don't have an account yet?</h4>
+                <p><RouterLink to="/signup">Sign up here</RouterLink></p>
+            </div>
+        </aside>
     </main>
 </template>
 
 <script setup>
-    import { ref, reactive, provide } from 'vue';
-    import { useAPI } from '@/api/useAPI';
+    import { usePageTitle } from '@/use/usePageTitle';
+    usePageTitle('Log in');
+
+    import Error from '@/components/Error.vue';
+
+    import { ref, reactive } from 'vue';
     import { useUserStore } from '@/stores/user';
+
     const userStore = useUserStore();
 
     const fields = reactive({
         email: {
-            value: 'cookie@monster.com',
+            value: null,
             error: null,
         },
         password: {
-            value: 'testtest',
-        },
-        confirmPassword: {
-            value: 'testtest',
+            value: null,
             error: null,
         },
     });
 
-    // watch(
-    //     fields.password.value: () => {
-    //         comparePasswords()
-    //     },
+    let formError = ref('');
 
-    //     fields.confirmPassword.value: () => {
-    //         comparePasswords()
-    //     }
-    // );
-
-    const comparePasswords = () => {
-        if (
-            fields.password.value &&
-            fields.confirmPassword.value &&
-            fields.password.value !== fields.confirmPassword.value
-        ) {
-            fields.confirmPassword.error = 'Passwords must match';
-            console.log('error', fields.confirmPassword.error);
-        } else {
-            fields.confirmPassword.error = null;
-            console.log('no error', fields.confirmPassword.error);
-        }
+    const clearError = () => {
+        // fields[fieldKey].error = null;
+        formError.value = '';
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        userStore.performLogin({
+        const outcome = await userStore.performLogin({
             email: fields.email.value,
             password: fields.password.value,
         });
+
+        console.log('outcome', outcome);
+
+        if (outcome && outcome.error) {
+            formError.value = outcome.error;
+        } else if (outcome && outcome.errors) {
+            for (let error of outcome.errors) {
+                console.log('error', error);
+                formError.value += `${error}`;
+            }
+        }
     };
 </script>

@@ -1,0 +1,40 @@
+.friends-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+
+        &:nth-child(2n) {
+            .avatar-image {
+                transform: rotate(2deg);
+            }
+        }
+        &:nth-child(3n) {
+            .avatar-image {
+                transform: rotate(-2deg);
+            }
+        }
+    }
+
+    .avatar {
+        flex-direction: row;
+        justify-content: flex-start;
+        filter: grayscale(1);
+
+        #{$hover-states} {
+            filter: grayscale(0);
+
+            .avatar-image {
+                box-shadow: none;
+            }
+        }
+    }
+
+    .avatar-image {
+        border-radius: 0;
+        border: var(--border-width-xwide) solid var(--white);
+        box-shadow: var( --box-shadow-soft);
+        margin-right: var(--space-xs);
+    }
+}
