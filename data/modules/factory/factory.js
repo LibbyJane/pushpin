@@ -1,9 +1,26 @@
 const config = require('./../../config.json');
+const dailyDigestSenderModule = require('./../comms/services/dailyDigestSender');
 const emailSenderModule = require('../comms/services/emailSender');
 const { getTemplateRenderer } = require("../util/templateRenderer");
 const { fileHelper } = require('../util/fileHelper');
+const database = require('./../../database');
+const noteServiceFactory = require('../notes/services/noteServiceFactory');
 
 const Factory = function (config) {
+    this.getDatabaseManager = () => {
+        return database.dbManager;
+    }
+
+    this.getDigestSender = async () => {
+        return dailyDigestSenderModule.getDigestSender(
+            this.getDatabaseManager(),
+            await this.getTemplateRenderer(),
+            this.getEmailSender(),
+            this.noteServiceFactory().recentNoteCountFetcher(),
+            this.noteServiceFactory().recentReactionCountFetcher(),
+        );
+    }
+
     this.getEmailSender = () => {
         return emailSenderModule.getEmailSender(
             config.email.host,
@@ -38,6 +55,10 @@ const Factory = function (config) {
         }
 
         return getTemplateRenderer(cachePath, templatesPath);
+    }
+
+    this.noteServiceFactory = () => {
+        return noteServiceFactory.getFactory(config, this.getDatabaseManager());
     }
 }
 

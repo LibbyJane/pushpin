@@ -30,7 +30,7 @@ module.exports.getNotesForLoggedInUser = (db) => {
 };
 
 /**
- * Returns note reactions for the logged in user (i.e. reactions on notes they have sent)
+ * Returns note reactions for the logged-in user (i.e. reactions on notes they have sent)
  * for the last X days.  The number of days should be passed in the URL.
  * @param db
  * @returns {(function(*, *): Promise<*|undefined>)|*}
@@ -437,6 +437,19 @@ const sqlStatements = {
         INNER JOIN recipients r ON n.id = r.noteId
         WHERE r.recipientId = ?
         AND ((r.status is null) OR (r.status <> 'deleted'))
+    `,
+    "getRecentNoteCountsGroupByRecipient": `
+        SELECT n.createdByID, u.displayName as senderDisplayName, r.recipientId,
+        u2.displayName as recipientDisplayName, u2.email as recipientEmail, COUNT(n.id) as noteCount
+        FROM notes n
+        INNER JOIN recipients r ON n.id = r.noteId
+        INNER JOIN users u ON n.createdByID = u.id
+        INNER JOIN users u2 ON r.recipientId = u2.id
+        WHERE r.recipientId = ?
+        AND ((r.status is null) OR (r.status <> 'deleted'))
+        AND r.createdAt >= ?
+        GROUP BY n.createdByID, u.displayName, r.recipientId
+        ORDER BY r.recipientId;
     `,
     "insertNote": `
         INSERT INTO notes (createdById, message, imageUrl, style, color)

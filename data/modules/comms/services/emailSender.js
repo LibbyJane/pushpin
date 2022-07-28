@@ -41,7 +41,7 @@ module.exports.getEmailSender = (
 
         // If the username is empty, delete the auth block entirely.
         if (smtpUsername.length === 0) {
-            options.delete('auth');
+            delete options.auth;
         }
 
         return nodemailer.createTransport(options);

@@ -2,6 +2,7 @@ const tokens = require("./../../../tokens");
 const validationModule = require("./../../../validationModule");
 const getUserByEmail = require('./getUserByEmail');
 const hashService = require('./../../security/services/hashService');
+const factory = require('../../factory/factory');
 
 const getResult = (errors = [], user = null, token = null) => {
     return {
@@ -69,6 +70,28 @@ module.exports.do = async (databaseManager, firstName, lastName, displayName, em
 
         // Insert the new user
         await databaseManager.execute(insertSql, params);
+
+        // Email the user, welcoming them to system.
+        const factoryInstance = factory.getFactory();
+        const templateRenderer = await factoryInstance.getTemplateRenderer();
+        const sender = factoryInstance.getEmailSender();
+
+        // Define the template data for the user registration email.
+        const templateData = {
+            displayName: displayName,
+            emailAddress: email,
+        }
+
+        // Get the HTML and Text versions of the email that we want to send.
+        const html = await templateRenderer.renderTemplate('email/newUserRegistration/html.twig', templateData);
+        const text = await templateRenderer.renderTemplate('email/newUserRegistration/text.twig', templateData);
+
+        // Send the email.
+        const success = await sender.sendMessage(email, "Welcome to PushPin", text, html);
+        if (!success) {
+            const lastError = sender.getLastError();
+            console.log('Failed to send user registration email', lastError);
+        }
 
         // Load the user and then delete the password attribute so that we don't send that back to the client.
         user = await getUserByEmail.do(databaseManager, email);

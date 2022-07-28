@@ -1,0 +1,37 @@
+{% extends "./email/baseHtmlTemplate.twig" %}
+
+{% block title %}Your PushPin Daily Summary{% endblock %}
+{% block pretext %}Your PushPin Daily Summary{% endblock %}
+
+{% block content %}
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td align="left" style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">
+            Hi {{ displayName }}, you've had some activity on PushPin in the last 24 hours!
+        </td>
+    </tr>
+    <tr>
+        <td align="left" style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <thead>
+                    <tr>
+                        <th align="center" style="padding: 10px; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">Notes Received</th>
+                        <th align="center" style="padding: 10px; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">New Reactions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td align="center" style="padding: 10px; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">{{ noteCount }}</td>
+                        <td align="center" style="padding: 10px; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">{{ reactionCount }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td align="left" style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">
+            To view your recent notes and reactions, please visit PushPin.
+        </td>
+    </tr>
+</table>
+{% endblock %}

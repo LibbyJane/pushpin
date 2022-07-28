@@ -18,3 +18,18 @@ node_modules/.bin/migrate
 
 ### Run migrations down manually
 node_modules/.bin/migrate down
+
+
+# Cron Tasks
+
+## Daily
+
+### Daily Digest Task
+
+The daily digest task sends a digest of new activity to relevant users.
+Digests are only sent if the user has at least 1 new note or 1 new reaction.
+
+To run the task:
+```angular2html
+node cron/daily/sendDailyDigests.js
+```
